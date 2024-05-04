@@ -1,0 +1,38 @@
+{
+  "root": true,
+  "env": {
+    "es2022": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "overrides": [
+    {
+      "env": {
+        "node": true
+      },
+      "files": [
+        ".eslintrc.{js,cjs}"
+      ],
+      "parserOptions": {
+        "sourceType": "script"
+      }
+    }
+  ],
+
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  },
+  "ignorePatterns": [
+    "node_modules/",
+    "dist/",
+    "index.html"
+  ],
+  "rules": {}
+}
