@@ -5,3 +5,5 @@ public/*
 .prettierrc
 nodemon.json
 tsconfig.json
+README.md
+vite.config.ts
