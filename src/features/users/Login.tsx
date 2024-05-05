@@ -1,26 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import type { FormProps } from 'antd';
-import { Button, Col, Form, Input, message, Row } from 'antd';
+import { Button, Col, Form, Input, Row } from 'antd';
 import { LoginMutation } from '../../types/types.user';
 import Breadcrumbs from '../../components/UI/Breadcrumps/Breadcrumbs';
+import { login } from '../../services/user.service';
 
 const App: React.FC = () => {
+  const { isPending, mutateAsync } = login();
   const [form] = Form.useForm();
   const [clientReady, setClientReady] = useState<boolean>(false);
 
   useEffect(() => {
     setClientReady(true);
   }, []);
-  const onSubmit: FormProps<LoginMutation>['onFinish'] = (values) => {
-    console.log('Success:', values);
-    void message.success('Submit success!');
+  const onSubmit: FormProps<LoginMutation>['onFinish'] = async (values) => {
+    await mutateAsync(values);
     form.resetFields();
   };
 
-  const onFinishFailed: FormProps<LoginMutation>['onFinishFailed'] = (
-    errorInfo,
-  ) => {
-    console.log('Failed:', errorInfo);
+  const onFinishFailed: FormProps<LoginMutation>['onFinishFailed'] = () => {
+    form.resetFields();
   };
 
   return (
@@ -74,7 +73,8 @@ const App: React.FC = () => {
                   !clientReady ||
                   !form.isFieldsTouched(true) ||
                   !!form.getFieldsError().filter(({ errors }) => errors.length)
-                    .length
+                    .length ||
+                  isPending
                 }
               >
                 Войти

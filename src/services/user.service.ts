@@ -2,6 +2,8 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { LoginMutation, UserResponse } from '../types/types.user';
 import { axiosApi } from './axiosApi';
 import { httpRoutes } from '../utils/routes';
+import { message } from 'antd';
+import { isAxiosError } from 'axios';
 
 export const GetUsers = () => {
   return useQuery({
@@ -21,10 +23,17 @@ export const login = () => {
       return response.data;
     },
     onSuccess: (data) => {
-      console.log(data.message);
+      void message.success(data.message);
     },
-    onError: () => {
-      console.log('error');
+    onError: (error) => {
+      if (
+        isAxiosError(error) &&
+        error.response &&
+        error.response.data.message
+      ) {
+        void message.error(error.response.data.message);
+      }
+      throw error;
     },
   });
 };

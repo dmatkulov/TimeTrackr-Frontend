@@ -6,5 +6,5 @@ export const appRoutes = {
 };
 
 export const httpRoutes = {
-  login: '/sessions',
+  login: 'staff/sessions',
 };
