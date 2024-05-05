@@ -12,7 +12,9 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@tanstack/query-sync-storage-persister": "^5.34.1",
     "@tanstack/react-query": "^5.34.1",
+    "@tanstack/react-query-persist-client": "^5.34.1",
     "antd": "^5.17.0",
     "axios": "^1.6.8",
     "husky": "^9.0.11",
