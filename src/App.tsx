@@ -1,10 +1,17 @@
-import { Button, Space } from 'antd';
+import { Route, Routes } from 'react-router-dom';
+import { appRoutes } from './utils/routes';
+import Home from './Home/Home';
+import Page404 from './components/404/Page404';
+import Login from './features/users/Login';
 
 function App() {
   return (
     <>
-      <Space>Hi</Space>
-      <Button type="primary">Button</Button>
+      <Routes>
+        <Route path={appRoutes.home} element={<Home />} />
+        <Route path={appRoutes.login} element={<Login />} />
+        <Route path={appRoutes.notFound} element={<Page404 />} />
+      </Routes>
     </>
   );
 }

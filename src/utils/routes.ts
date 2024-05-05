@@ -1,7 +1,8 @@
 export const appRoutes = {
   home: '/',
-  register: 'admin/register',
-  login: 'login',
+  register: '/admin/register',
+  login: '/login',
+  notFound: '*',
 };
 
 export const httpRoutes = {

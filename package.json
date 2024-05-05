@@ -12,6 +12,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@ant-design/colors": "^7.0.2",
     "@tanstack/query-sync-storage-persister": "^5.34.1",
     "@tanstack/react-query": "^5.34.1",
     "@tanstack/react-query-persist-client": "^5.34.1",
