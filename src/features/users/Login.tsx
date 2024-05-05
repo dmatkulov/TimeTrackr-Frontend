@@ -3,10 +3,11 @@ import type { FormProps } from 'antd';
 import { Button, Col, Form, Input, Row } from 'antd';
 import { LoginMutation } from '../../types/types.user';
 import Breadcrumbs from '../../components/UI/Breadcrumps/Breadcrumbs';
-import { login } from '../../services/user.service';
+import { useNavigate } from 'react-router-dom';
+import { appRoutes } from '../../utils/routes';
 
 const App: React.FC = () => {
-  const { isPending, mutateAsync } = login();
+  const navigate = useNavigate();
   const [form] = Form.useForm();
   const [clientReady, setClientReady] = useState<boolean>(false);
 
@@ -14,7 +15,8 @@ const App: React.FC = () => {
     setClientReady(true);
   }, []);
   const onSubmit: FormProps<LoginMutation>['onFinish'] = async (values) => {
-    await mutateAsync(values);
+    navigate(appRoutes.profile);
+    console.log(values);
     form.resetFields();
   };
 
@@ -73,8 +75,7 @@ const App: React.FC = () => {
                   !clientReady ||
                   !form.isFieldsTouched(true) ||
                   !!form.getFieldsError().filter(({ errors }) => errors.length)
-                    .length ||
-                  isPending
+                    .length
                 }
               >
                 Войти
