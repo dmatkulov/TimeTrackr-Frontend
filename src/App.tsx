@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import { appRoutes } from './utils/routes';
 import Home from './Home/Home';
-import Page404 from './components/404/Page404';
+import Page404 from './components/UI/404/Page404';
 import Login from './features/users/Login';
 
 function App() {
