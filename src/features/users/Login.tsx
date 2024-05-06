@@ -5,18 +5,30 @@ import { LoginMutation } from '../../types/types.user';
 import Breadcrumbs from '../../components/UI/Breadcrumps/Breadcrumbs';
 import { useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../utils/routes';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { login } from './UsersThunks';
+import { selectLoginError } from './UsersSlice';
 
 const App: React.FC = () => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const loginError = useAppSelector(selectLoginError);
+
   const [form] = Form.useForm();
   const [clientReady, setClientReady] = useState<boolean>(false);
 
   useEffect(() => {
     setClientReady(true);
   }, []);
-  const onSubmit: FormProps<LoginMutation>['onFinish'] = async (values) => {
+  const onSubmit: FormProps<LoginMutation>['onFinish'] = async (
+    loginMutation,
+  ) => {
+    await dispatch(login(loginMutation)).unwrap();
+
+    if (loginError) {
+      return;
+    }
     navigate(appRoutes.profile);
-    console.log(values);
     form.resetFields();
   };
 

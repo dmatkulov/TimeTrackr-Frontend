@@ -4,7 +4,7 @@ export interface User {
   token: string;
   firstname: string;
   lastname: string;
-  contactInfo;
+  contactInfo: contactInfo;
   photo: string;
   position: string;
   role: string;
@@ -24,7 +24,7 @@ export interface LoginMutation {
 
 export interface RegisterMutation {}
 
-export interface UserResponse {
+export interface LoginResponse {
   message: string;
   user: User;
 }
