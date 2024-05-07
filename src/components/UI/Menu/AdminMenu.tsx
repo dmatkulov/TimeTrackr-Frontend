@@ -1,14 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { TeamOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../../utils/routes';
+import { useAppDispatch } from '../../../app/hooks';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
 const AdminMenu: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    getAllStaff();
+  }, [dispatch]);
 
   const getAllStaff = () => {
     navigate(appRoutes.staff);
@@ -19,17 +25,7 @@ const AdminMenu: React.FC = () => {
       key: '1',
       label: 'Сотрудники',
       icon: <TeamOutlined />,
-      children: [
-        { key: '2', label: 'Все сотрудники', onClick: getAllStaff },
-        {
-          key: '3',
-          label: 'По отделам',
-          children: [
-            { key: '7', label: 'Option 7' },
-            { key: '8', label: 'Option 8' },
-          ],
-        },
-      ],
+      onClick: getAllStaff,
     },
     {
       type: 'divider',

@@ -26,7 +26,7 @@ export const positionsSlice = createSlice({
         state.fetchLoading = false;
         state.items = items;
       })
-      .addCase(fetchPositions.pending, (state) => {
+      .addCase(fetchPositions.rejected, (state) => {
         state.fetchLoading = false;
       });
   },

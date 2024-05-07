@@ -11,6 +11,6 @@ export const appRoutes = {
 
 export const httpRoutes = {
   users: 'staff',
-  login: 'staff/sessions',
+  sessions: 'staff/sessions',
   positions: 'positions',
 };
