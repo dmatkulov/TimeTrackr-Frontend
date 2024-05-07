@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import type { FormProps } from 'antd';
 import { Button, Col, Form, Input, Row } from 'antd';
 import { LoginMutation } from '../../types/types.user';
-import Breadcrumbs from '../../components/UI/Breadcrumps/Breadcrumbs';
 import { useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../utils/routes';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
@@ -28,6 +27,7 @@ const App: React.FC = () => {
     if (loginError) {
       return;
     }
+
     navigate(appRoutes.profile);
     form.resetFields();
   };
@@ -38,9 +38,6 @@ const App: React.FC = () => {
 
   return (
     <Row>
-      <Col span={24} style={{ marginBottom: '50px' }}>
-        <Breadcrumbs />
-      </Col>
       <Col span={8} offset={8}>
         <Form
           form={form}

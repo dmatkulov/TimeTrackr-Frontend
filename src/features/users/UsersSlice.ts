@@ -2,32 +2,52 @@ import { User } from '../../types/types.user';
 import { GlobalMessage, ValidationError } from '../../types/types.global';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { login } from './UsersThunks';
+import { getUsers, login } from './UsersThunks';
 import { message } from 'antd';
 
 interface UsersState {
   user: User | null;
+  staff: User[];
   registerLoading: boolean;
   registerError: ValidationError | null;
   loginLoading: boolean;
   loginError: GlobalMessage | null;
   logOutLoading: boolean;
+  fetchAllLoading: boolean;
 }
 
 const initialState: UsersState = {
   user: null,
+  staff: [],
   registerLoading: false,
   registerError: null,
   loginLoading: false,
   loginError: null,
   logOutLoading: false,
+  fetchAllLoading: false,
 };
 
 export const usersSlice = createSlice({
   name: 'users',
   initialState,
-  reducers: {},
+  reducers: {
+    unsetUser: (state) => {
+      state.user = null;
+    },
+  },
   extraReducers: (builder) => {
+    builder
+      .addCase(getUsers.pending, (state) => {
+        state.fetchAllLoading = true;
+      })
+      .addCase(getUsers.fulfilled, (state, { payload: data }) => {
+        state.fetchAllLoading = false;
+        state.staff = data.users;
+      })
+      .addCase(getUsers.rejected, (state) => {
+        state.fetchAllLoading = false;
+      });
+
     builder
       .addCase(login.pending, (state) => {
         state.loginLoading = true;
@@ -45,15 +65,16 @@ export const usersSlice = createSlice({
 });
 
 export const usersReducer = usersSlice.reducer;
+export const { unsetUser } = usersSlice.actions;
 
 export const selectUser = (state: RootState) => state.users.user;
+export const selectStaff = (state: RootState) => state.users.staff;
 export const selectRegisterLoading = (state: RootState) =>
   state.users.registerError;
 export const selectRegisterError = (state: RootState) =>
   state.users.registerError;
 export const selectLoginLoading = (state: RootState) =>
   state.users.loginLoading;
-
 export const selectLoginError = (state: RootState) => state.users.loginLoading;
 export const selectLogoutLoading = (state: RootState) =>
   state.users.logOutLoading;

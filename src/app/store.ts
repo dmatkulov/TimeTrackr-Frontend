@@ -9,6 +9,7 @@ import {
 } from 'redux-persist';
 import { PURGE, REGISTER, REHYDRATE } from 'redux-persist/es/constants';
 import { usersReducer } from '../features/users/UsersSlice';
+import { positionsReducer } from '../features/positions/positionsSlice';
 
 const usersPersistConfig = {
   key: 'trckr:users',
@@ -17,6 +18,7 @@ const usersPersistConfig = {
 
 const rootReducer = combineReducers({
   users: persistReducer(usersPersistConfig, usersReducer),
+  positions: positionsReducer,
 });
 
 export const store = configureStore({
