@@ -3,11 +3,14 @@ import { Button, Flex, Space, Typography } from 'antd';
 import { blue } from '@ant-design/colors';
 import { useNavigate } from 'react-router-dom';
 import { appRoutes } from '../utils/routes';
+import { useAppSelector } from '../app/hooks';
+import { selectUser } from '../features/users/UsersSlice';
 
 const { Title, Paragraph } = Typography;
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
+  const user = useAppSelector(selectUser);
   const titleStyle = {
     marginTop: 0,
     color: blue.primary,
@@ -28,9 +31,15 @@ const Home: React.FC = () => {
         </Title>
         <Space direction="vertical" align="center">
           <Paragraph>Войдите, чтобы начать пользоваться приложением</Paragraph>
-          <Button type="primary" onClick={() => navigate(appRoutes.login)}>
-            Войти
-          </Button>
+          {user ? (
+            <Button type="primary" onClick={() => navigate(appRoutes.profile)}>
+              Личный кабинет
+            </Button>
+          ) : (
+            <Button type="primary" onClick={() => navigate(appRoutes.login)}>
+              Войти
+            </Button>
+          )}
         </Space>
       </Flex>
     </>

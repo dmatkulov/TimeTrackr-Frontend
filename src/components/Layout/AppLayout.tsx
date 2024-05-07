@@ -25,9 +25,9 @@ const AppLayout: React.FC<Props> = () => {
         <div className="demo-logo-vertical">Time Trackr</div>
         <AdminMenu />
       </Sider>
-      <Layout>
+      <Layout style={{ marginLeft: '20%' }}>
         <Header style={{ padding: 0 }}>Header</Header>
-        <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
+        <Content style={{ margin: '24px 0', overflow: 'initial' }}>
           <div
             style={{
               padding: 24,
