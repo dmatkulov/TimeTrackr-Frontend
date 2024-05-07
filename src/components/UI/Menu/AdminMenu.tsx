@@ -1,6 +1,6 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { TeamOutlined } from '@ant-design/icons';
-import type { MenuProps, MenuRef } from 'antd';
+import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../../utils/routes';
@@ -39,12 +39,9 @@ const AdminMenu: React.FC = () => {
     console.log('click ', e);
   };
 
-  const menuRef = useRef<MenuRef>(null);
-
   return (
     <>
       <Menu
-        ref={menuRef}
         onClick={onClick}
         defaultSelectedKeys={['1']}
         defaultOpenKeys={['1']}

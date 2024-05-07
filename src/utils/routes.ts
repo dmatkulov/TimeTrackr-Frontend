@@ -12,4 +12,5 @@ export const appRoutes = {
 export const httpRoutes = {
   users: 'staff',
   login: 'staff/sessions',
+  positions: 'positions',
 };
