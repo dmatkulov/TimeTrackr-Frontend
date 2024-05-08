@@ -19,13 +19,8 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <Flex
-        vertical
-        align="center"
-        style={{ height: '100vh' }}
-        justify="center"
-      >
-        <Paragraph>Добро пожаловать в</Paragraph>
+      <Flex vertical align="center" justify="center">
+        <Paragraph style={{ marginTop: '120px' }}>Добро пожаловать в</Paragraph>
         <Title style={titleStyle} level={1}>
           Time Trackr
         </Title>

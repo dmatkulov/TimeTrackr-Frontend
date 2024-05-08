@@ -1,48 +1,44 @@
-import React, { useEffect } from 'react';
-import { TeamOutlined } from '@ant-design/icons';
+import React from 'react';
+import { PartitionOutlined, TeamOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../../utils/routes';
-import { useAppDispatch } from '../../../app/hooks';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
 const AdminMenu: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    getAllStaff();
-  }, [dispatch]);
-
-  const getAllStaff = () => {
-    navigate(appRoutes.staff);
-  };
 
   const items: MenuItem[] = [
     {
       key: '1',
       label: 'Сотрудники',
       icon: <TeamOutlined />,
-      onClick: getAllStaff,
+      onClick: () => navigate(appRoutes.staff),
+    },
+    {
+      key: '2',
+      label: 'Позиции',
+      icon: <PartitionOutlined />,
+      onClick: () => navigate(appRoutes.positions),
+      style: { marginBottom: '12px' },
     },
     {
       type: 'divider',
     },
   ];
-  const onClick: MenuProps['onClick'] = (e) => {
-    console.log('click ', e);
-  };
 
   return (
     <>
       <Menu
-        onClick={onClick}
         defaultSelectedKeys={['1']}
         defaultOpenKeys={['1']}
         mode="inline"
         items={items}
+        style={{
+          border: 'none',
+        }}
       />
     </>
   );
