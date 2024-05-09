@@ -24,14 +24,21 @@ const Staff: React.FC = () => {
     void fetchStaffByPosition(value);
   };
 
+  const filterOption = (
+    input: string,
+    option?: { label: string; value: string },
+  ) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
+
   return (
     <>
       <Space style={{ alignItems: 'center' }}>
         Сортировать
         <Select
+          showSearch
           style={{ width: 300 }}
           placeholder="Поиск по позициям"
           optionFilterProp="children"
+          filterOption={filterOption}
           options={[
             { value: '', label: 'Все сотрудники' },
             ...positions.map((position) => ({

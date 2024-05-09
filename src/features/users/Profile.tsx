@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Layout } from 'antd';
+import { Button, Divider, Layout } from 'antd';
 import Sider from 'antd/es/layout/Sider';
 import { Outlet } from 'react-router-dom';
 import { useAppDispatch } from '../../app/hooks';
@@ -10,7 +10,7 @@ import { LogoutOutlined } from '@ant-design/icons';
 const { Content } = Layout;
 
 interface Props extends React.PropsWithChildren {}
-const AppLayout: React.FC<Props> = () => {
+const Profile: React.FC<Props> = () => {
   const dispatch = useAppDispatch();
 
   const logOutUser = async () => {
@@ -35,15 +35,34 @@ const AppLayout: React.FC<Props> = () => {
           }}
         >
           <AdminMenu />
-          <Button
-            style={{ position: 'fixed', bottom: '30px' }}
-            icon={<LogoutOutlined />}
-            danger
-            type="text"
-            onClick={logOutUser}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '90px',
+              left: 0,
+              right: '16px',
+              marginLeft: '20px',
+            }}
           >
-            Выйти
-          </Button>
+            <Divider />
+            <Button
+              style={{
+                marginInline: '4px',
+                textAlign: 'left',
+                width: '240px',
+              }}
+              icon={
+                <LogoutOutlined
+                  style={{ paddingLeft: '8px', marginRight: '2px' }}
+                />
+              }
+              danger
+              type="text"
+              onClick={logOutUser}
+            >
+              Выйти
+            </Button>
+          </div>
         </Sider>
         <Layout style={{ marginLeft: '304px', paddingTop: '65px' }}>
           <Content style={{ margin: '24px 0', overflow: 'initial' }}>
@@ -62,4 +81,4 @@ const AppLayout: React.FC<Props> = () => {
   );
 };
 
-export default AppLayout;
+export default Profile;

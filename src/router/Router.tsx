@@ -6,7 +6,7 @@ import ProtectedRoute from '../components/ProtectedRoute/ProtectedRoute';
 import Staff from '../features/adminPages/Staff';
 import Page404 from '../components/UI/404/Page404';
 import AppLayout from '../components/Layout/AppLayout';
-import UserProfile from '../features/users/UserProfile';
+import UserProfile from '../features/users/Profile';
 import Positions from '../features/adminPages/Positions';
 
 export const router = createBrowserRouter([

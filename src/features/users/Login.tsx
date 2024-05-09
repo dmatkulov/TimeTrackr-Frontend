@@ -37,7 +37,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <Row>
+    <Row style={{ marginTop: '140px' }}>
       <Col span={8} offset={8}>
         <Form
           form={form}

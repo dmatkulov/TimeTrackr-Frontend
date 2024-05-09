@@ -22,10 +22,6 @@ const AdminMenu: React.FC = () => {
       label: 'Позиции',
       icon: <PartitionOutlined />,
       onClick: () => navigate(appRoutes.positions),
-      style: { marginBottom: '12px' },
-    },
-    {
-      type: 'divider',
     },
   ];
 
