@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Col, Layout, Row, theme, Typography } from 'antd';
+import { Layout, theme, Typography } from 'antd';
 import { blue } from '@ant-design/colors';
 import { appRoutes } from '../../../utils/routes';
 import { selectUser } from '../../../features/users/UsersSlice';
@@ -26,40 +26,27 @@ const AppBar: React.FC = () => {
           left: 0,
           right: 0,
           padding: '0 24px',
-          // display: 'flex',
-          // flexDirection: 'row',
-          // justifyContent: 'space-between',
-          // alignItems: 'center',
           background: colorBgContainer,
           borderBottom: '1px solid #ececec',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
         }}
       >
-        <Row>
-          <Col span={8} style={{ marginRight: '20px' }}>
-            <Link
-              href={appRoutes.home}
-              style={{
-                color: blue.primary,
-                margin: 0,
-                fontSize: '20px',
-                fontWeight: '600',
-              }}
-            >
-              Time Trackr
-            </Link>
-          </Col>
-          <Col
+        <div style={{ width: '280px', marginRight: '20px' }}>
+          <Link
+            href={appRoutes.home}
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              flexGrow: 1,
-              justifyContent: 'space-between',
+              color: blue.primary,
+              margin: 0,
+              fontSize: '20px',
+              fontWeight: '600',
             }}
           >
-            <Button>Add user</Button>
-            {user ? <UserMenu user={user} /> : <AnonymousMenu />}
-          </Col>
-        </Row>
+            Time Trackr
+          </Link>
+        </div>
+        {user ? <UserMenu user={user} /> : <AnonymousMenu />}
       </Header>
     </>
   );

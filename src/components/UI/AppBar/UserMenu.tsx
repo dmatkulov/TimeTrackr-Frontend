@@ -1,10 +1,19 @@
 import React from 'react';
-import { Avatar, Dropdown, MenuProps, Space, Typography } from 'antd';
+import {
+  Avatar,
+  Button,
+  Dropdown,
+  Flex,
+  MenuProps,
+  Space,
+  Typography,
+} from 'antd';
 import { User } from '../../../types/types.user';
 import { apiURL } from '../../../utils/constants';
 import { appRoutes } from '../../../utils/routes';
 import { useAppDispatch } from '../../../app/hooks';
 import { logOut } from '../../../features/users/UsersThunks';
+import { PlusOutlined } from '@ant-design/icons';
 
 const { Text, Link } = Typography;
 interface Props {
@@ -38,20 +47,37 @@ const UserMenu: React.FC<Props> = ({ user }) => {
   ];
 
   return (
-    <Dropdown menu={{ items }} placement="bottomRight" arrow>
-      <Space style={{ alignItems: 'center' }}>
-        <Text type="secondary">
-          {user.firstname} {user.lastname}
-        </Text>
-        {user.photo ? (
-          <Avatar src={src} alt={user.firstname} />
-        ) : (
-          <Avatar style={{ backgroundColor: '#f56a00' }}>
-            {user.firstname.charAt(0)}
-          </Avatar>
-        )}
-      </Space>
-    </Dropdown>
+    <>
+      <Flex
+        align="center"
+        justify="space-between"
+        vertical={false}
+        style={{ flexGrow: 1 }}
+      >
+        <Space align="center">
+          <Button type="primary" icon={<PlusOutlined />}>
+            Добавить сотрудника
+          </Button>
+          <Button type="dashed" icon={<PlusOutlined />} iconPosition="start">
+            Создать позицую
+          </Button>
+        </Space>
+        <Dropdown menu={{ items }} placement="bottomRight" arrow>
+          <Space style={{ alignItems: 'center' }}>
+            <Text type="secondary">
+              {user.firstname} {user.lastname}
+            </Text>
+            {user.photo ? (
+              <Avatar src={src} alt={user.firstname} />
+            ) : (
+              <Avatar style={{ backgroundColor: '#f56a00' }}>
+                {user.firstname.charAt(0)}
+              </Avatar>
+            )}
+          </Space>
+        </Dropdown>
+      </Flex>
+    </>
   );
 };
 
