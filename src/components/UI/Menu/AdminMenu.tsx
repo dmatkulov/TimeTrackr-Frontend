@@ -34,7 +34,6 @@ const AdminMenu: React.FC = () => {
         items={items}
         style={{
           border: 'none',
-          paddingRight: '28px',
         }}
       />
     </>

@@ -32,6 +32,7 @@ const UserPanel: React.FC<Props> = () => {
             left: 0,
             top: '65px',
             bottom: 0,
+            right: 0,
             padding: '0 16px',
             background: '#fff',
             paddingTop: '40px',
