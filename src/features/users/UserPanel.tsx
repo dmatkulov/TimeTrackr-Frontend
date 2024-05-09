@@ -1,20 +1,23 @@
 import React from 'react';
 import { Button, Divider, Layout } from 'antd';
 import Sider from 'antd/es/layout/Sider';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { useAppDispatch } from '../../app/hooks';
 import { logOut } from './UsersThunks';
 import AdminMenu from '../../components/UI/Menu/AdminMenu';
 import { LogoutOutlined } from '@ant-design/icons';
+import { appRoutes } from '../../utils/routes';
 
 const { Content } = Layout;
 
 interface Props extends React.PropsWithChildren {}
-const Profile: React.FC<Props> = () => {
+const UserPanel: React.FC<Props> = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const logOutUser = async () => {
     await dispatch(logOut());
+    navigate(appRoutes.login);
   };
 
   return (
@@ -81,4 +84,4 @@ const Profile: React.FC<Props> = () => {
   );
 };
 
-export default Profile;
+export default UserPanel;

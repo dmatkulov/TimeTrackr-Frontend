@@ -6,7 +6,7 @@ import ProtectedRoute from '../components/ProtectedRoute/ProtectedRoute';
 import Staff from '../features/adminPages/Staff';
 import Page404 from '../components/UI/404/Page404';
 import AppLayout from '../components/Layout/AppLayout';
-import UserProfile from '../features/users/Profile';
+import UserPanel from '../features/users/UserPanel';
 import Positions from '../features/adminPages/Positions';
 
 export const router = createBrowserRouter([
@@ -24,23 +24,19 @@ export const router = createBrowserRouter([
       },
       {
         path: appRoutes.profile,
-        element: <UserProfile />,
+        element: (
+          <ProtectedRoute>
+            <UserPanel />
+          </ProtectedRoute>
+        ),
         children: [
           {
             path: appRoutes.staff,
-            element: (
-              <ProtectedRoute>
-                <Staff />
-              </ProtectedRoute>
-            ),
+            element: <Staff />,
           },
           {
             path: appRoutes.positions,
-            element: (
-              <ProtectedRoute>
-                <Positions />
-              </ProtectedRoute>
-            ),
+            element: <Positions />,
           },
         ],
       },

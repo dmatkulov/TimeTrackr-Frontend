@@ -3,7 +3,7 @@ import { Button } from 'antd';
 import { appRoutes } from '../../../utils/routes';
 import { useNavigate } from 'react-router-dom';
 
-const AnonymousMenu: React.FC = () => {
+const GuestAppBar: React.FC = () => {
   const navigate = useNavigate();
   return (
     <>
@@ -14,4 +14,4 @@ const AnonymousMenu: React.FC = () => {
   );
 };
 
-export default AnonymousMenu;
+export default GuestAppBar;

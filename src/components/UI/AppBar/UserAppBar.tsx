@@ -14,19 +14,22 @@ import { appRoutes } from '../../../utils/routes';
 import { useAppDispatch } from '../../../app/hooks';
 import { logOut } from '../../../features/users/UsersThunks';
 import { PlusOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 
 const { Text, Link } = Typography;
 interface Props {
   user: User;
 }
-const UserMenu: React.FC<Props> = ({ user }) => {
+const UserAppBar: React.FC<Props> = ({ user }) => {
   const src = `${apiURL}/${user.photo}`;
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
   const isAdmin = user.role === 'admin';
 
   const logOutUser = async () => {
     await dispatch(logOut());
+    navigate(appRoutes.login);
   };
 
   const items: MenuProps['items'] = [
@@ -54,14 +57,20 @@ const UserMenu: React.FC<Props> = ({ user }) => {
         vertical={false}
         style={{ flexGrow: 1 }}
       >
-        <Space align="center">
-          <Button type="primary" icon={<PlusOutlined />}>
-            Добавить сотрудника
-          </Button>
+        {isAdmin ? (
+          <Space align="center">
+            <Button type="primary" icon={<PlusOutlined />}>
+              Добавить сотрудника
+            </Button>
+            <Button type="dashed" icon={<PlusOutlined />} iconPosition="start">
+              Создать позицую
+            </Button>
+          </Space>
+        ) : (
           <Button type="dashed" icon={<PlusOutlined />} iconPosition="start">
-            Создать позицую
+            Добавить задачу
           </Button>
-        </Space>
+        )}
         <Dropdown menu={{ items }} placement="bottomRight" arrow>
           <Space style={{ alignItems: 'center' }}>
             <Text type="secondary">
@@ -81,4 +90,4 @@ const UserMenu: React.FC<Props> = ({ user }) => {
   );
 };
 
-export default UserMenu;
+export default UserAppBar;

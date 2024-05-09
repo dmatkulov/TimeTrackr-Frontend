@@ -1,14 +1,12 @@
 import React from 'react';
-import { Layout, theme, Typography } from 'antd';
-import { blue } from '@ant-design/colors';
-import { appRoutes } from '../../../utils/routes';
+import { Layout, theme } from 'antd';
 import { selectUser } from '../../../features/users/UsersSlice';
 import { useAppSelector } from '../../../app/hooks';
-import AnonymousMenu from './AnonymousMenu';
-import UserMenu from './UserMenu';
+import GuestAppBar from './GuestAppBar';
+import UserAppBar from './UserAppBar';
+import Logo from './Logo';
 
 const { Header } = Layout;
-const { Link } = Typography;
 
 const AppBar: React.FC = () => {
   const {
@@ -31,22 +29,12 @@ const AppBar: React.FC = () => {
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
+          zIndex: 10,
+          justifyContent: 'space-between',
         }}
       >
-        <div style={{ width: '280px', marginRight: '20px' }}>
-          <Link
-            href={appRoutes.home}
-            style={{
-              color: blue.primary,
-              margin: 0,
-              fontSize: '20px',
-              fontWeight: '600',
-            }}
-          >
-            Time Trackr
-          </Link>
-        </div>
-        {user ? <UserMenu user={user} /> : <AnonymousMenu />}
+        <Logo />
+        {user ? <UserAppBar user={user} /> : <GuestAppBar />}
       </Header>
     </>
   );

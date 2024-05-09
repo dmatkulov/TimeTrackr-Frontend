@@ -3,8 +3,6 @@ export const appRoutes = {
   register: '/admin/register',
   login: '/login',
   profile: '/profile',
-  adminProfile: '/profile/admin',
-  userProfile: '/profile/user',
   staff: '/profile/admin/all-staff',
   positions: '/profile/admin/positions',
   notFound: '*',
