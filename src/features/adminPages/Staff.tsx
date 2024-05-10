@@ -1,13 +1,18 @@
 import React, { useCallback, useEffect } from 'react';
-import { Select, Space } from 'antd';
+import { Input, Select, Space } from 'antd';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { selectPositions } from '../positions/positionsSlice';
 import { getUsers } from '../users/UsersThunks';
 import { fetchPositions } from '../positions/positionsThunks';
+import { SearchProps } from 'antd/es/input';
+import { selectStaff } from '../users/UsersSlice';
+
+const { Search } = Input;
 
 const Staff: React.FC = () => {
   const positions = useAppSelector(selectPositions);
   const dispatch = useAppDispatch();
+  const staff = useAppSelector(selectStaff);
 
   useEffect(() => {
     dispatch(getUsers());
@@ -15,10 +20,10 @@ const Staff: React.FC = () => {
   }, [dispatch]);
 
   const handleChange = (value: string[]) => {
-    void fetchAll(value);
+    void fetchStaff(value);
   };
 
-  const fetchAll = useCallback(
+  const fetchStaff = useCallback(
     async (value: string[]) => {
       if (value.includes('')) {
         await dispatch(getUsers());
@@ -33,6 +38,16 @@ const Staff: React.FC = () => {
     input: string,
     option?: { label: string; value: string },
   ) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
+
+  const onSearch: SearchProps['onSearch'] = (value) => {
+    const searched = staff.filter((user) => {
+      const lowercaseLastname = user.lastname.toLowerCase();
+      const lowercaseValue = value.toLowerCase();
+      return lowercaseLastname.includes(lowercaseValue);
+    });
+    console.log(value);
+    console.log(searched);
+  };
 
   return (
     <>
@@ -55,6 +70,11 @@ const Staff: React.FC = () => {
             })),
           ]}
           onChange={handleChange}
+        />
+        <Search
+          placeholder="input search text"
+          onSearch={onSearch}
+          style={{ width: 200 }}
         />
       </Space>
     </>
