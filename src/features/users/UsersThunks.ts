@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   LoginMutation,
   LoginResponse,
+  UserQueryParams,
   UsersResponse,
 } from '../../types/types.user';
 import { GlobalMessage } from '../../types/types.global';
@@ -11,19 +12,32 @@ import { isAxiosError } from 'axios';
 import { RootState } from '../../app/store';
 import { unsetUser } from './UsersSlice';
 
-export const getUsers = createAsyncThunk<UsersResponse, string[] | undefined>(
-  'users/fetchAll',
-  async (positions?) => {
-    let url = httpRoutes.users;
+export const getUsers = createAsyncThunk<
+  UsersResponse,
+  UserQueryParams | undefined
+>('users/fetchAll', async (params?) => {
+  const query: Record<string, string | undefined> = {};
 
-    if (positions) {
-      const positionsQuery = positions.join(',');
-      url = httpRoutes.users + '?positions=' + positionsQuery;
+  if (params) {
+    if (params.positions) {
+      query.positions = params.positions?.join(',');
     }
-    const response = await axiosApi.get<UsersResponse>(url);
-    return response.data;
-  },
-);
+    if (params.email) {
+      query.email = params.email;
+    }
+
+    if (params.lastname) {
+      query.lastname = params.lastname;
+    }
+  }
+
+  const response = await axiosApi.get<UsersResponse>(httpRoutes.users, {
+    params: query,
+  });
+
+  console.log(response.data);
+  return response.data;
+});
 
 export const login = createAsyncThunk<
   LoginResponse,

@@ -35,7 +35,7 @@ export interface UsersResponse {
 }
 
 export interface UserQueryParams {
-  position?: string[];
+  positions?: string[];
   email?: string;
   lastname?: string;
 }

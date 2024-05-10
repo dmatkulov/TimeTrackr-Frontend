@@ -1,82 +1,92 @@
 import React, { useCallback, useEffect } from 'react';
-import { Input, Select, Space } from 'antd';
+import { Button, Form, FormProps, Input, Select } from 'antd';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { selectPositions } from '../positions/positionsSlice';
 import { getUsers } from '../users/UsersThunks';
 import { fetchPositions } from '../positions/positionsThunks';
-import { SearchProps } from 'antd/es/input';
-import { selectStaff } from '../users/UsersSlice';
-
-const { Search } = Input;
+import { UserQueryParams } from '../../types/types.user';
 
 const Staff: React.FC = () => {
   const positions = useAppSelector(selectPositions);
   const dispatch = useAppDispatch();
-  const staff = useAppSelector(selectStaff);
 
-  useEffect(() => {
-    dispatch(getUsers());
-    dispatch(fetchPositions());
+  const [form] = Form.useForm();
+
+  const fetchOnInitOrReset = useCallback(async () => {
+    await dispatch(getUsers());
+    await dispatch(fetchPositions());
   }, [dispatch]);
 
-  const handleChange = (value: string[]) => {
-    void fetchStaff(value);
-  };
+  useEffect(() => {
+    void fetchOnInitOrReset();
+  }, [fetchOnInitOrReset]);
 
-  const fetchStaff = useCallback(
-    async (value: string[]) => {
-      if (value.includes('')) {
-        await dispatch(getUsers());
-      } else {
-        await dispatch(getUsers(value));
-      }
-    },
-    [dispatch],
-  );
+  const resetFormFields = () => {
+    form.resetFields();
+    void fetchOnInitOrReset();
+  };
 
   const filterOption = (
     input: string,
     option?: { label: string; value: string },
   ) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
 
-  const onSearch: SearchProps['onSearch'] = (value) => {
-    const searched = staff.filter((user) => {
-      const lowercaseLastname = user.lastname.toLowerCase();
-      const lowercaseValue = value.toLowerCase();
-      return lowercaseLastname.includes(lowercaseValue);
-    });
-    console.log(value);
-    console.log(searched);
+  const onSubmit: FormProps<UserQueryParams>['onFinish'] = async (
+    queryParams,
+  ) => {
+    await dispatch(getUsers(queryParams));
   };
 
   return (
     <>
-      <Space style={{ alignItems: 'center' }}>
-        Сортировать
-        <Select
-          showSearch
-          mode="multiple"
-          allowClear
-          style={{ width: 300 }}
-          placeholder="Поиск по позициям"
-          optionFilterProp="children"
-          filterOption={filterOption}
-          defaultValue={['']}
-          options={[
-            { value: '', label: 'Все сотрудники' },
-            ...positions.map((position) => ({
-              value: position._id,
-              label: position.name,
-            })),
+      <Form
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          gap: '24px',
+          alignItems: 'flex-start',
+          marginRight: '60px',
+        }}
+        form={form}
+        layout="vertical"
+        initialValues={{ remember: true }}
+        onFinish={onSubmit}
+      >
+        <Form.Item name="positions" style={{ width: 300 }}>
+          <Select
+            showSearch
+            mode="multiple"
+            allowClear
+            placeholder="Поиск по позициям"
+            optionFilterProp="children"
+            filterOption={filterOption}
+            options={[
+              ...positions.map((position) => ({
+                value: position._id,
+                label: position.name,
+              })),
+            ]}
+          />
+        </Form.Item>
+        <Form.Item name="lastname" style={{ width: 300 }}>
+          <Input placeholder="Введите фамилию" />
+        </Form.Item>
+        <Form.Item
+          name="email"
+          rules={[
+            { message: 'Неверный формат электронной почты', type: 'email' },
           ]}
-          onChange={handleChange}
-        />
-        <Search
-          placeholder="input search text"
-          onSearch={onSearch}
-          style={{ width: 200 }}
-        />
-      </Space>
+          style={{ width: 300 }}
+        >
+          <Input placeholder="Введите почту" />
+        </Form.Item>
+        <Form.Item wrapperCol={{ span: 24 }} shouldUpdate>
+          {() => <Button htmlType="submit">Поиск</Button>}
+        </Form.Item>
+        <Form.Item>
+          <Button onClick={resetFormFields}>Очистить</Button>
+        </Form.Item>
+      </Form>
     </>
   );
 };
