@@ -36,7 +36,7 @@ const UserAppBar: React.FC<Props> = ({ user }) => {
     {
       key: '1',
       label: (
-        <Link href={appRoutes.staff}>
+        <Link href={appRoutes.admin.staff}>
           {isAdmin ? 'Панель управления' : 'Мой кабинет'}
         </Link>
       ),

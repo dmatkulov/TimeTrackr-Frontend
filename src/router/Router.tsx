@@ -32,11 +32,11 @@ export const router = createBrowserRouter([
         ),
         children: [
           {
-            path: appRoutes.staff,
+            path: appRoutes.admin.staff,
             element: <Staff />,
           },
           {
-            path: appRoutes.positions,
+            path: appRoutes.admin.positions,
             element: <Positions />,
           },
         ],

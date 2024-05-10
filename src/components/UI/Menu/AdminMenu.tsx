@@ -15,13 +15,13 @@ const AdminMenu: React.FC = () => {
       key: '1',
       label: 'Сотрудники',
       icon: <TeamOutlined />,
-      onClick: () => navigate(appRoutes.staff),
+      onClick: () => navigate(appRoutes.admin.staff),
     },
     {
       key: '2',
       label: 'Позиции',
       icon: <PartitionOutlined />,
-      onClick: () => navigate(appRoutes.positions),
+      onClick: () => navigate(appRoutes.admin.positions),
     },
   ];
 

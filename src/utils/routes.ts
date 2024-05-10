@@ -4,8 +4,10 @@ export const appRoutes = {
   register: '/admin/register',
   login: '/login',
   profile: '/profile',
-  staff: '/profile/admin/all-staff',
-  positions: '/profile/admin/positions',
+  admin: {
+    staff: '/profile/admin/all-staff',
+    positions: '/profile/admin/positions',
+  },
   notFound: '*',
 };
 
