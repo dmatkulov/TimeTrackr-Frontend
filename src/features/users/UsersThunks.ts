@@ -17,11 +17,10 @@ export const getUsers = createAsyncThunk<UsersResponse, string[] | undefined>(
     let url = httpRoutes.users;
 
     if (positions) {
-      const positionsStr = positions.join(',');
-      url = httpRoutes.users + '?positions=' + positionsStr;
+      const positionsQuery = positions.join(',');
+      url = httpRoutes.users + '?positions=' + positionsQuery;
     }
     const response = await axiosApi.get<UsersResponse>(url);
-    console.log(response.data);
     return response.data;
   },
 );

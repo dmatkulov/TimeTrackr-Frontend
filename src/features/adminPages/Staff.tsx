@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Select, Space } from 'antd';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { selectPositions } from '../positions/positionsSlice';
@@ -9,18 +9,26 @@ const Staff: React.FC = () => {
   const positions = useAppSelector(selectPositions);
   const dispatch = useAppDispatch();
 
-  const fetchStaffByPosition = async (positions: string[]) => {
-    await dispatch(getUsers(positions));
-  };
-
   useEffect(() => {
     dispatch(getUsers());
     dispatch(fetchPositions());
   }, [dispatch]);
 
   const handleChange = (value: string[]) => {
-    void fetchStaffByPosition(value);
+    void fetchAll(value);
   };
+
+  const fetchAll = useCallback(
+    async (value: string[]) => {
+      if (value.includes('')) {
+        await dispatch(getUsers());
+      } else {
+        await dispatch(getUsers(value));
+      }
+    },
+    [dispatch],
+  );
+
   const filterOption = (
     input: string,
     option?: { label: string; value: string },
@@ -38,7 +46,7 @@ const Staff: React.FC = () => {
           placeholder="Поиск по позициям"
           optionFilterProp="children"
           filterOption={filterOption}
-          defaultValue={['Все сотрудники']}
+          defaultValue={['']}
           options={[
             { value: '', label: 'Все сотрудники' },
             ...positions.map((position) => ({
