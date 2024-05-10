@@ -31,7 +31,7 @@ const App: React.FC = () => {
       return;
     }
 
-    navigate(appRoutes.profile);
+    navigate(appRoutes.auth);
     form.resetFields();
   };
 
@@ -85,10 +85,7 @@ const App: React.FC = () => {
           <Form.Item<LoginMutation>
             label="Пароль"
             name="password"
-            rules={[
-              { required: true, message: 'Введите пароль' },
-              { min: 8, message: 'Длина пароля не менее 8 символов' },
-            ]}
+            rules={[{ required: true, message: 'Введите пароль' }]}
             style={{ marginBottom: '24px' }}
           >
             <Input.Password />

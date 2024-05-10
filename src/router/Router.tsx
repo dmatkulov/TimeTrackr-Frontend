@@ -8,6 +8,7 @@ import Page404 from '../components/UI/404/Page404';
 import AppLayout from '../components/Layout/AppLayout';
 import UserPanel from '../features/users/UserPanel';
 import Positions from '../features/adminPages/Positions';
+import AuthPage from '../components/UI/AuthPage/AuthPage';
 
 export const router = createBrowserRouter([
   {
@@ -41,6 +42,10 @@ export const router = createBrowserRouter([
         ],
       },
     ],
+  },
+  {
+    path: appRoutes.auth,
+    element: <AuthPage />,
   },
   {
     path: appRoutes.notFound,
