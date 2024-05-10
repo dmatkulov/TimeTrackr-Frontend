@@ -33,9 +33,8 @@ const UserPanel: React.FC<Props> = () => {
             top: '65px',
             bottom: 0,
             right: 0,
-            padding: '0 16px',
+            padding: '40px 16px 0 30px',
             background: '#fff',
-            paddingTop: '40px',
           }}
         >
           <AdminMenu />
@@ -72,8 +71,7 @@ const UserPanel: React.FC<Props> = () => {
           <Content style={{ margin: '24px 0', overflow: 'initial' }}>
             <div
               style={{
-                padding: 24,
-                minHeight: 360,
+                padding: '24px 30px 24px 10px',
               }}
             >
               <Outlet />

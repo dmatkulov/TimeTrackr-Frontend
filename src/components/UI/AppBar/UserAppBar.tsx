@@ -62,7 +62,7 @@ const UserAppBar: React.FC<Props> = ({ user }) => {
             <Button type="primary" icon={<PlusOutlined />}>
               Добавить сотрудника
             </Button>
-            <Button type="dashed" icon={<PlusOutlined />} iconPosition="start">
+            <Button type="text" icon={<PlusOutlined />} iconPosition="start">
               Создать позицую
             </Button>
           </Space>
@@ -73,7 +73,7 @@ const UserAppBar: React.FC<Props> = ({ user }) => {
         )}
         <Dropdown menu={{ items }} placement="bottomRight" arrow>
           <Space style={{ alignItems: 'center' }}>
-            <Text type="secondary">
+            <Text>
               {user.firstname} {user.lastname}
             </Text>
             {user.photo ? (

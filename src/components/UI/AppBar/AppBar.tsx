@@ -31,6 +31,8 @@ const AppBar: React.FC = () => {
           alignItems: 'center',
           zIndex: 10,
           justifyContent: 'space-between',
+          paddingRight: '30px',
+          paddingLeft: '30px',
         }}
       >
         <Logo />

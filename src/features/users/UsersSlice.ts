@@ -43,6 +43,10 @@ export const usersSlice = createSlice({
       .addCase(getUsers.fulfilled, (state, { payload: data }) => {
         state.fetchAllLoading = false;
         state.staff = data.users;
+
+        if (data.message) {
+          void message.error(data.message);
+        }
       })
       .addCase(getUsers.rejected, (state) => {
         state.fetchAllLoading = false;
@@ -75,6 +79,8 @@ export const selectRegisterError = (state: RootState) =>
   state.users.registerError;
 export const selectLoginLoading = (state: RootState) =>
   state.users.loginLoading;
+export const selectFetchAllLoading = (state: RootState) =>
+  state.users.fetchAllLoading;
 export const selectLoginError = (state: RootState) => state.users.loginLoading;
 export const selectLogoutLoading = (state: RootState) =>
   state.users.logOutLoading;

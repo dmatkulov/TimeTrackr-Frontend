@@ -6,7 +6,7 @@ const { Link } = Typography;
 
 const Logo: React.FC = () => {
   return (
-    <div style={{ width: '280px', marginRight: '20px' }}>
+    <div style={{ width: '280px' }}>
       <Link
         href={appRoutes.home}
         style={{

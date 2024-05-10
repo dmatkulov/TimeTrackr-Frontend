@@ -3,6 +3,7 @@ import {
   LoginMutation,
   LoginResponse,
   UserQueryParams,
+  UserQueryValues,
   UsersResponse,
 } from '../../types/types.user';
 import { GlobalMessage } from '../../types/types.global';
@@ -14,9 +15,9 @@ import { unsetUser } from './UsersSlice';
 
 export const getUsers = createAsyncThunk<
   UsersResponse,
-  UserQueryParams | undefined
+  UserQueryValues | undefined
 >('users/fetchAll', async (params?) => {
-  const query: Record<string, string | undefined> = {};
+  const query: UserQueryParams = {};
 
   if (params) {
     if (params.positions) {
@@ -35,7 +36,6 @@ export const getUsers = createAsyncThunk<
     params: query,
   });
 
-  console.log(response.data);
   return response.data;
 });
 

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../utils/routes';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { login } from './UsersThunks';
-import { selectLoginError } from './UsersSlice';
+import { selectLoginError, selectLoginLoading } from './UsersSlice';
 import { blue } from '@ant-design/colors';
 
 const { Title, Paragraph } = Typography;
@@ -15,6 +15,7 @@ const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const loginError = useAppSelector(selectLoginError);
+  const loginLoading = useAppSelector(selectLoginLoading);
 
   const [form] = Form.useForm();
   const [clientReady, setClientReady] = useState<boolean>(false);
@@ -99,6 +100,7 @@ const App: React.FC = () => {
                 style={{ width: '100%' }}
                 disabled={
                   !clientReady ||
+                  loginLoading ||
                   !form.isFieldsTouched(true) ||
                   !!form.getFieldsError().filter(({ errors }) => errors.length)
                     .length
