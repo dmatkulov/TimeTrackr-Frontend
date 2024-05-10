@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Select, Space } from 'antd';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { selectPositions } from '../positions/positionsSlice';
@@ -9,21 +9,18 @@ const Staff: React.FC = () => {
   const positions = useAppSelector(selectPositions);
   const dispatch = useAppDispatch();
 
-  const [selectedPosition, setSelectedPosition] = useState('');
-
-  const fetchStaffByPosition = async (position: string) => {
-    await dispatch(getUsers(position));
+  const fetchStaffByPosition = async (positions: string[]) => {
+    await dispatch(getUsers(positions));
   };
 
   useEffect(() => {
+    dispatch(getUsers());
     dispatch(fetchPositions());
   }, [dispatch]);
 
-  const handleSelectChange = async (value: string) => {
-    setSelectedPosition(value);
+  const handleChange = (value: string[]) => {
     void fetchStaffByPosition(value);
   };
-
   const filterOption = (
     input: string,
     option?: { label: string; value: string },
@@ -35,10 +32,13 @@ const Staff: React.FC = () => {
         Сортировать
         <Select
           showSearch
+          mode="multiple"
+          allowClear
           style={{ width: 300 }}
           placeholder="Поиск по позициям"
           optionFilterProp="children"
           filterOption={filterOption}
+          defaultValue={['Все сотрудники']}
           options={[
             { value: '', label: 'Все сотрудники' },
             ...positions.map((position) => ({
@@ -46,8 +46,7 @@ const Staff: React.FC = () => {
               label: position.name,
             })),
           ]}
-          onChange={handleSelectChange}
-          value={selectedPosition}
+          onChange={handleChange}
         />
       </Space>
     </>

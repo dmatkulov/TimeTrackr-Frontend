@@ -11,15 +11,17 @@ import { isAxiosError } from 'axios';
 import { RootState } from '../../app/store';
 import { unsetUser } from './UsersSlice';
 
-export const getUsers = createAsyncThunk<UsersResponse, string | undefined>(
+export const getUsers = createAsyncThunk<UsersResponse, string[] | undefined>(
   'users/fetchAll',
-  async (position?) => {
+  async (positions?) => {
     let url = httpRoutes.users;
 
-    if (position) {
-      url = httpRoutes.users + '?position=' + position;
+    if (positions) {
+      const positionsStr = positions.join(',');
+      url = httpRoutes.users + '?positions=' + positionsStr;
     }
     const response = await axiosApi.get<UsersResponse>(url);
+    console.log(response.data);
     return response.data;
   },
 );
