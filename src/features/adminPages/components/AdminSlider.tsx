@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Menu, MenuProps } from 'antd';
+import { Button, Menu, MenuProps, Tooltip } from 'antd';
 import {
   LogoutOutlined,
   MenuFoldOutlined,
@@ -22,27 +22,30 @@ const AdminSlider: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true);
 
   const screens = useBreakpoint();
-  const xs = !screens.sm;
+  const xs = screens.xs;
+
   const logOutUser = async () => {
     await dispatch(logOut());
     navigate(appRoutes.login);
   };
 
+  const activeKey = location.pathname.split('/')[3];
+
   const items: MenuItem[] = [
     {
-      key: '1',
+      key: 'all-staff',
       label: 'Сотрудники',
       icon: <TeamOutlined />,
       onClick: () => navigate(appRoutes.admin.staff),
     },
     {
-      key: '2',
+      key: 'positions',
       label: 'Позиции',
       icon: <PartitionOutlined />,
       onClick: () => navigate(appRoutes.admin.positions),
     },
     {
-      key: '3',
+      key: 'logout',
       label: 'Выйти',
       icon: <LogoutOutlined />,
       onClick: logOutUser,
@@ -82,8 +85,7 @@ const AdminSlider: React.FC = () => {
         }}
       >
         <Menu
-          defaultSelectedKeys={['1']}
-          defaultOpenKeys={['1']}
+          defaultSelectedKeys={[activeKey]}
           mode="inline"
           items={items}
           style={{
@@ -93,25 +95,27 @@ const AdminSlider: React.FC = () => {
             flexGrow: 1,
           }}
         />
-        <Button
-          type="text"
-          color="#eee"
-          icon={
-            collapsed ? (
-              <MenuUnfoldOutlined />
-            ) : (
-              <MenuFoldOutlined style={{ display: 'inline' }} />
-            )
-          }
-          onClick={() => setCollapsed(!collapsed)}
-          style={{
-            textAlign: 'left',
-            padding: '0 24px',
-            marginInline: '4px',
-          }}
-        >
-          {!collapsed && 'Скрыть меню'}
-        </Button>
+        <Tooltip placement="right" title={collapsed && 'Показать меню'}>
+          <Button
+            type="text"
+            color="#eee"
+            icon={
+              collapsed ? (
+                <MenuUnfoldOutlined />
+              ) : (
+                <MenuFoldOutlined style={{ display: 'inline' }} />
+              )
+            }
+            onClick={() => setCollapsed(!collapsed)}
+            style={{
+              textAlign: 'left',
+              padding: '0 24px',
+              marginInline: '4px',
+            }}
+          >
+            {!collapsed && 'Скрыть меню'}
+          </Button>
+        </Tooltip>
       </div>
     </Sider>
   );

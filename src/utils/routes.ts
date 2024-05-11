@@ -5,6 +5,7 @@ export const appRoutes = {
   login: '/login',
   profile: '/profile',
   admin: {
+    profile: '/profile/admin',
     staff: '/profile/admin/all-staff',
     positions: '/profile/admin/positions',
   },

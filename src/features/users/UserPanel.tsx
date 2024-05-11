@@ -3,6 +3,7 @@ import { Layout } from 'antd';
 import { Outlet } from 'react-router-dom';
 import AdminSlider from '../adminPages/components/AdminSlider';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
+import Breadcrumbs from '../../router/Breadcrumbs';
 
 const { Content } = Layout;
 
@@ -21,12 +22,13 @@ const UserPanel: React.FC<Props> = () => {
             overflow: 'scroll',
           }}
         >
-          <Content style={{ margin: '24px 0', overflow: 'initial' }}>
+          <Content style={{ margin: '0', overflow: 'initial' }}>
             <div
               style={{
-                padding: '30px',
+                padding: '15px 30px',
               }}
             >
+              <Breadcrumbs />
               <Outlet />
             </div>
           </Content>

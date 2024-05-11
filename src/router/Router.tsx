@@ -24,7 +24,7 @@ export const router = createBrowserRouter([
         element: <Login />,
       },
       {
-        path: appRoutes.profile,
+        path: appRoutes.admin.profile,
         element: (
           <ProtectedRoute>
             <UserPanel />
@@ -34,10 +34,18 @@ export const router = createBrowserRouter([
           {
             path: appRoutes.admin.staff,
             element: <Staff />,
+            handle: {
+              link: appRoutes.admin.staff,
+              title: 'Сотрудники',
+            },
           },
           {
             path: appRoutes.admin.positions,
             element: <Positions />,
+            handle: {
+              link: appRoutes.admin.positions,
+              title: 'Позиции',
+            },
           },
         ],
       },
