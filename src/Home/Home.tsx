@@ -24,18 +24,16 @@ const Home: React.FC = () => {
         <Title style={titleStyle} level={1}>
           Time Trackr
         </Title>
-        <Space direction="vertical" align="center">
-          <Paragraph>Войдите, чтобы начать пользоваться приложением</Paragraph>
-          {user ? (
-            <Button type="primary" onClick={() => navigate(appRoutes.auth)}>
-              Личный кабинет
-            </Button>
-          ) : (
+        {!user && (
+          <Space direction="vertical" align="center">
+            <Paragraph>
+              Войдите, чтобы начать пользоваться приложением
+            </Paragraph>
             <Button type="primary" onClick={() => navigate(appRoutes.login)}>
               Войти
             </Button>
-          )}
-        </Space>
+          </Space>
+        )}
       </Flex>
     </>
   );

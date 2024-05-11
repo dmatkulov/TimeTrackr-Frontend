@@ -99,12 +99,13 @@ const StaffFilter: React.FC = () => {
               name="positions"
               style={{
                 flexGrow: 1,
-                minWidth: 300,
+                minWidth: 260,
                 width: xs ? '100%' : 'auto',
                 marginBottom: 0,
               }}
             >
               <Select
+                notFoundContent="Ничего не удалось найти"
                 onChange={checkIsValid}
                 showSearch
                 mode="multiple"
@@ -178,14 +179,6 @@ const StaffFilter: React.FC = () => {
           </Form>
         </Col>
       </Row>
-      {/*<Flex*/}
-      {/*  align="start"*/}
-      {/*  gap="24px"*/}
-      {/*  style={{*/}
-      {/*    paddingBottom: '20px',*/}
-      {/*    borderBottom: '1px solid #ececec',*/}
-      {/*  }}*/}
-      {/*></Flex>*/}
     </>
   );
 };

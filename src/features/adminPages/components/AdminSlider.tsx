@@ -22,7 +22,7 @@ const AdminSlider: React.FC = () => {
   const [collapsed, setCollapsed] = useState(true);
 
   const screens = useBreakpoint();
-  const xs = !screens.md;
+  const xs = !screens.sm;
   const logOutUser = async () => {
     await dispatch(logOut());
     navigate(appRoutes.login);

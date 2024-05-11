@@ -15,6 +15,7 @@ import { useAppDispatch } from '../../../app/hooks';
 import { logOut } from '../../../features/users/UsersThunks';
 import { PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 
 const { Text, Link } = Typography;
 interface Props {
@@ -24,6 +25,10 @@ const UserAppBar: React.FC<Props> = ({ user }) => {
   const src = `${apiURL}/${user.photo}`;
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  const screens = useBreakpoint();
+  const md = !screens.lg;
+  const xs = !screens.sm;
 
   const isAdmin = user.role === 'admin';
 
@@ -58,7 +63,7 @@ const UserAppBar: React.FC<Props> = ({ user }) => {
         style={{ flexGrow: 1 }}
       >
         {isAdmin ? (
-          <Space align="center">
+          <Space align="center" style={{ display: xs ? 'none' : 'flex' }}>
             <Button type="primary" icon={<PlusOutlined />}>
               Добавить сотрудника
             </Button>
@@ -73,7 +78,7 @@ const UserAppBar: React.FC<Props> = ({ user }) => {
         )}
         <Dropdown menu={{ items }} placement="bottomRight" arrow>
           <Space style={{ alignItems: 'center' }}>
-            <Text>
+            <Text style={{ display: md ? 'none' : 'block' }}>
               {user.firstname} {user.lastname}
             </Text>
             {user.photo ? (
