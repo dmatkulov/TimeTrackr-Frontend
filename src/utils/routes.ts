@@ -1,11 +1,14 @@
 export const appRoutes = {
   home: '/',
+  auth: '/auth',
   register: '/admin/register',
   login: '/login',
   profile: '/profile',
-  adminProfile: '/profile/admin',
-  userProfile: '/profile/user',
-  staff: '/profile/admin/all-staff',
+  admin: {
+    profile: '/profile/admin',
+    staff: '/profile/admin/all-staff',
+    positions: '/profile/admin/positions',
+  },
   notFound: '*',
 };
 

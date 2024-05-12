@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import type { FormProps } from 'antd';
-import { Button, Col, Form, Input, Row } from 'antd';
+import { Button, Col, Form, Input, Row, Typography } from 'antd';
 import { LoginMutation } from '../../types/types.user';
 import { useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../utils/routes';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { login } from './UsersThunks';
-import { selectLoginError } from './UsersSlice';
+import { selectLoginError, selectLoginLoading } from './UsersSlice';
+import { blue } from '@ant-design/colors';
+
+const { Title, Paragraph } = Typography;
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const loginError = useAppSelector(selectLoginError);
+  const loginLoading = useAppSelector(selectLoginLoading);
 
   const [form] = Form.useForm();
   const [clientReady, setClientReady] = useState<boolean>(false);
@@ -28,7 +32,7 @@ const App: React.FC = () => {
       return;
     }
 
-    navigate(appRoutes.profile);
+    navigate(appRoutes.auth);
     form.resetFields();
   };
 
@@ -37,15 +41,32 @@ const App: React.FC = () => {
   };
 
   return (
-    <Row>
+    <Row style={{ marginTop: '140px' }}>
       <Col span={8} offset={8}>
+        <Title
+          level={3}
+          style={{
+            color: blue.primary,
+            textAlign: 'center',
+          }}
+        >
+          Вход
+        </Title>
+        <Paragraph
+          style={{
+            color: blue.primary,
+            textAlign: 'center',
+            marginBottom: '50px',
+          }}
+        >
+          Введите адрес электронной почты и пароль
+        </Paragraph>
         <Form
           form={form}
           layout="vertical"
           initialValues={{ remember: true }}
           onFinish={onSubmit}
           onFinishFailed={onFinishFailed}
-          autoComplete="off"
         >
           <Form.Item<LoginMutation>
             label="Почта"
@@ -65,10 +86,7 @@ const App: React.FC = () => {
           <Form.Item<LoginMutation>
             label="Пароль"
             name="password"
-            rules={[
-              { required: true, message: 'Введите пароль' },
-              { min: 8, message: 'Длина пароля не менее 8 символов' },
-            ]}
+            rules={[{ required: true, message: 'Введите пароль' }]}
             style={{ marginBottom: '24px' }}
           >
             <Input.Password />
@@ -82,6 +100,7 @@ const App: React.FC = () => {
                 style={{ width: '100%' }}
                 disabled={
                   !clientReady ||
+                  loginLoading ||
                   !form.isFieldsTouched(true) ||
                   !!form.getFieldsError().filter(({ errors }) => errors.length)
                     .length

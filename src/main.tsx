@@ -5,7 +5,7 @@ import { persistor, store } from './app/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import { addInterceptors } from './utils/axiosApi';
 import { router } from './router/Router';
-
+import './index.css';
 addInterceptors(store);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

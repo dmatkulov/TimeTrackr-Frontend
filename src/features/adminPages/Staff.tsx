@@ -1,48 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { Select, Space } from 'antd';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectPositions } from '../positions/positionsSlice';
-import { getUsers } from '../users/UsersThunks';
-import { fetchPositions } from '../positions/positionsThunks';
+import React from 'react';
+import StaffFilter from './components/StaffFilter';
+import { useAppSelector } from '../../app/hooks';
+import { selectFetchAllLoading } from '../users/UsersSlice';
+import Spinner from '../../components/UI/Spin/Spin';
 
 const Staff: React.FC = () => {
-  const positions = useAppSelector(selectPositions);
-  const dispatch = useAppDispatch();
-
-  const [selectedPosition, setSelectedPosition] = useState('');
-
-  const fetchStaffByPosition = async (position: string) => {
-    await dispatch(getUsers(position));
-  };
-
-  useEffect(() => {
-    dispatch(fetchPositions());
-  }, [dispatch]);
-
-  const handleSelectChange = async (value: string) => {
-    setSelectedPosition(value);
-    void fetchStaffByPosition(value);
-  };
-
+  const fetchLoading = useAppSelector(selectFetchAllLoading);
   return (
     <>
-      <Space style={{ alignItems: 'center' }}>
-        Сортировать
-        <Select
-          style={{ width: 300 }}
-          placeholder="Поиск по позициям"
-          optionFilterProp="children"
-          options={[
-            { value: '', label: 'Все сотрудники' },
-            ...positions.map((position) => ({
-              value: position._id,
-              label: position.name,
-            })),
-          ]}
-          onChange={handleSelectChange}
-          value={selectedPosition}
-        />
-      </Space>
+      <StaffFilter />
+      {fetchLoading && <Spinner />}
     </>
   );
 };
