@@ -69,8 +69,8 @@ const App: React.FC = () => {
           onFinishFailed={onFinishFailed}
         >
           <Form.Item<LoginMutation>
-            label="Почта"
             name="email"
+            label="Почта"
             rules={[
               {
                 required: true,

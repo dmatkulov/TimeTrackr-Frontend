@@ -14,6 +14,7 @@ interface UsersState {
   loginError: GlobalMessage | null;
   logOutLoading: boolean;
   fetchAllLoading: boolean;
+  openDrawer: boolean;
 }
 
 const initialState: UsersState = {
@@ -25,6 +26,7 @@ const initialState: UsersState = {
   loginError: null,
   logOutLoading: false,
   fetchAllLoading: false,
+  openDrawer: false,
 };
 
 export const usersSlice = createSlice({
@@ -33,6 +35,9 @@ export const usersSlice = createSlice({
   reducers: {
     unsetUser: (state) => {
       state.user = null;
+    },
+    toggleDrawer: (state, { payload }) => {
+      state.openDrawer = payload;
     },
   },
   extraReducers: (builder) => {
@@ -69,7 +74,7 @@ export const usersSlice = createSlice({
 });
 
 export const usersReducer = usersSlice.reducer;
-export const { unsetUser } = usersSlice.actions;
+export const { unsetUser, toggleDrawer } = usersSlice.actions;
 
 export const selectUser = (state: RootState) => state.users.user;
 export const selectStaff = (state: RootState) => state.users.staff;
@@ -84,3 +89,5 @@ export const selectFetchAllLoading = (state: RootState) =>
 export const selectLoginError = (state: RootState) => state.users.loginLoading;
 export const selectLogoutLoading = (state: RootState) =>
   state.users.logOutLoading;
+
+export const selectOpenDrawer = (state: RootState) => state.users.openDrawer;
