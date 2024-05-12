@@ -9,7 +9,6 @@ import {
   Input,
   Row,
   Select,
-  Upload,
 } from 'antd';
 import locale from 'antd/locale/ru_RU';
 import dayjs from 'dayjs';
@@ -18,7 +17,7 @@ import { RegisterMutation } from '../../../../types/types.user';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { fetchPositions } from '../../../positions/positionsThunks';
 import { selectPositions } from '../../../positions/positionsSlice';
-import { PlusOutlined } from '@ant-design/icons';
+import FileInput from '../../../../components/FileInput';
 
 dayjs.locale('ru');
 
@@ -27,12 +26,32 @@ interface Props {
   isEdit?: boolean;
 }
 
+interface Temp {
+  startDate: string;
+  photo: File | null;
+}
+
 const RegisterForm: React.FC<Props> = () => {
   const dispatch = useAppDispatch();
   const positions = useAppSelector(selectPositions);
 
-  const [selectedDate, setSelectedDate] = useState({ startDate: '' });
+  const [selectedDate, setSelectedDate] = useState<Temp>({
+    startDate: '',
+    photo: null,
+  });
   const [form] = Form.useForm();
+
+  const fileInputChangeHandler = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const { files } = event.target;
+    if (files) {
+      setSelectedDate((prevState) => ({
+        ...prevState,
+        photo: files[0],
+      }));
+    }
+  };
 
   useEffect(() => {
     dispatch(fetchPositions());
@@ -42,16 +61,10 @@ const RegisterForm: React.FC<Props> = () => {
     const formData: RegisterMutation = {
       ...data,
       startDate: selectedDate.startDate,
+      photo: selectedDate.photo,
     };
 
     console.log('formData: ', formData);
-  };
-
-  const normFile = (e: { fileList: { thumbUrl: File }[] }) => {
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e?.fileList[0].thumbUrl;
   };
 
   const onDateChange: DatePickerProps['onChange'] = (date) => {
@@ -213,22 +226,8 @@ const RegisterForm: React.FC<Props> = () => {
       </Row>
       <Row gutter={16} style={{ display: 'flex', alignItems: 'flex-end' }}>
         <Col>
-          <Form.Item
-            label="Upload"
-            name="photo"
-            valuePropName="fileList"
-            getValueFromEvent={normFile}
-          >
-            <Upload
-              beforeUpload={() => false}
-              listType="picture-card"
-              maxCount={1}
-            >
-              <button style={{ border: 0, background: 'none' }} type="button">
-                <PlusOutlined />
-                <div style={{ marginTop: 8 }}>Upload</div>
-              </button>
-            </Upload>
+          <Form.Item label="Upload" name="photo">
+            <FileInput onChange={fileInputChangeHandler} />
           </Form.Item>
         </Col>
       </Row>
