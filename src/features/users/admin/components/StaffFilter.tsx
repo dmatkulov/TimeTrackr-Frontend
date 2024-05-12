@@ -10,12 +10,12 @@ import {
   Space,
   Switch,
 } from 'antd';
-import { selectPositions } from '../../positions/positionsSlice';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { selectFetchAllLoading } from '../../users/UsersSlice';
-import { getUsers } from '../../users/UsersThunks';
-import { fetchPositions } from '../../positions/positionsThunks';
-import { UserQueryValues } from '../../../types/types.user';
+import { selectPositions } from '../../../positions/positionsSlice';
+import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
+import { selectFetchAllLoading } from '../../UsersSlice';
+import { getUsers } from '../../UsersThunks';
+import { fetchPositions } from '../../../positions/positionsThunks';
+import { UserQueryValues } from '../../../../types/types.user';
 import { ClearOutlined, SearchOutlined } from '@ant-design/icons';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 

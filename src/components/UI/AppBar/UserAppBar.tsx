@@ -1,21 +1,14 @@
 import React from 'react';
-import {
-  Avatar,
-  Button,
-  Dropdown,
-  Flex,
-  MenuProps,
-  Space,
-  Typography,
-} from 'antd';
+import { Avatar, Dropdown, Flex, MenuProps, Space, Typography } from 'antd';
 import { User } from '../../../types/types.user';
 import { apiURL } from '../../../utils/constants';
 import { appRoutes } from '../../../utils/routes';
 import { useAppDispatch } from '../../../app/hooks';
 import { logOut } from '../../../features/users/UsersThunks';
-import { PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
+import AdminHeader from '../../../features/users/admin/components/AdminHeader';
+import EmployeeHeader from '../../../features/users/employee/components/EmployeeHeader';
 
 const { Text, Link } = Typography;
 interface Props {
@@ -26,9 +19,7 @@ const UserAppBar: React.FC<Props> = ({ user }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const screens = useBreakpoint();
-  const md = !screens.lg;
-  const xs = !screens.sm;
+  const { lg } = useBreakpoint();
 
   const isAdmin = user.role === 'admin';
 
@@ -62,23 +53,11 @@ const UserAppBar: React.FC<Props> = ({ user }) => {
         vertical={false}
         style={{ flexGrow: 1 }}
       >
-        {isAdmin ? (
-          <Space align="center" style={{ display: xs ? 'none' : 'flex' }}>
-            <Button type="primary" icon={<PlusOutlined />}>
-              Добавить сотрудника
-            </Button>
-            <Button type="text" icon={<PlusOutlined />} iconPosition="start">
-              Создать позицую
-            </Button>
-          </Space>
-        ) : (
-          <Button type="dashed" icon={<PlusOutlined />} iconPosition="start">
-            Добавить задачу
-          </Button>
-        )}
+        {isAdmin ? <AdminHeader /> : <EmployeeHeader />}
+
         <Dropdown menu={{ items }} placement="bottomRight" arrow>
           <Space style={{ alignItems: 'center' }}>
-            <Text style={{ display: md ? 'none' : 'block' }}>
+            <Text style={{ display: lg ? 'block' : 'none' }}>
               {user.firstname} {user.lastname}
             </Text>
             {user.photo ? (
