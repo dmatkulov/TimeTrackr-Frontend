@@ -27,7 +27,7 @@ interface Props {
 }
 
 interface Temp {
-  startDate: string;
+  date: string;
   photo: File | null;
 }
 
@@ -36,7 +36,7 @@ const RegisterForm: React.FC<Props> = () => {
   const positions = useAppSelector(selectPositions);
 
   const [selectedDate, setSelectedDate] = useState<Temp>({
-    startDate: '',
+    date: '',
     photo: null,
   });
   const [form] = Form.useForm();
@@ -44,11 +44,11 @@ const RegisterForm: React.FC<Props> = () => {
   const fileInputChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    const { files } = event.target;
+    const { name, files } = event.target;
     if (files) {
       setSelectedDate((prevState) => ({
         ...prevState,
-        photo: files[0],
+        [name]: files[0],
       }));
     }
   };
@@ -60,7 +60,7 @@ const RegisterForm: React.FC<Props> = () => {
   const onSubmit: FormProps<RegisterMutation>['onFinish'] = async (data) => {
     const formData: RegisterMutation = {
       ...data,
-      startDate: selectedDate.startDate,
+      startDate: selectedDate.date,
       photo: selectedDate.photo,
     };
 
@@ -69,8 +69,9 @@ const RegisterForm: React.FC<Props> = () => {
 
   const onDateChange: DatePickerProps['onChange'] = (date) => {
     setSelectedDate((prevState) => {
-      return { ...prevState, startDate: date.toISOString() };
+      return { ...prevState, date: date.toISOString() };
     });
+    console.log(date.toISOString());
   };
 
   return (
@@ -177,13 +178,12 @@ const RegisterForm: React.FC<Props> = () => {
             name="startDate"
             rules={[{ required: true }]}
           >
-            <ConfigProvider locale={locale}>
-              <DatePicker
-                onChange={onDateChange}
-                style={{ width: '100%' }}
-                name="startDate"
-              />
-            </ConfigProvider>
+            <DatePicker
+              onChange={onDateChange}
+              style={{ width: '100%' }}
+              name="startDate"
+            />
+            <ConfigProvider locale={locale} />
           </Form.Item>
         </Col>
         <Col xs={{ span: 24 }} md={{ span: 8 }}>
@@ -215,7 +215,7 @@ const RegisterForm: React.FC<Props> = () => {
                   if (!value || getFieldValue('password') === value) {
                     return Promise.resolve();
                   }
-                  return Promise.reject(new Error('Пароли не совпадают'));
+                  return Promise.reject(new Error('Пароли не совпадают!'));
                 },
               }),
             ]}
@@ -226,8 +226,8 @@ const RegisterForm: React.FC<Props> = () => {
       </Row>
       <Row gutter={16} style={{ display: 'flex', alignItems: 'flex-end' }}>
         <Col>
-          <Form.Item label="Upload" name="photo">
-            <FileInput onChange={fileInputChangeHandler} />
+          <Form.Item label="Фото" name="photo">
+            <FileInput name="photo" onChange={fileInputChangeHandler} />
           </Form.Item>
         </Col>
       </Row>
