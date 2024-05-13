@@ -5,7 +5,6 @@ import { PlusOutlined } from '@ant-design/icons';
 import { useAppDispatch } from '../../../../app/hooks';
 import { toggleDrawer } from '../../UsersSlice';
 import RegisterForm from './RegisterForm';
-import RegisterUser from './RegisterUser';
 
 const AdminHeader: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -25,9 +24,7 @@ const AdminHeader: React.FC = () => {
           Создать позицую
         </Button>
       </Space>
-      <RegisterUser>
-        <RegisterForm />
-      </RegisterUser>
+      <RegisterForm />
     </>
   );
 };

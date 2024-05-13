@@ -6,8 +6,9 @@ import { red } from '@ant-design/colors';
 interface Props {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   name?: string;
+  onDelete: () => void;
 }
-const FileInput: React.FC<Props> = ({ onChange, name }) => {
+const FileInput: React.FC<Props> = ({ onChange, name, onDelete }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [filename, setFilename] = useState<string | null>(null);
@@ -27,6 +28,11 @@ const FileInput: React.FC<Props> = ({ onChange, name }) => {
       inputRef.current.click();
     }
   };
+
+  const deletePhoto = () => {
+    onDelete();
+    setFilename('');
+  };
   return (
     <>
       <input
@@ -38,14 +44,19 @@ const FileInput: React.FC<Props> = ({ onChange, name }) => {
       />
       <Space style={{ gap: '20px' }}>
         <Button icon={<UploadOutlined />} onClick={activateInput}>
-          Загрузить фото
+          {filename ? 'Заменить фото' : 'Загрузить фото'}
         </Button>
         {filename && (
           <Space>
             <Typography.Text style={{ color: red.primary }}>
               {filename}
             </Typography.Text>
-            <Button type="text" danger icon={<DeleteOutlined />} />
+            <Button
+              type="text"
+              danger
+              icon={<DeleteOutlined />}
+              onClick={deletePhoto}
+            />
           </Space>
         )}
       </Space>
