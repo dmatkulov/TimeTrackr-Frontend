@@ -2,7 +2,7 @@ import { User } from '../../types/types.user';
 import { GlobalMessage, ValidationError } from '../../types/types.global';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { getUsers, login } from './UsersThunks';
+import { createUser, getUsers, login } from './UsersThunks';
 import { message } from 'antd';
 
 interface UsersState {
@@ -55,6 +55,23 @@ export const usersSlice = createSlice({
       })
       .addCase(getUsers.rejected, (state) => {
         state.fetchAllLoading = false;
+      });
+
+    builder
+      .addCase(createUser.pending, (state) => {
+        state.registerLoading = true;
+      })
+      .addCase(createUser.fulfilled, (state) => {
+        state.registerLoading = false;
+
+        // if (data.message) {
+        //   void message.success(data.message);
+        // }
+      })
+      .addCase(createUser.rejected, (state) => {
+        state.registerLoading = false;
+        // console.log(data?.message);
+        // void message.error(data?.message);
       });
 
     builder

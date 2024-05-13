@@ -7,7 +7,6 @@ import {
   Divider,
   Drawer,
   Form,
-  FormProps,
   Input,
   Row,
   Select,
@@ -20,6 +19,7 @@ import { selectPositions } from '../../../positions/positionsSlice';
 import FileInput from '../../../../components/FileInput';
 import { selectOpenDrawer, toggleDrawer } from '../../UsersSlice';
 import { ClearOutlined } from '@ant-design/icons';
+import { createUser } from '../../UsersThunks';
 
 const initialState: RegisterMutation = {
   email: '',
@@ -53,9 +53,13 @@ const RegisterForm: React.FC<Props> = ({ existingUser = initialState }) => {
     dispatch(fetchPositions());
   }, [dispatch]);
 
-  const onSubmit: FormProps<RegisterMutation>['onFinish'] = async () => {
-    console.log('state: ', state);
-    form.resetFields();
+  const onSubmit = async () => {
+    try {
+      await dispatch(createUser(state)).unwrap();
+      onClose();
+    } catch (e) {
+      return;
+    }
   };
 
   const onClose = () => {
@@ -144,6 +148,7 @@ const RegisterForm: React.FC<Props> = ({ existingUser = initialState }) => {
               label="Фамилия"
               name="lastname"
               rules={[{ required: true, message: 'Введите фамилию' }]}
+              help={<p style={{ color: 'red' }}>dsadasd</p>}
             >
               <Input
                 placeholder="Фамилия сотрудника"

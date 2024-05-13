@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   LoginMutation,
   LoginResponse,
+  RegisterMutation,
   UserQueryParams,
   UserQueryValues,
   UsersResponse,
@@ -12,7 +13,43 @@ import { httpRoutes } from '../../utils/routes';
 import { isAxiosError } from 'axios';
 import { RootState } from '../../app/store';
 import { unsetUser } from './UsersSlice';
+import { message } from 'antd';
 
+export const createUser = createAsyncThunk<
+  LoginResponse,
+  RegisterMutation
+  // { rejectValue: GlobalMessage }
+>('users/addUser', async (mutation) => {
+  try {
+    const response = await axiosApi.post<LoginResponse>(
+      httpRoutes.newUser,
+      mutation,
+    );
+    return response.data;
+  } catch (e) {
+    if (
+      isAxiosError(e) &&
+      e.response?.status === 500 &&
+      e.response?.data.message
+    ) {
+      console.log(e);
+      void message.error('Пользователь с такой почтой уже зарегистрирован!');
+      // return rejectWithValue(e);
+    }
+
+    if (
+      isAxiosError(e) &&
+      e.response?.status === 400 &&
+      e.response?.data.message
+    ) {
+      console.log(e.response?.data.message);
+      void message.error(e.response?.data.message);
+    }
+
+    console.log(e);
+    throw e;
+  }
+});
 export const getUsers = createAsyncThunk<
   UsersResponse,
   UserQueryValues | undefined
