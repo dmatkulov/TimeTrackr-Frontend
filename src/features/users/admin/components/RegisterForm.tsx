@@ -83,7 +83,6 @@ const RegisterForm: React.FC<Props> = () => {
       onFinish={onSubmit}
       autoComplete="off"
     >
-      <span className="ant-upload"></span>
       <Row gutter={16}>
         <Col xs={{ span: 24 }} md={{ span: 12 }}>
           <Form.Item
@@ -226,7 +225,7 @@ const RegisterForm: React.FC<Props> = () => {
       </Row>
       <Row gutter={16} style={{ display: 'flex', alignItems: 'flex-end' }}>
         <Col>
-          <Form.Item label="Фото" name="photo">
+          <Form.Item name="photo">
             <FileInput name="photo" onChange={fileInputChangeHandler} />
           </Form.Item>
         </Col>

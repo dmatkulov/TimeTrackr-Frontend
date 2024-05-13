@@ -1,5 +1,7 @@
 import React, { useRef, useState } from 'react';
-import { PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, UploadOutlined } from '@ant-design/icons';
+import { Button, Space, Typography } from 'antd';
+import { red } from '@ant-design/colors';
 
 interface Props {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -8,22 +10,13 @@ interface Props {
 const FileInput: React.FC<Props> = ({ onChange, name }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [filename, setFilename] = useState('');
-  const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const [filename, setFilename] = useState<string | null>(null);
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const selectedFile = e.target.files[0];
-      setFilename(selectedFile.name);
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFileUrl(reader.result as string);
-      };
-      reader.readAsDataURL(selectedFile);
+      setFilename(e.target.files[0].name);
     } else {
       setFilename('');
-      setFileUrl('');
     }
 
     onChange(e);
@@ -36,51 +29,26 @@ const FileInput: React.FC<Props> = ({ onChange, name }) => {
   };
   return (
     <>
-      <span
-        className="ant-upload-wrapper css-dev-only-do-not-override-1okl62o ant-upload-picture-card-wrapper"
-        // style={{ display: 'flex' }}
-      >
-        {fileUrl && (
-          <div
-            className="ant-upload-list ant-upload-list-picture-card"
-            // style={{ marginRight: '16px' }}
-          >
-            <div className="ant-upload-list-item-container">
-              <div className="ant-upload-list-item ant-upload-list-item-undefined">
-                <div className="ant-upload-list-item-thumbnail">
-                  <img
-                    className="ant-upload-list-item-image"
-                    alt="photo"
-                    src={fileUrl}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+      <input
+        style={{ display: 'none' }}
+        type="file"
+        name={name}
+        onChange={onFileChange}
+        ref={inputRef}
+      />
+      <Space style={{ gap: '20px' }}>
+        <Button icon={<UploadOutlined />} onClick={activateInput}>
+          Загрузить фото
+        </Button>
+        {filename && (
+          <Space>
+            <Typography.Text style={{ color: red.primary }}>
+              {filename}
+            </Typography.Text>
+            <Button type="text" danger icon={<DeleteOutlined />} />
+          </Space>
         )}
-
-        <div className="ant-upload ant-upload-select">
-          <span className="ant-upload">
-            <input
-              style={{ display: 'none' }}
-              type="file"
-              name={name}
-              onChange={onFileChange}
-              ref={inputRef}
-            />
-            <button
-              style={{ border: 0, background: 'none' }}
-              type="button"
-              onClick={activateInput}
-            >
-              <PlusOutlined />
-              <div style={{ marginTop: 8 }}>
-                {filename ? 'Заменить' : 'Загрузить'}
-              </div>
-            </button>
-          </span>
-        </div>
-      </span>
+      </Space>
     </>
   );
 };
