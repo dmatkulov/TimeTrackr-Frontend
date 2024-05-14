@@ -1,5 +1,5 @@
 import { User } from '../../types/types.user';
-import { GlobalMessage, ValidationError } from '../../types/types.global';
+import { GlobalMessage } from '../../types/types.global';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import { createUser, getUsers, login } from './UsersThunks';
@@ -9,7 +9,6 @@ interface UsersState {
   user: User | null;
   staff: User[];
   registerLoading: boolean;
-  registerError: ValidationError | null;
   loginLoading: boolean;
   loginError: GlobalMessage | null;
   logOutLoading: boolean;
@@ -21,7 +20,6 @@ const initialState: UsersState = {
   user: null,
   staff: [],
   registerLoading: false,
-  registerError: null,
   loginLoading: false,
   loginError: null,
   logOutLoading: false,
@@ -61,17 +59,17 @@ export const usersSlice = createSlice({
       .addCase(createUser.pending, (state) => {
         state.registerLoading = true;
       })
-      .addCase(createUser.fulfilled, (state) => {
+      .addCase(createUser.fulfilled, (state, { payload: data }) => {
         state.registerLoading = false;
 
-        // if (data.message) {
-        //   void message.success(data.message);
-        // }
+        if (data.message) {
+          void message.success(data.message);
+        }
       })
-      .addCase(createUser.rejected, (state) => {
+      .addCase(createUser.rejected, (state, { payload: error }) => {
         state.registerLoading = false;
-        // console.log(data?.message);
-        // void message.error(data?.message);
+
+        void message.error(error?.data.message);
       });
 
     builder
@@ -95,10 +93,6 @@ export const { unsetUser, toggleDrawer } = usersSlice.actions;
 
 export const selectUser = (state: RootState) => state.users.user;
 export const selectStaff = (state: RootState) => state.users.staff;
-export const selectRegisterLoading = (state: RootState) =>
-  state.users.registerError;
-export const selectRegisterError = (state: RootState) =>
-  state.users.registerError;
 export const selectLoginLoading = (state: RootState) =>
   state.users.loginLoading;
 export const selectFetchAllLoading = (state: RootState) =>

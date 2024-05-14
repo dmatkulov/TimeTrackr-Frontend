@@ -16,10 +16,12 @@ import { RegisterMutation } from '../../../../types/types.user';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { fetchPositions } from '../../../positions/positionsThunks';
 import { selectPositions } from '../../../positions/positionsSlice';
-import FileInput from '../../../../components/FileInput';
+import FileInput from './Inputs/FileInput';
 import { selectOpenDrawer, toggleDrawer } from '../../UsersSlice';
 import { ClearOutlined } from '@ant-design/icons';
 import { createUser } from '../../UsersThunks';
+import ContactsInputGroup from './Inputs/ContactsInputGroup';
+import PasswordInput from './Inputs/PasswordInput';
 
 const initialState: RegisterMutation = {
   email: '',
@@ -45,6 +47,7 @@ const RegisterForm: React.FC<Props> = ({ existingUser = initialState }) => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const positions = useAppSelector(selectPositions);
+
   const [state, setState] = useState<RegisterMutation>(existingUser);
 
   const open = useAppSelector(selectOpenDrawer);
@@ -58,8 +61,20 @@ const RegisterForm: React.FC<Props> = ({ existingUser = initialState }) => {
       await dispatch(createUser(state)).unwrap();
       onClose();
     } catch (e) {
-      return;
+      console.log(e);
     }
+  };
+
+  const handlePhoneChange = (value: string) => {
+    setState((prevState) => {
+      return {
+        ...prevState,
+        contactInfo: {
+          ...prevState.contactInfo,
+          mobile: value,
+        },
+      };
+    });
   };
 
   const onClose = () => {
@@ -68,9 +83,7 @@ const RegisterForm: React.FC<Props> = ({ existingUser = initialState }) => {
   };
 
   const contactInfo = Object.keys(state.contactInfo);
-  const inputChangeHandler = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
+  const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
     setState((prevState) => {
@@ -148,7 +161,6 @@ const RegisterForm: React.FC<Props> = ({ existingUser = initialState }) => {
               label="Фамилия"
               name="lastname"
               rules={[{ required: true, message: 'Введите фамилию' }]}
-              help={<p style={{ color: 'red' }}>dsadasd</p>}
             >
               <Input
                 placeholder="Фамилия сотрудника"
@@ -220,50 +232,11 @@ const RegisterForm: React.FC<Props> = ({ existingUser = initialState }) => {
           </Col>
         </Row>
         <Row gutter={16}>
-          <Col xs={{ span: 24 }} md={{ span: 8 }}>
-            <Form.Item
-              label="Телефон"
-              name={['contactInfo', 'mobile']}
-              rules={[{ required: true, message: 'Укажите номер телефона' }]}
-            >
-              <Input
-                onChange={inputChangeHandler}
-                name="mobile"
-                value={state.contactInfo.mobile}
-                addonBefore={'+996'}
-                style={{ width: '100%' }}
-                type="number"
-              />
-            </Form.Item>
-          </Col>
-          <Col xs={{ span: 24 }} md={{ span: 8 }}>
-            <Form.Item
-              label="Город"
-              name={['contactInfo', 'city']}
-              rules={[{ required: true, message: 'Укажите город' }]}
-            >
-              <Input
-                name="city"
-                value={state.contactInfo.city}
-                onChange={inputChangeHandler}
-                placeholder="Город проживания"
-              />
-            </Form.Item>
-          </Col>
-          <Col xs={{ span: 24 }} md={{ span: 8 }}>
-            <Form.Item
-              label="Улица"
-              name={['contactInfo', 'street']}
-              rules={[{ required: true, message: 'Укажите улицу' }]}
-            >
-              <Input
-                name="street"
-                onChange={inputChangeHandler}
-                value={state.contactInfo.street}
-                placeholder="Улица"
-              />
-            </Form.Item>
-          </Col>
+          <ContactsInputGroup
+            state={state}
+            onInputChange={inputChangeHandler}
+            onPhoneChange={handlePhoneChange}
+          />
         </Row>
         <Row gutter={16}>
           <Col xs={{ span: 24 }} md={{ span: 8 }}>
@@ -279,47 +252,7 @@ const RegisterForm: React.FC<Props> = ({ existingUser = initialState }) => {
               />
             </Form.Item>
           </Col>
-          <Col xs={{ span: 24 }} md={{ span: 8 }}>
-            <Form.Item
-              name="password"
-              label="Пароль"
-              rules={[
-                { required: true, message: 'Введите пароль' },
-                { min: 8, message: 'Длина пароля не менее 8 символов' },
-              ]}
-              hasFeedback
-            >
-              <Input.Password
-                name="password"
-                value={state.password}
-                onChange={inputChangeHandler}
-              />
-            </Form.Item>
-          </Col>
-          <Col xs={{ span: 24 }} md={{ span: 8 }}>
-            <Form.Item
-              name="confirm"
-              label="Подтвердите пароль"
-              dependencies={['password']}
-              hasFeedback
-              rules={[
-                {
-                  required: true,
-                  message: 'Введите пароль повторно',
-                },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue('password') === value) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(new Error('Пароли не совпадают'));
-                  },
-                }),
-              ]}
-            >
-              <Input.Password />
-            </Form.Item>
-          </Col>
+          <PasswordInput state={state} onChange={inputChangeHandler} />
         </Row>
         <Divider style={{ marginTop: 16 }} />
         <Row

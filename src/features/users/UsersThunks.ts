@@ -7,43 +7,47 @@ import {
   UserQueryValues,
   UsersResponse,
 } from '../../types/types.user';
-import { GlobalMessage } from '../../types/types.global';
+import { GlobalError, GlobalMessage } from '../../types/types.global';
 import { axiosApi } from '../../utils/axiosApi';
 import { httpRoutes } from '../../utils/routes';
 import { isAxiosError } from 'axios';
 import { RootState } from '../../app/store';
 import { unsetUser } from './UsersSlice';
-import { message } from 'antd';
 
 export const createUser = createAsyncThunk<
   LoginResponse,
-  RegisterMutation
-  // { rejectValue: GlobalMessage }
->('users/addUser', async (mutation) => {
+  RegisterMutation,
+  { rejectValue: GlobalError }
+>('users/addUser', async (mutation, { rejectWithValue }) => {
   try {
+    const formData = new FormData();
+
+    formData.append('email', mutation.email);
+    formData.append('firstname', mutation.firstname);
+    formData.append('lastname', mutation.lastname);
+    formData.append('position', mutation.position);
+    formData.append('contactInfo[mobile]', mutation.contactInfo.mobile);
+    formData.append('contactInfo[city]', mutation.contactInfo.city);
+    formData.append('contactInfo[street]', mutation.contactInfo.street);
+    formData.append('password', mutation.password);
+    formData.append('startDate', mutation.startDate);
+
+    if (mutation.photo) {
+      formData.append('photo', mutation.photo);
+    }
+
     const response = await axiosApi.post<LoginResponse>(
       httpRoutes.newUser,
-      mutation,
+      formData,
     );
     return response.data;
   } catch (e) {
     if (
       isAxiosError(e) &&
-      e.response?.status === 500 &&
-      e.response?.data.message
-    ) {
-      console.log(e);
-      void message.error('Пользователь с такой почтой уже зарегистрирован!');
-      // return rejectWithValue(e);
-    }
-
-    if (
-      isAxiosError(e) &&
       e.response?.status === 400 &&
       e.response?.data.message
     ) {
-      console.log(e.response?.data.message);
-      void message.error(e.response?.data.message);
+      return rejectWithValue(e.response);
     }
 
     console.log(e);

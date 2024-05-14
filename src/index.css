@@ -10,3 +10,12 @@ input::-webkit-inner-spin-button {
 input[type='number'] {
   -moz-appearance: textfield;
 }
+
+.react-tel-input .flag-dropdown {
+  display: none;
+}
+
+.react-tel-input .form-control {
+  padding-left: 4px;
+  /*border: none;*/
+}
