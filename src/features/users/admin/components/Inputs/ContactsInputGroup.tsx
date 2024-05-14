@@ -30,6 +30,7 @@ const ContactsInputGroup: React.FC<Props> = ({
         <Form.Item
           label="Телефон"
           name={['contactInfo', 'mobile']}
+          status={'error'}
           rules={[
             { required: true, message: 'Укажите номер телефона' },
             {

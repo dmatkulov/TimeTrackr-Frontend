@@ -27,7 +27,6 @@ import { ClearOutlined } from '@ant-design/icons';
 import { createUser } from '../../UsersThunks';
 import ContactsInputGroup from './Inputs/ContactsInputGroup';
 import PasswordInput from './Inputs/PasswordInput';
-import { selectRegisterLoading } from '../../UsersSlice';
 
 dayjs.locale('ru');
 
@@ -55,14 +54,12 @@ interface Props {
 
 const RegisterForm: React.FC<Props> = ({
   existingUser = initialState,
-  isEdit,
   open,
   onClose,
 }) => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const positions = useAppSelector(selectPositions);
-  const registerLoading = useAppSelector(selectRegisterLoading);
 
   const [state, setState] = useState<RegisterMutation>(existingUser);
 
@@ -73,7 +70,7 @@ const RegisterForm: React.FC<Props> = ({
   const onSubmit = async () => {
     try {
       await dispatch(createUser(state)).unwrap();
-      onClose();
+      closeDrawer();
     } catch (e) {
       console.log(e);
     }
@@ -91,7 +88,7 @@ const RegisterForm: React.FC<Props> = ({
     });
   };
 
-  const handleClose = () => {
+  const closeDrawer = () => {
     onClose();
     form.resetFields();
   };
@@ -142,9 +139,9 @@ const RegisterForm: React.FC<Props> = ({
 
   return (
     <Drawer
-      title={isEdit ? 'Редактирование сотрудника' : 'Добавление сотрудника'}
+      title="Добавление нового сотрудника"
       width={720}
-      onClose={handleClose}
+      onClose={closeDrawer}
       open={open}
       styles={{
         body: {
@@ -195,8 +192,6 @@ const RegisterForm: React.FC<Props> = ({
                 name="firstname"
                 value={state.firstname}
                 onChange={inputChangeHandler}
-                status={'error'}
-                aria-errormessage="asdas"
               />
             </Form.Item>
           </Col>
@@ -259,16 +254,19 @@ const RegisterForm: React.FC<Props> = ({
             <Form.Item
               label="Дата начала работы"
               name="startDate"
+              getValueFromEvent={(onChange) =>
+                dayjs(onChange).format('YYYY-MM-DD')
+              }
+              getValueProps={(i: string) => ({ value: dayjs(i) })}
               rules={[{ required: true, message: 'Введите дату' }]}
             >
               <ConfigProvider locale={locale}>
                 <DatePicker
-                  allowClear
+                  // allowClear
                   name="startDate"
                   format={'DD-MM-YYYY'}
                   style={{ width: '100%' }}
                   onChange={onDateChange}
-                  defaultValue={dayjs(new Date())}
                 />
               </ConfigProvider>
             </Form.Item>
@@ -299,7 +297,6 @@ const RegisterForm: React.FC<Props> = ({
               form="register"
               type="primary"
               style={{ width: '100%' }}
-              disabled={registerLoading}
             >
               Отправить
             </Button>

@@ -42,6 +42,7 @@ export const createUser = createAsyncThunk<
     );
     return response.data;
   } catch (e) {
+    console.log(e);
     if (
       isAxiosError(e) &&
       e.response?.status === 400 &&
