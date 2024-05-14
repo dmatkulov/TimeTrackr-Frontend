@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout } from 'antd';
 import { Outlet } from 'react-router-dom';
-import AdminSlider from '../adminPages/components/AdminSlider';
+import AdminSlider from './admin/components/AdminSlider';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import Breadcrumbs from '../../router/Breadcrumbs';
 
@@ -9,15 +9,14 @@ const { Content } = Layout;
 
 interface Props extends React.PropsWithChildren {}
 const UserPanel: React.FC<Props> = () => {
-  const screens = useBreakpoint();
-  const xs = !screens.md;
+  const { md } = useBreakpoint();
   return (
     <>
       <Layout hasSider style={{ minHeight: '100vh' }}>
         <AdminSlider />
         <Layout
           style={{
-            marginLeft: xs ? '0' : '20px',
+            marginLeft: !md ? '0' : '20px',
             marginTop: '65px',
             overflow: 'scroll',
           }}

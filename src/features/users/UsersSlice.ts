@@ -1,15 +1,14 @@
 import { User } from '../../types/types.user';
-import { GlobalMessage, ValidationError } from '../../types/types.global';
+import { GlobalMessage } from '../../types/types.global';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { getUsers, login } from './UsersThunks';
+import { createUser, getUsers, login } from './UsersThunks';
 import { message } from 'antd';
 
 interface UsersState {
   user: User | null;
   staff: User[];
   registerLoading: boolean;
-  registerError: ValidationError | null;
   loginLoading: boolean;
   loginError: GlobalMessage | null;
   logOutLoading: boolean;
@@ -20,7 +19,6 @@ const initialState: UsersState = {
   user: null,
   staff: [],
   registerLoading: false,
-  registerError: null,
   loginLoading: false,
   loginError: null,
   logOutLoading: false,
@@ -53,6 +51,23 @@ export const usersSlice = createSlice({
       });
 
     builder
+      .addCase(createUser.pending, (state) => {
+        state.registerLoading = true;
+      })
+      .addCase(createUser.fulfilled, (state, { payload: data }) => {
+        state.registerLoading = false;
+
+        if (data.message) {
+          void message.success(data.message);
+        }
+      })
+      .addCase(createUser.rejected, (state, { payload: error }) => {
+        state.registerLoading = false;
+
+        void message.error(error?.data.message);
+      });
+
+    builder
       .addCase(login.pending, (state) => {
         state.loginLoading = true;
       })
@@ -74,9 +89,7 @@ export const { unsetUser } = usersSlice.actions;
 export const selectUser = (state: RootState) => state.users.user;
 export const selectStaff = (state: RootState) => state.users.staff;
 export const selectRegisterLoading = (state: RootState) =>
-  state.users.registerError;
-export const selectRegisterError = (state: RootState) =>
-  state.users.registerError;
+  state.users.registerLoading;
 export const selectLoginLoading = (state: RootState) =>
   state.users.loginLoading;
 export const selectFetchAllLoading = (state: RootState) =>

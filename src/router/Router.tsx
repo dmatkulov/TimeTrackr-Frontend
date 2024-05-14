@@ -3,11 +3,11 @@ import { appRoutes } from '../utils/routes';
 import Home from '../Home/Home';
 import Login from '../features/users/Login';
 import ProtectedRoute from '../components/ProtectedRoute/ProtectedRoute';
-import Staff from '../features/adminPages/Staff';
+import Staff from '../features/users/admin/Staff';
 import Page404 from '../components/UI/404/Page404';
 import AppLayout from '../components/Layout/AppLayout';
 import UserPanel from '../features/users/UserPanel';
-import Positions from '../features/adminPages/Positions';
+import Positions from '../features/users/admin/Positions';
 import AuthPage from '../components/UI/AuthPage/AuthPage';
 
 export const router = createBrowserRouter([

@@ -2,17 +2,59 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   LoginMutation,
   LoginResponse,
+  RegisterMutation,
   UserQueryParams,
   UserQueryValues,
   UsersResponse,
 } from '../../types/types.user';
-import { GlobalMessage } from '../../types/types.global';
+import { GlobalError, GlobalMessage } from '../../types/types.global';
 import { axiosApi } from '../../utils/axiosApi';
 import { httpRoutes } from '../../utils/routes';
 import { isAxiosError } from 'axios';
 import { RootState } from '../../app/store';
 import { unsetUser } from './UsersSlice';
 
+export const createUser = createAsyncThunk<
+  LoginResponse,
+  RegisterMutation,
+  { rejectValue: GlobalError }
+>('users/addUser', async (mutation, { rejectWithValue }) => {
+  try {
+    const formData = new FormData();
+
+    formData.append('email', mutation.email);
+    formData.append('firstname', mutation.firstname);
+    formData.append('lastname', mutation.lastname);
+    formData.append('position', mutation.position);
+    formData.append('contactInfo[mobile]', mutation.contactInfo.mobile);
+    formData.append('contactInfo[city]', mutation.contactInfo.city);
+    formData.append('contactInfo[street]', mutation.contactInfo.street);
+    formData.append('password', mutation.password);
+    formData.append('startDate', mutation.startDate);
+
+    if (mutation.photo) {
+      formData.append('photo', mutation.photo);
+    }
+
+    const response = await axiosApi.post<LoginResponse>(
+      httpRoutes.newUser,
+      formData,
+    );
+    return response.data;
+  } catch (e) {
+    console.log(e);
+    if (
+      isAxiosError(e) &&
+      e.response?.status === 400 &&
+      e.response?.data.message
+    ) {
+      return rejectWithValue(e.response);
+    }
+
+    console.log(e);
+    throw e;
+  }
+});
 export const getUsers = createAsyncThunk<
   UsersResponse,
   UserQueryValues | undefined

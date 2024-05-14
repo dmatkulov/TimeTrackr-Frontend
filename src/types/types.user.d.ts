@@ -22,7 +22,16 @@ export interface LoginMutation {
   password: string;
 }
 
-export interface RegisterMutation {}
+export interface RegisterMutation {
+  email: string;
+  firstname: string;
+  lastname: string;
+  contactInfo: contactInfo;
+  photo: File | null;
+  position: string;
+  startDate: string;
+  password: string;
+}
 
 export interface LoginResponse {
   message: string;
