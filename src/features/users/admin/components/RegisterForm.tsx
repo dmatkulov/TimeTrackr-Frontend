@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
   Button,
   Col,
-  ConfigProvider,
   DatePicker,
   DatePickerProps,
   Divider,
@@ -13,10 +12,7 @@ import {
   Select,
   Tooltip,
 } from 'antd';
-
 import dayjs from 'dayjs';
-import locale from 'antd/locale/ru_RU';
-import 'dayjs/locale/ru';
 
 import { RegisterMutation } from '../../../../types/types.user';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
@@ -27,8 +23,6 @@ import { ClearOutlined } from '@ant-design/icons';
 import { createUser } from '../../UsersThunks';
 import ContactsInputGroup from './Inputs/ContactsInputGroup';
 import PasswordInput from './Inputs/PasswordInput';
-
-dayjs.locale('ru');
 
 const initialState: RegisterMutation = {
   email: '',
@@ -41,7 +35,7 @@ const initialState: RegisterMutation = {
     street: '',
   },
   password: '',
-  startDate: new Date().toISOString(),
+  startDate: '',
   photo: null,
 };
 
@@ -131,10 +125,12 @@ const RegisterForm: React.FC<Props> = ({
       }));
     }
   };
-  const onDateChange: DatePickerProps['onChange'] = (date) => {
-    setState((prevState) => {
-      return { ...prevState, startDate: date?.toISOString() };
-    });
+  const onDateChange: DatePickerProps['onChange'] = (_date, dateString) => {
+    if (typeof dateString === 'string') {
+      setState((prevState) => {
+        return { ...prevState, startDate: new Date(dateString).toISOString() };
+      });
+    }
   };
 
   return (
@@ -254,21 +250,24 @@ const RegisterForm: React.FC<Props> = ({
             <Form.Item
               label="Дата начала работы"
               name="startDate"
-              getValueFromEvent={(onChange) =>
-                dayjs(onChange).format('YYYY-MM-DD')
-              }
-              getValueProps={(i: string) => ({ value: dayjs(i) })}
-              rules={[{ required: true, message: 'Введите дату' }]}
+              rules={[
+                {
+                  type: 'object' as const,
+                  required: true,
+                  message: 'Введите дату',
+                },
+              ]}
             >
-              <ConfigProvider locale={locale}>
-                <DatePicker
-                  // allowClear
-                  name="startDate"
-                  format={'DD-MM-YYYY'}
-                  style={{ width: '100%' }}
-                  onChange={onDateChange}
-                />
-              </ConfigProvider>
+              <DatePicker
+                allowClear={false}
+                name="startDate"
+                style={{ width: '100%' }}
+                value={
+                  state.startDate ? dayjs(state.startDate) : dayjs(new Date())
+                }
+                defaultValue={dayjs(new Date())}
+                onChange={onDateChange}
+              />
             </Form.Item>
           </Col>
           <PasswordInput state={state} onChange={inputChangeHandler} />
