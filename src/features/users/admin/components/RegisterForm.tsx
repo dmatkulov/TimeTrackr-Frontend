@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   Button,
   Col,
+  ConfigProvider,
   DatePicker,
   DatePickerProps,
   Divider,
@@ -12,6 +13,11 @@ import {
   Select,
   Tooltip,
 } from 'antd';
+
+import dayjs from 'dayjs';
+import locale from 'antd/locale/ru_RU';
+import 'dayjs/locale/ru';
+
 import { RegisterMutation } from '../../../../types/types.user';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { fetchPositions } from '../../../positions/positionsThunks';
@@ -22,6 +28,8 @@ import { ClearOutlined } from '@ant-design/icons';
 import { createUser } from '../../UsersThunks';
 import ContactsInputGroup from './Inputs/ContactsInputGroup';
 import PasswordInput from './Inputs/PasswordInput';
+
+dayjs.locale('ru');
 
 const initialState: RegisterMutation = {
   email: '',
@@ -34,7 +42,7 @@ const initialState: RegisterMutation = {
     street: '',
   },
   password: '',
-  startDate: '',
+  startDate: new Date().toISOString(),
   photo: null,
 };
 
@@ -122,7 +130,7 @@ const RegisterForm: React.FC<Props> = ({ existingUser = initialState }) => {
   };
   const onDateChange: DatePickerProps['onChange'] = (date) => {
     setState((prevState) => {
-      return { ...prevState, startDate: date.toISOString() };
+      return { ...prevState, startDate: date?.toISOString() };
     });
   };
 
@@ -245,11 +253,17 @@ const RegisterForm: React.FC<Props> = ({ existingUser = initialState }) => {
               name="startDate"
               rules={[{ required: true, message: 'Введите дату' }]}
             >
-              <DatePicker
-                onChange={onDateChange}
-                style={{ width: '100%' }}
-                name="startDate"
-              />
+              <ConfigProvider locale={locale}>
+                <DatePicker
+                  allowClear
+                  name="startDate"
+                  format={'DD-MM-YYYY'}
+                  style={{ width: '100%' }}
+                  onChange={onDateChange}
+                  defaultValue={dayjs(new Date())}
+                  value={dayjs(state.startDate)}
+                />
+              </ConfigProvider>
             </Form.Item>
           </Col>
           <PasswordInput state={state} onChange={inputChangeHandler} />
