@@ -23,11 +23,11 @@ import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { fetchPositions } from '../../../positions/positionsThunks';
 import { selectPositions } from '../../../positions/positionsSlice';
 import FileInput from './Inputs/FileInput';
-import { selectOpenDrawer, toggleDrawer } from '../../UsersSlice';
 import { ClearOutlined } from '@ant-design/icons';
 import { createUser } from '../../UsersThunks';
 import ContactsInputGroup from './Inputs/ContactsInputGroup';
 import PasswordInput from './Inputs/PasswordInput';
+import { selectRegisterLoading } from '../../UsersSlice';
 
 dayjs.locale('ru');
 
@@ -49,16 +49,22 @@ const initialState: RegisterMutation = {
 interface Props {
   existingUser?: RegisterMutation;
   isEdit?: boolean;
+  open: boolean;
+  onClose: () => void;
 }
 
-const RegisterForm: React.FC<Props> = ({ existingUser = initialState }) => {
+const RegisterForm: React.FC<Props> = ({
+  existingUser = initialState,
+  isEdit,
+  open,
+  onClose,
+}) => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const positions = useAppSelector(selectPositions);
+  const registerLoading = useAppSelector(selectRegisterLoading);
 
   const [state, setState] = useState<RegisterMutation>(existingUser);
-
-  const open = useAppSelector(selectOpenDrawer);
 
   useEffect(() => {
     dispatch(fetchPositions());
@@ -85,8 +91,8 @@ const RegisterForm: React.FC<Props> = ({ existingUser = initialState }) => {
     });
   };
 
-  const onClose = () => {
-    dispatch(toggleDrawer(false));
+  const handleClose = () => {
+    onClose();
     form.resetFields();
   };
 
@@ -136,9 +142,9 @@ const RegisterForm: React.FC<Props> = ({ existingUser = initialState }) => {
 
   return (
     <Drawer
-      title="Добавление нового сотрудника"
+      title={isEdit ? 'Редактирование сотрудника' : 'Добавление сотрудника'}
       width={720}
-      onClose={onClose}
+      onClose={handleClose}
       open={open}
       styles={{
         body: {
@@ -189,6 +195,8 @@ const RegisterForm: React.FC<Props> = ({ existingUser = initialState }) => {
                 name="firstname"
                 value={state.firstname}
                 onChange={inputChangeHandler}
+                status={'error'}
+                aria-errormessage="asdas"
               />
             </Form.Item>
           </Col>
@@ -261,7 +269,6 @@ const RegisterForm: React.FC<Props> = ({ existingUser = initialState }) => {
                   style={{ width: '100%' }}
                   onChange={onDateChange}
                   defaultValue={dayjs(new Date())}
-                  value={dayjs(state.startDate)}
                 />
               </ConfigProvider>
             </Form.Item>
@@ -292,6 +299,7 @@ const RegisterForm: React.FC<Props> = ({ existingUser = initialState }) => {
               form="register"
               type="primary"
               style={{ width: '100%' }}
+              disabled={registerLoading}
             >
               Отправить
             </Button>
