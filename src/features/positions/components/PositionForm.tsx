@@ -1,18 +1,17 @@
 import React from 'react';
 import { Position, PositionMutation } from '../../../types/types.position';
 import { Button, Col, Drawer, Form, FormProps, Input, Row } from 'antd';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { useAppSelector } from '../../../app/hooks';
 import { selectPositionsCreating } from '../positionsSlice';
-import { createPosition } from '../positionsThunks';
 
 interface Props {
+  onSubmit: (state: PositionMutation) => void;
   existingItem?: Position;
   isEdit?: boolean;
   open: boolean;
   onClose: () => void;
 }
-const PositionForm: React.FC<Props> = ({ open, onClose, isEdit }) => {
-  const dispatch = useAppDispatch();
+const PositionForm: React.FC<Props> = ({ onSubmit, open, onClose, isEdit }) => {
   const creating = useAppSelector(selectPositionsCreating);
   const [form] = Form.useForm();
 
@@ -21,10 +20,10 @@ const PositionForm: React.FC<Props> = ({ open, onClose, isEdit }) => {
     form.resetFields();
   };
 
-  const onSubmit: FormProps<PositionMutation>['onFinish'] = async (
+  const handleSubmit: FormProps<PositionMutation>['onFinish'] = async (
     mutation,
   ) => {
-    await dispatch(createPosition(mutation)).unwrap();
+    onSubmit(mutation);
     closeDrawer();
     form.resetFields();
   };
@@ -46,7 +45,7 @@ const PositionForm: React.FC<Props> = ({ open, onClose, isEdit }) => {
           form={form}
           layout="vertical"
           initialValues={{ remember: true }}
-          onFinish={onSubmit}
+          onFinish={handleSubmit}
           autoComplete="off"
         >
           <Row>

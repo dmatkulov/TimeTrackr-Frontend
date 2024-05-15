@@ -2,13 +2,6 @@ export interface GlobalMessage {
   message: string;
 }
 
-export interface GlobalError {
-  status: number;
-  data: {
-    message: string;
-  };
-}
-
 export interface BadRequestError {
   code: string;
   status: number;

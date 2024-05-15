@@ -1,15 +1,35 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import type { TableProps } from 'antd';
 import { Button, Space, Table } from 'antd';
-import { useAppSelector } from '../../app/hooks';
-import { selectPositions } from './positionsSlice';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { selectPositions, selectPositionsLoading } from './positionsSlice';
 import { Position } from '../../types/types.position';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
+import EditPositions from './EditPositions';
+import Spinner from '../../components/UI/Spin/Spin';
+import { fetchOnePosition } from './positionsThunks';
 
 const Positions: React.FC = () => {
+  const dispatch = useAppDispatch();
   const positions = useAppSelector(selectPositions);
+  const fetchLoading = useAppSelector(selectPositionsLoading);
+
   const { md } = useBreakpoint();
+
+  const [open, setOpen] = useState(false);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const fetchOne = useCallback(
+    async (id: string) => {
+      await dispatch(fetchOnePosition(id));
+      setOpen(true);
+    },
+    [dispatch],
+  );
 
   const columns: TableProps<Position>['columns'] = [
     {
@@ -22,9 +42,13 @@ const Positions: React.FC = () => {
       title: 'Дейсвия',
       dataIndex: 'action',
       key: 'action',
-      render: () => (
+      render: (_, position) => (
         <Space size="middle">
-          <Button type="link" icon={<EditOutlined />}>
+          <Button
+            type="link"
+            icon={<EditOutlined />}
+            onClick={() => fetchOne(position._id)}
+          >
             {md && 'Редактировать'}
           </Button>
           <Button type="text" danger icon={<DeleteOutlined />}>
@@ -42,11 +66,16 @@ const Positions: React.FC = () => {
 
   return (
     <>
-      <Table
-        columns={columns}
-        dataSource={dataSource}
-        pagination={{ pageSize: 16, position: ['topRight'] }}
-      />
+      {fetchLoading ? (
+        <Spinner />
+      ) : (
+        <Table
+          columns={columns}
+          dataSource={dataSource}
+          pagination={{ pageSize: 10, position: ['topRight'] }}
+        />
+      )}
+      <EditPositions open={open} onClose={handleClose} />
     </>
   );
 };

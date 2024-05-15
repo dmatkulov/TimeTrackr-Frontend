@@ -1,7 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { Position, PositionMutation } from '../../types/types.position';
+import {
+  Position,
+  PositionMutation,
+  UpdatePositionArg,
+} from '../../types/types.position';
 import axiosApi from '../../utils/axiosApi';
-import { httpRoutes } from '../../utils/routes';
+import { apiRoutes } from '../../utils/routes';
 import { BadRequestError, GlobalMessage } from '../../types/types.global';
 import { isAxiosError } from 'axios';
 
@@ -12,7 +16,7 @@ export const createPosition = createAsyncThunk<
 >('positions/createOne', async (mutation, { rejectWithValue }) => {
   try {
     const response = await axiosApi.post<GlobalMessage>(
-      httpRoutes.newPosition,
+      apiRoutes.newPosition,
       mutation,
     );
     return response.data;
@@ -34,7 +38,26 @@ export const createPosition = createAsyncThunk<
 export const fetchPositions = createAsyncThunk<Position[]>(
   'positions/fetchAll',
   async () => {
-    const response = await axiosApi.get(httpRoutes.positions);
+    const response = await axiosApi.get(apiRoutes.positions);
     return response.data ?? [];
   },
 );
+
+export const fetchOnePosition = createAsyncThunk<Position, string>(
+  'positions/fetchOne',
+  async (id) => {
+    const response = await axiosApi.get<Position>(apiRoutes.positionById + id);
+    return response.data;
+  },
+);
+
+export const updatePosition = createAsyncThunk<
+  GlobalMessage,
+  UpdatePositionArg
+>('positions/updateOne', async ({ id, mutation }) => {
+  const response = await axiosApi.patch<GlobalMessage>(
+    apiRoutes.editPosition + id,
+    mutation,
+  );
+  return response.data;
+});

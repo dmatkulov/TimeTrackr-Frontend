@@ -14,10 +14,12 @@ export const appRoutes = {
   notFound: '*',
 };
 
-export const httpRoutes = {
+export const apiRoutes = {
   users: 'staff',
   newUser: 'staff/register-user',
   sessions: 'staff/sessions',
   positions: 'positions',
+  positionById: 'positions/info/',
+  editPosition: 'positions/edit/',
   newPosition: 'positions/new-position',
 };
