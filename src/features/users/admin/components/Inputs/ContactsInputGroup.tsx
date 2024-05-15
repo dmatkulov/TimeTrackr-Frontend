@@ -8,18 +8,21 @@ interface Props {
   state: RegisterMutation;
   onPhoneChange: (value: string) => void;
   onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  error?: boolean;
 }
 const ContactsInputGroup: React.FC<Props> = ({
   state,
   onPhoneChange,
   onInputChange,
+  error = false,
 }) => {
   let inputClass: string =
     'ant-input css-dev-only-do-not-override-1okl62o ant-input-outlined';
 
   if (
-    state.contactInfo.mobile.length > 3 &&
-    state.contactInfo.mobile.length < 12
+    (state.contactInfo.mobile.length > 2 &&
+      state.contactInfo.mobile.length < 12) ||
+    error
   ) {
     inputClass = inputClass + ' ant-input-status-error';
   }
@@ -27,7 +30,7 @@ const ContactsInputGroup: React.FC<Props> = ({
   return (
     <>
       <Col xs={{ span: 24 }} md={{ span: 8 }}>
-        <Form.Item
+        <Form.Item<RegisterMutation>
           label="Телефон"
           name={['contactInfo', 'mobile']}
           status={'error'}
@@ -63,7 +66,7 @@ const ContactsInputGroup: React.FC<Props> = ({
         </Form.Item>
       </Col>
       <Col xs={{ span: 24 }} md={{ span: 8 }}>
-        <Form.Item
+        <Form.Item<RegisterMutation>
           label="Город"
           name={['contactInfo', 'city']}
           rules={[{ required: true, message: 'Укажите город' }]}
@@ -77,7 +80,7 @@ const ContactsInputGroup: React.FC<Props> = ({
         </Form.Item>
       </Col>
       <Col xs={{ span: 24 }} md={{ span: 8 }}>
-        <Form.Item
+        <Form.Item<RegisterMutation>
           label="Улица"
           name={['contactInfo', 'street']}
           rules={[{ required: true, message: 'Укажите улицу' }]}

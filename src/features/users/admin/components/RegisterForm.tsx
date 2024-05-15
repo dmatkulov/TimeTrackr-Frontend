@@ -12,17 +12,20 @@ import {
   Select,
   Tooltip,
 } from 'antd';
+import ru from 'antd/es/date-picker/locale/ru_RU';
 import dayjs from 'dayjs';
-
+import buddhistEra from 'dayjs/plugin/buddhistEra';
 import { RegisterMutation } from '../../../../types/types.user';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { fetchPositions } from '../../../positions/positionsThunks';
 import { selectPositions } from '../../../positions/positionsSlice';
 import FileInput from './Inputs/FileInput';
 import { ClearOutlined } from '@ant-design/icons';
-import { createUser } from '../../UsersThunks';
 import ContactsInputGroup from './Inputs/ContactsInputGroup';
 import PasswordInput from './Inputs/PasswordInput';
+import { createUser } from '../../UsersThunks';
+
+dayjs.extend(buddhistEra);
 
 const initialState: RegisterMutation = {
   email: '',
@@ -61,13 +64,27 @@ const RegisterForm: React.FC<Props> = ({
     dispatch(fetchPositions());
   }, [dispatch]);
 
-  const onSubmit = async () => {
-    try {
-      await dispatch(createUser(state)).unwrap();
-      closeDrawer();
-    } catch (e) {
-      console.log(e);
-    }
+  const buddhistLocale: typeof ru = {
+    ...ru,
+    lang: {
+      ...ru.lang,
+      fieldDateFormat: 'YYYY-MM-DD',
+      fieldDateTimeFormat: 'YYYY-MM-DD HH:mm:ss',
+      yearFormat: 'YYYY',
+      cellYearFormat: 'YYYY',
+    },
+  };
+
+  const closeDrawer = () => {
+    onClose();
+    form.resetFields();
+  };
+
+  const deletePhoto = () => {
+    setState((prevState) => ({
+      ...prevState,
+      photo: null,
+    }));
   };
 
   const handlePhoneChange = (value: string) => {
@@ -80,11 +97,6 @@ const RegisterForm: React.FC<Props> = ({
         },
       };
     });
-  };
-
-  const closeDrawer = () => {
-    onClose();
-    form.resetFields();
   };
 
   const contactInfo = Object.keys(state.contactInfo);
@@ -107,13 +119,6 @@ const RegisterForm: React.FC<Props> = ({
     }
   };
 
-  const deletePhoto = () => {
-    setState((prevState) => ({
-      ...prevState,
-      photo: null,
-    }));
-  };
-
   const fileInputChangeHandler = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -128,8 +133,35 @@ const RegisterForm: React.FC<Props> = ({
   const onDateChange: DatePickerProps['onChange'] = (_date, dateString) => {
     if (typeof dateString === 'string') {
       setState((prevState) => {
-        return { ...prevState, startDate: new Date(dateString).toISOString() };
+        return {
+          ...prevState,
+          startDate: dateString ? new Date(dateString).toISOString() : '',
+        };
       });
+    }
+  };
+
+  // const onSubmit: FormProps<RegisterMutation>['onFinish'] = async (values) => {
+  //   try {
+  //     console.log(values);
+  //     console.log('state', state);
+  //     console.log('state', state.startDate);
+  //     console.log(
+  //       new Date(dayjs(values.startDate).toISOString()).toISOString(),
+  //     );
+  //     await dispatch(createUser(state)).unwrap();
+  //     closeDrawer();
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
+
+  const onSubmit = async () => {
+    try {
+      await dispatch(createUser(state)).unwrap();
+      closeDrawer();
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -149,13 +181,17 @@ const RegisterForm: React.FC<Props> = ({
         id="register"
         form={form}
         layout="vertical"
-        initialValues={{ remember: true }}
+        initialValues={{
+          startDate: state.startDate
+            ? dayjs(state.startDate)
+            : dayjs(new Date()),
+        }}
         onFinish={onSubmit}
         autoComplete="off"
       >
         <Row gutter={16}>
           <Col xs={{ span: 24 }}>
-            <Form.Item name="photo">
+            <Form.Item<RegisterMutation> name="photo">
               <FileInput
                 name="photo"
                 onChange={fileInputChangeHandler}
@@ -164,7 +200,7 @@ const RegisterForm: React.FC<Props> = ({
             </Form.Item>
           </Col>
           <Col xs={{ span: 24 }} md={{ span: 12 }}>
-            <Form.Item
+            <Form.Item<RegisterMutation>
               label="Фамилия"
               name="lastname"
               rules={[{ required: true, message: 'Введите фамилию' }]}
@@ -178,7 +214,7 @@ const RegisterForm: React.FC<Props> = ({
             </Form.Item>
           </Col>
           <Col xs={{ span: 24 }} md={{ span: 12 }}>
-            <Form.Item
+            <Form.Item<RegisterMutation>
               label="Имя"
               name="firstname"
               rules={[{ required: true, message: 'Введите имя' }]}
@@ -194,7 +230,7 @@ const RegisterForm: React.FC<Props> = ({
         </Row>
         <Row gutter={16}>
           <Col xs={{ span: 24 }} md={{ span: 12 }}>
-            <Form.Item
+            <Form.Item<RegisterMutation>
               label="Почта"
               name="email"
               rules={[
@@ -214,7 +250,7 @@ const RegisterForm: React.FC<Props> = ({
             </Form.Item>
           </Col>
           <Col xs={{ span: 24 }} md={{ span: 12 }}>
-            <Form.Item
+            <Form.Item<RegisterMutation>
               name="position"
               label="Позиция"
               rules={[{ required: true, message: 'Выберите позицию' }]}
@@ -247,7 +283,7 @@ const RegisterForm: React.FC<Props> = ({
         </Row>
         <Row gutter={16}>
           <Col xs={{ span: 24 }} md={{ span: 8 }}>
-            <Form.Item
+            <Form.Item<RegisterMutation>
               label="Дата начала работы"
               name="startDate"
               rules={[
@@ -259,13 +295,13 @@ const RegisterForm: React.FC<Props> = ({
               ]}
             >
               <DatePicker
-                allowClear={false}
+                allowClear={true}
                 name="startDate"
                 style={{ width: '100%' }}
                 value={
                   state.startDate ? dayjs(state.startDate) : dayjs(new Date())
                 }
-                defaultValue={dayjs(new Date())}
+                locale={buddhistLocale}
                 onChange={onDateChange}
               />
             </Form.Item>

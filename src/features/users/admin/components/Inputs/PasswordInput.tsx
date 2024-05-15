@@ -11,7 +11,7 @@ const PasswordInput: React.FC<Props> = ({ state, onChange }) => {
   return (
     <>
       <Col xs={{ span: 24 }} md={{ span: 8 }}>
-        <Form.Item
+        <Form.Item<RegisterMutation>
           name="password"
           label="Пароль"
           rules={[
