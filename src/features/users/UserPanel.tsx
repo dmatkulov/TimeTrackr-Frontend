@@ -18,10 +18,11 @@ const UserPanel: React.FC<Props> = () => {
           style={{
             marginLeft: !md ? '0' : '20px',
             marginTop: '65px',
-            overflow: 'scroll',
+            height: '90vh',
+            overflow: 'auto',
           }}
         >
-          <Content style={{ margin: '0', overflow: 'initial' }}>
+          <Content style={{ margin: '0' }}>
             <div
               style={{
                 padding: '15px 30px',
