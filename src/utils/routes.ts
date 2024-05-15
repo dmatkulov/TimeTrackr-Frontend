@@ -19,4 +19,5 @@ export const httpRoutes = {
   newUser: 'staff/register-user',
   sessions: 'staff/sessions',
   positions: 'positions',
+  newPosition: 'positions/new-position',
 };
