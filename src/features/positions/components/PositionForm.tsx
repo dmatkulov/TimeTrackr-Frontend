@@ -24,7 +24,7 @@ const PositionForm: React.FC<Props> = ({ open, onClose, isEdit }) => {
   const onSubmit: FormProps<PositionMutation>['onFinish'] = async (
     mutation,
   ) => {
-    await dispatch(createPosition(mutation));
+    await dispatch(createPosition(mutation)).unwrap();
     closeDrawer();
     form.resetFields();
   };
@@ -47,6 +47,7 @@ const PositionForm: React.FC<Props> = ({ open, onClose, isEdit }) => {
           layout="vertical"
           initialValues={{ remember: true }}
           onFinish={onSubmit}
+          autoComplete="off"
         >
           <Row>
             <Col span={24} style={{ marginBottom: '8px' }}>

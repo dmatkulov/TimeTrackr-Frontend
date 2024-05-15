@@ -9,6 +9,16 @@ export interface GlobalError {
   };
 }
 
+export interface BadRequestError {
+  code: string;
+  status: number;
+  data: {
+    error: string;
+    message: string;
+    status: number;
+  };
+}
+
 export interface ValidationError {
   errors: {
     [key: string]: {
