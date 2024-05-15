@@ -1,17 +1,36 @@
 import React from 'react';
-import { Position, PositionMutation } from '../../../types/types.position';
-import { Button, Col, Drawer, Form, FormProps, Input, Row } from 'antd';
+import { PositionMutation } from '../../../types/types.position';
+import {
+  Button,
+  Col,
+  Drawer,
+  Form,
+  FormProps,
+  Input,
+  Row,
+  Tooltip,
+} from 'antd';
 import { useAppSelector } from '../../../app/hooks';
 import { selectPositionsCreating } from '../positionsSlice';
+import { ClearOutlined } from '@ant-design/icons';
 
+const initialState: PositionMutation = {
+  name: '',
+};
 interface Props {
   onSubmit: (state: PositionMutation) => void;
-  existingItem?: Position;
+  existingItem?: PositionMutation;
   isEdit?: boolean;
   open: boolean;
   onClose: () => void;
 }
-const PositionForm: React.FC<Props> = ({ onSubmit, open, onClose, isEdit }) => {
+const PositionForm: React.FC<Props> = ({
+  onSubmit,
+  open,
+  onClose,
+  isEdit = false,
+  existingItem = initialState,
+}) => {
   const creating = useAppSelector(selectPositionsCreating);
   const [form] = Form.useForm();
 
@@ -31,8 +50,8 @@ const PositionForm: React.FC<Props> = ({ onSubmit, open, onClose, isEdit }) => {
   return (
     <>
       <Drawer
-        title="Создание позиции"
-        width={320}
+        title={isEdit ? 'Редактирование' : 'Создание позиции'}
+        width={360}
         onClose={closeDrawer}
         open={open}
         styles={{
@@ -44,12 +63,12 @@ const PositionForm: React.FC<Props> = ({ onSubmit, open, onClose, isEdit }) => {
         <Form
           form={form}
           layout="vertical"
-          initialValues={{ remember: true }}
+          initialValues={existingItem}
           onFinish={handleSubmit}
           autoComplete="off"
         >
           <Row>
-            <Col span={24} style={{ marginBottom: '8px' }}>
+            <Col span={24}>
               <Form.Item<PositionMutation>
                 name="name"
                 label="Название позиции"
@@ -63,7 +82,25 @@ const PositionForm: React.FC<Props> = ({ onSubmit, open, onClose, isEdit }) => {
                 <Input name="name" />
               </Form.Item>
             </Col>
-            <Col xs={24}>
+          </Row>
+          <Row
+            gutter={16}
+            style={{
+              display: 'flex',
+              marginTop: 10,
+              justifyContent: 'space-between',
+            }}
+          >
+            <Col>
+              <Tooltip placement="right" title="Очистить">
+                <Button
+                  icon={<ClearOutlined />}
+                  danger
+                  onClick={() => form.resetFields()}
+                />
+              </Tooltip>
+            </Col>
+            <Col xs={18}>
               <Button
                 type="primary"
                 htmlType="submit"
