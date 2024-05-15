@@ -3,13 +3,9 @@ export interface GlobalMessage {
 }
 
 export interface BadRequestError {
-  code: string;
+  error: string;
+  message: string;
   status: number;
-  data: {
-    error: string;
-    message: string;
-    status: number;
-  };
 }
 
 export interface ValidationError {

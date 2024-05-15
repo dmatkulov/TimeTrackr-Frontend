@@ -21,7 +21,6 @@ export const createPosition = createAsyncThunk<
     );
     return response.data;
   } catch (e) {
-    console.log(e);
     if (
       isAxiosError(e) &&
       e.response?.status &&
@@ -31,7 +30,6 @@ export const createPosition = createAsyncThunk<
       return rejectWithValue(e.response.data);
     }
 
-    console.log(e);
     throw e;
   }
 });
@@ -53,11 +51,25 @@ export const fetchOnePosition = createAsyncThunk<Position, string>(
 
 export const updatePosition = createAsyncThunk<
   GlobalMessage,
-  UpdatePositionArg
->('positions/updateOne', async ({ id, mutation }) => {
-  const response = await axiosApi.patch<GlobalMessage>(
-    apiRoutes.editPosition + id,
-    mutation,
-  );
-  return response.data;
+  UpdatePositionArg,
+  { rejectValue: BadRequestError }
+>('positions/updateOne', async ({ id, mutation }, { rejectWithValue }) => {
+  try {
+    const response = await axiosApi.patch<GlobalMessage>(
+      apiRoutes.editPosition + id,
+      mutation,
+    );
+    return response.data;
+  } catch (e) {
+    if (
+      isAxiosError(e) &&
+      e.response?.status &&
+      e.response?.status === 400 &&
+      e.response?.data.message
+    ) {
+      return rejectWithValue(e.response.data);
+    }
+
+    throw e;
+  }
 });
