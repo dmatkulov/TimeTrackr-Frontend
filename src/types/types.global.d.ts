@@ -2,11 +2,10 @@ export interface GlobalMessage {
   message: string;
 }
 
-export interface GlobalError {
+export interface BadRequestError {
+  error: string;
+  message: string;
   status: number;
-  data: {
-    message: string;
-  };
 }
 
 export interface ValidationError {

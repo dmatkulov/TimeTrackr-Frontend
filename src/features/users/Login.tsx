@@ -38,10 +38,6 @@ const App: React.FC = () => {
     form.resetFields();
   };
 
-  const onFinishFailed: FormProps<LoginMutation>['onFinishFailed'] = () => {
-    form.resetFields();
-  };
-
   return (
     <>
       {logoutLoading && <Spinner />}
@@ -70,7 +66,6 @@ const App: React.FC = () => {
             layout="vertical"
             initialValues={{ remember: true }}
             onFinish={onSubmit}
-            onFinishFailed={onFinishFailed}
           >
             <Form.Item<LoginMutation>
               name="email"
@@ -84,7 +79,7 @@ const App: React.FC = () => {
               ]}
               style={{ marginBottom: '16px' }}
             >
-              <Input />
+              <Input autoComplete="current-email" />
             </Form.Item>
 
             <Form.Item<LoginMutation>
@@ -93,20 +88,18 @@ const App: React.FC = () => {
               rules={[{ required: true, message: 'Введите пароль' }]}
               style={{ marginBottom: '24px' }}
             >
-              <Input.Password />
+              <Input.Password autoComplete="current-password" />
             </Form.Item>
 
-            <Form.Item wrapperCol={{ span: 24 }} shouldUpdate>
-              {() => (
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  style={{ width: '100%' }}
-                  disabled={loginLoading}
-                >
-                  Войти
-                </Button>
-              )}
+            <Form.Item wrapperCol={{ span: 24 }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{ width: '100%' }}
+                disabled={loginLoading}
+              >
+                Войти
+              </Button>
             </Form.Item>
           </Form>
         </Col>

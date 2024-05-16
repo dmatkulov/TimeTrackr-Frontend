@@ -6,3 +6,8 @@ export interface Position {
 export interface PositionMutation {
   name: string;
 }
+
+export interface UpdatePositionArg {
+  id: string;
+  mutation: PositionMutation;
+}

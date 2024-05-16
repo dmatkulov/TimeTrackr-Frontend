@@ -7,9 +7,9 @@ import {
   UserQueryValues,
   UsersResponse,
 } from '../../types/types.user';
-import { GlobalError, GlobalMessage } from '../../types/types.global';
+import { BadRequestError, GlobalMessage } from '../../types/types.global';
 import { axiosApi } from '../../utils/axiosApi';
-import { httpRoutes } from '../../utils/routes';
+import { apiRoutes } from '../../utils/routes';
 import { isAxiosError } from 'axios';
 import { RootState } from '../../app/store';
 import { unsetUser } from './UsersSlice';
@@ -17,7 +17,7 @@ import { unsetUser } from './UsersSlice';
 export const createUser = createAsyncThunk<
   LoginResponse,
   RegisterMutation,
-  { rejectValue: GlobalError }
+  { rejectValue: BadRequestError }
 >('users/addUser', async (mutation, { rejectWithValue }) => {
   try {
     const formData = new FormData();
@@ -37,7 +37,7 @@ export const createUser = createAsyncThunk<
     }
 
     const response = await axiosApi.post<LoginResponse>(
-      httpRoutes.newUser,
+      apiRoutes.newUser,
       formData,
     );
     return response.data;
@@ -48,7 +48,7 @@ export const createUser = createAsyncThunk<
       e.response?.status === 400 &&
       e.response?.data.message
     ) {
-      return rejectWithValue(e.response);
+      return rejectWithValue(e.response.data);
     }
 
     console.log(e);
@@ -74,7 +74,7 @@ export const getUsers = createAsyncThunk<
     }
   }
 
-  const response = await axiosApi.get<UsersResponse>(httpRoutes.users, {
+  const response = await axiosApi.get<UsersResponse>(apiRoutes.users, {
     params: query,
   });
 
@@ -87,7 +87,7 @@ export const login = createAsyncThunk<
   { rejectValue: GlobalMessage }
 >('users/login', async (loginMutation, { rejectWithValue }) => {
   try {
-    const response = await axiosApi.post(httpRoutes.sessions, loginMutation);
+    const response = await axiosApi.post(apiRoutes.sessions, loginMutation);
     return response.data;
   } catch (e) {
     if (isAxiosError(e) && e.response && e.response.data.message) {
@@ -102,7 +102,7 @@ export const login = createAsyncThunk<
 export const logOut = createAsyncThunk<void, undefined, { state: RootState }>(
   'users/logout',
   async (_, { dispatch }) => {
-    await axiosApi.delete(httpRoutes.sessions);
+    await axiosApi.delete(apiRoutes.sessions);
     dispatch(unsetUser());
   },
 );

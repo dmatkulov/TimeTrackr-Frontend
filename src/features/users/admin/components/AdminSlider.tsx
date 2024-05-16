@@ -74,6 +74,7 @@ const AdminSlider: React.FC = () => {
         paddingLeft: '10px',
         paddingRight: '10px',
         background: '#fff',
+        float: 'right',
       }}
     >
       <div

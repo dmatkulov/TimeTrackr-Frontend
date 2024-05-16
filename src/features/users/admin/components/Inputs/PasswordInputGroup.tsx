@@ -2,16 +2,11 @@ import React from 'react';
 import { Col, Form, Input } from 'antd';
 import { RegisterMutation } from '../../../../../types/types.user';
 
-interface Props {
-  state: RegisterMutation;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-}
-
-const PasswordInput: React.FC<Props> = ({ state, onChange }) => {
+const PasswordInputGroup: React.FC = () => {
   return (
     <>
       <Col xs={{ span: 24 }} md={{ span: 8 }}>
-        <Form.Item
+        <Form.Item<RegisterMutation>
           name="password"
           label="Пароль"
           rules={[
@@ -20,15 +15,11 @@ const PasswordInput: React.FC<Props> = ({ state, onChange }) => {
           ]}
           hasFeedback
         >
-          <Input.Password
-            name="password"
-            value={state.password}
-            onChange={onChange}
-          />
+          <Input.Password autoComplete="new-password" />
         </Form.Item>
       </Col>
       <Col xs={{ span: 24 }} md={{ span: 8 }}>
-        <Form.Item
+        <Form.Item<RegisterMutation>
           name="confirm"
           label="Подтвердите пароль"
           dependencies={['password']}
@@ -48,11 +39,11 @@ const PasswordInput: React.FC<Props> = ({ state, onChange }) => {
             }),
           ]}
         >
-          <Input.Password />
+          <Input.Password autoComplete="new-password" />
         </Form.Item>
       </Col>
     </>
   );
 };
 
-export default PasswordInput;
+export default PasswordInputGroup;
