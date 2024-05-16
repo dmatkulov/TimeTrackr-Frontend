@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import type { TableProps } from 'antd';
 import { Button, Space, Table } from 'antd';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
@@ -9,6 +9,7 @@ import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import EditPositions from './EditPositions';
 import Spinner from '../../components/UI/Spin/Spin';
 import { fetchOnePosition } from './positionsThunks';
+import { getUsers } from '../users/UsersThunks';
 
 const Positions: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -30,6 +31,10 @@ const Positions: React.FC = () => {
     },
     [dispatch],
   );
+
+  useEffect(() => {
+    dispatch(getUsers());
+  }, [dispatch]);
 
   const columns: TableProps<Position>['columns'] = [
     {

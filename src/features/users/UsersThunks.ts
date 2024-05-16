@@ -3,9 +3,9 @@ import {
   LoginMutation,
   LoginResponse,
   RegisterMutation,
+  User,
   UserQueryParams,
   UserQueryValues,
-  UsersResponse,
 } from '../../types/types.user';
 import { BadRequestError, GlobalMessage } from '../../types/types.global';
 import { axiosApi } from '../../utils/axiosApi';
@@ -42,7 +42,6 @@ export const createUser = createAsyncThunk<
     );
     return response.data;
   } catch (e) {
-    console.log(e);
     if (
       isAxiosError(e) &&
       e.response?.status === 400 &&
@@ -51,34 +50,47 @@ export const createUser = createAsyncThunk<
       return rejectWithValue(e.response.data);
     }
 
-    console.log(e);
     throw e;
   }
 });
 export const getUsers = createAsyncThunk<
-  UsersResponse,
-  UserQueryValues | undefined
->('users/fetchAll', async (params?) => {
-  const query: UserQueryParams = {};
+  User[],
+  UserQueryValues | undefined,
+  { rejectValue: GlobalMessage }
+>('users/fetchAll', async (params = {}, thunkAPI) => {
+  const { rejectWithValue } = thunkAPI;
+  try {
+    const query: UserQueryParams = {};
 
-  if (params) {
-    if (params.positions) {
-      query.positions = params.positions?.join(',');
-    }
-    if (params.email) {
-      query.email = params.email;
+    if (params) {
+      if (params.positions) {
+        query.positions = params.positions?.join(',');
+      }
+      if (params.email) {
+        query.email = params.email;
+      }
+
+      if (params.lastname) {
+        query.lastname = params.lastname;
+      }
     }
 
-    if (params.lastname) {
-      query.lastname = params.lastname;
+    const response = await axiosApi.get<User[]>(apiRoutes.users, {
+      params: query,
+    });
+
+    return response.data;
+  } catch (e) {
+    if (
+      isAxiosError(e) &&
+      e.response?.data &&
+      e.response?.data.message &&
+      e.response.status === 404
+    ) {
+      return rejectWithValue(e.response.data);
     }
+    throw e;
   }
-
-  const response = await axiosApi.get<UsersResponse>(apiRoutes.users, {
-    params: query,
-  });
-
-  return response.data;
 });
 
 export const login = createAsyncThunk<
@@ -91,7 +103,6 @@ export const login = createAsyncThunk<
     return response.data;
   } catch (e) {
     if (isAxiosError(e) && e.response && e.response.data.message) {
-      console.log(e);
       return rejectWithValue(e.response.data);
     }
 
