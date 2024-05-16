@@ -79,7 +79,7 @@ const App: React.FC = () => {
               ]}
               style={{ marginBottom: '16px' }}
             >
-              <Input />
+              <Input autoComplete="current-email" />
             </Form.Item>
 
             <Form.Item<LoginMutation>
@@ -88,7 +88,7 @@ const App: React.FC = () => {
               rules={[{ required: true, message: 'Введите пароль' }]}
               style={{ marginBottom: '24px' }}
             >
-              <Input.Password />
+              <Input.Password autoComplete="current-password" />
             </Form.Item>
 
             <Form.Item wrapperCol={{ span: 24 }}>

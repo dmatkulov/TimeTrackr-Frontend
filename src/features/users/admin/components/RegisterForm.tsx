@@ -3,14 +3,16 @@ import {
   Button,
   Col,
   DatePicker,
-  DatePickerProps,
   Divider,
   Drawer,
   Form,
+  FormProps,
   Input,
   Row,
   Select,
   Tooltip,
+  Upload,
+  UploadProps,
 } from 'antd';
 import ru from 'antd/es/date-picker/locale/ru_RU';
 import dayjs from 'dayjs';
@@ -19,13 +21,25 @@ import { RegisterMutation } from '../../../../types/types.user';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { fetchPositions } from '../../../positions/positionsThunks';
 import { selectPositions } from '../../../positions/positionsSlice';
-import FileInput from './Inputs/FileInput';
-import { ClearOutlined } from '@ant-design/icons';
+import { ClearOutlined, UploadOutlined } from '@ant-design/icons';
 import ContactsInputGroup from './Inputs/ContactsInputGroup';
 import PasswordInput from './Inputs/PasswordInput';
-import { createUser } from '../../UsersThunks';
+
+import utc from 'dayjs/plugin/utc';
 
 dayjs.extend(buddhistEra);
+dayjs.extend(utc);
+
+const buddhistLocale: typeof ru = {
+  ...ru,
+  lang: {
+    ...ru.lang,
+    fieldDateFormat: 'YYYY-MM-DD',
+    fieldDateTimeFormat: 'YYYY-MM-DD HH:mm:ss',
+    yearFormat: 'YYYY',
+    cellYearFormat: 'YYYY',
+  },
+};
 
 const initialState: RegisterMutation = {
   email: '',
@@ -37,9 +51,10 @@ const initialState: RegisterMutation = {
     city: '',
     street: '',
   },
-  password: '',
   startDate: '',
   photo: null,
+  password: '',
+  confirm: '',
 };
 
 interface Props {
@@ -61,30 +76,50 @@ const RegisterForm: React.FC<Props> = ({
   const [state, setState] = useState<RegisterMutation>(existingUser);
 
   useEffect(() => {
+    if (existingUser) {
+      form.setFieldsValue(existingUser);
+    }
+  }, [existingUser, form]);
+
+  useEffect(() => {
     dispatch(fetchPositions());
   }, [dispatch]);
-
-  const buddhistLocale: typeof ru = {
-    ...ru,
-    lang: {
-      ...ru.lang,
-      fieldDateFormat: 'YYYY-MM-DD',
-      fieldDateTimeFormat: 'YYYY-MM-DD HH:mm:ss',
-      yearFormat: 'YYYY',
-      cellYearFormat: 'YYYY',
-    },
-  };
 
   const closeDrawer = () => {
     onClose();
     form.resetFields();
   };
 
-  const deletePhoto = () => {
-    setState((prevState) => ({
-      ...prevState,
-      photo: null,
-    }));
+  const onSubmit: FormProps<RegisterMutation>['onFinish'] = async (values) => {
+    try {
+      const result: RegisterMutation = {
+        ...values,
+        photo: state.photo,
+        startDate: dayjs(values.startDate).format(),
+      };
+
+      console.log(dayjs(values.startDate).utc().format());
+
+      // await dispatch(createUser(result)).unwrap();
+      // closeDrawer();
+      console.log(result);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const props: UploadProps = {
+    onRemove: () => {
+      setState((prevState) => ({ ...prevState, photo: null }));
+    },
+    openFileDialogOnClick: true,
+    beforeUpload: (file) => {
+      setState((prevState) => ({
+        ...prevState,
+        photo: file,
+      }));
+      return false;
+    },
   };
 
   const handlePhoneChange = (value: string) => {
@@ -99,78 +134,13 @@ const RegisterForm: React.FC<Props> = ({
     });
   };
 
-  const contactInfo = Object.keys(state.contactInfo);
-  const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-
-    setState((prevState) => {
-      return { ...prevState, [name]: value };
-    });
-
-    if (contactInfo.includes(name)) {
-      setState((prevState) => ({
-        ...prevState,
-        [name]: value,
-        contactInfo: {
-          ...prevState.contactInfo,
-          [name]: value,
-        },
-      }));
-    }
-  };
-
-  const fileInputChangeHandler = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const { name, files } = event.target;
-    if (files) {
-      setState((prevState) => ({
-        ...prevState,
-        [name]: files[0],
-      }));
-    }
-  };
-  const onDateChange: DatePickerProps['onChange'] = (_date, dateString) => {
-    if (typeof dateString === 'string') {
-      setState((prevState) => {
-        return {
-          ...prevState,
-          startDate: dateString ? new Date(dateString).toISOString() : '',
-        };
-      });
-    }
-  };
-
-  // const onSubmit: FormProps<RegisterMutation>['onFinish'] = async (values) => {
-  //   try {
-  //     console.log(values);
-  //     console.log('state', state);
-  //     console.log('state', state.startDate);
-  //     console.log(
-  //       new Date(dayjs(values.startDate).toISOString()).toISOString(),
-  //     );
-  //     await dispatch(createUser(state)).unwrap();
-  //     closeDrawer();
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
-
-  const onSubmit = async () => {
-    try {
-      await dispatch(createUser(state)).unwrap();
-      closeDrawer();
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   return (
     <Drawer
       title="Добавление нового сотрудника"
       width={720}
       onClose={closeDrawer}
       open={open}
+      forceRender
       styles={{
         body: {
           paddingBottom: 80,
@@ -181,22 +151,18 @@ const RegisterForm: React.FC<Props> = ({
         id="register"
         form={form}
         layout="vertical"
-        initialValues={{
-          startDate: state.startDate
-            ? dayjs(state.startDate)
-            : dayjs(new Date()),
-        }}
+        initialValues={existingUser}
         onFinish={onSubmit}
         autoComplete="off"
       >
         <Row gutter={16}>
           <Col xs={{ span: 24 }}>
-            <Form.Item<RegisterMutation> name="photo">
-              <FileInput
-                name="photo"
-                onChange={fileInputChangeHandler}
-                onDelete={deletePhoto}
-              />
+            <Form.Item<RegisterMutation> name="photo" valuePropName="photo">
+              <Upload {...props} listType="picture">
+                {!state.photo && (
+                  <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                )}
+              </Upload>
             </Form.Item>
           </Col>
           <Col xs={{ span: 24 }} md={{ span: 12 }}>
@@ -205,12 +171,7 @@ const RegisterForm: React.FC<Props> = ({
               name="lastname"
               rules={[{ required: true, message: 'Введите фамилию' }]}
             >
-              <Input
-                placeholder="Фамилия сотрудника"
-                name="lastname"
-                value={state.lastname}
-                onChange={inputChangeHandler}
-              />
+              <Input placeholder="Фамилия сотрудника" />
             </Form.Item>
           </Col>
           <Col xs={{ span: 24 }} md={{ span: 12 }}>
@@ -219,12 +180,7 @@ const RegisterForm: React.FC<Props> = ({
               name="firstname"
               rules={[{ required: true, message: 'Введите имя' }]}
             >
-              <Input
-                placeholder="Имя сотрудника"
-                name="firstname"
-                value={state.firstname}
-                onChange={inputChangeHandler}
-              />
+              <Input placeholder="Имя сотрудника" />
             </Form.Item>
           </Col>
         </Row>
@@ -241,12 +197,7 @@ const RegisterForm: React.FC<Props> = ({
                 { message: 'Неверный формат электронной почты', type: 'email' },
               ]}
             >
-              <Input
-                placeholder="Электронная почта"
-                name="email"
-                value={state.email}
-                onChange={inputChangeHandler}
-              />
+              <Input placeholder="Электронная почта" />
             </Form.Item>
           </Col>
           <Col xs={{ span: 24 }} md={{ span: 12 }}>
@@ -256,13 +207,6 @@ const RegisterForm: React.FC<Props> = ({
               rules={[{ required: true, message: 'Выберите позицию' }]}
             >
               <Select
-                value={state.position}
-                onChange={(value) =>
-                  setState((prevState) => ({
-                    ...prevState,
-                    position: value,
-                  }))
-                }
                 placeholder="Позиция сотрудника"
                 options={[
                   ...positions.map((position) => ({
@@ -274,12 +218,9 @@ const RegisterForm: React.FC<Props> = ({
             </Form.Item>
           </Col>
         </Row>
+        <Divider style={{ marginTop: 16 }} />
         <Row gutter={16}>
-          <ContactsInputGroup
-            state={state}
-            onInputChange={inputChangeHandler}
-            onPhoneChange={handlePhoneChange}
-          />
+          <ContactsInputGroup state={state} onPhoneChange={handlePhoneChange} />
         </Row>
         <Row gutter={16}>
           <Col xs={{ span: 24 }} md={{ span: 8 }}>
@@ -298,15 +239,14 @@ const RegisterForm: React.FC<Props> = ({
                 allowClear={true}
                 name="startDate"
                 style={{ width: '100%' }}
-                value={
-                  state.startDate ? dayjs(state.startDate) : dayjs(new Date())
-                }
+                // value={
+                //   state.startDate ? dayjs(state.startDate) : dayjs(new Date())
+                // }
                 locale={buddhistLocale}
-                onChange={onDateChange}
               />
             </Form.Item>
           </Col>
-          <PasswordInput state={state} onChange={inputChangeHandler} />
+          <PasswordInput />
         </Row>
         <Divider style={{ marginTop: 16 }} />
         <Row

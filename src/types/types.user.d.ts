@@ -1,3 +1,5 @@
+import { RcFile } from 'antd/es/upload';
+
 export interface User {
   _id: string;
   email: string;
@@ -27,10 +29,11 @@ export interface RegisterMutation {
   firstname: string;
   lastname: string;
   contactInfo: contactInfo;
-  photo: File | null;
+  photo: RcFile | null;
   position: string;
   startDate: string;
   password: string;
+  confirm: string;
 }
 
 export interface LoginResponse {

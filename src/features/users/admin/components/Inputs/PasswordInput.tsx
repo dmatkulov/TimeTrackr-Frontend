@@ -2,12 +2,7 @@ import React from 'react';
 import { Col, Form, Input } from 'antd';
 import { RegisterMutation } from '../../../../../types/types.user';
 
-interface Props {
-  state: RegisterMutation;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-}
-
-const PasswordInput: React.FC<Props> = ({ state, onChange }) => {
+const PasswordInput: React.FC = () => {
   return (
     <>
       <Col xs={{ span: 24 }} md={{ span: 8 }}>
@@ -20,11 +15,7 @@ const PasswordInput: React.FC<Props> = ({ state, onChange }) => {
           ]}
           hasFeedback
         >
-          <Input.Password
-            name="password"
-            value={state.password}
-            onChange={onChange}
-          />
+          <Input.Password name="password" autoComplete="new-password" />
         </Form.Item>
       </Col>
       <Col xs={{ span: 24 }} md={{ span: 8 }}>
@@ -36,7 +27,6 @@ const PasswordInput: React.FC<Props> = ({ state, onChange }) => {
           rules={[
             {
               required: true,
-              message: 'Введите пароль повторно',
             },
             ({ getFieldValue }) => ({
               validator(_, value) {
@@ -48,7 +38,7 @@ const PasswordInput: React.FC<Props> = ({ state, onChange }) => {
             }),
           ]}
         >
-          <Input.Password />
+          <Input.Password autoComplete="new-password" />
         </Form.Item>
       </Col>
     </>
