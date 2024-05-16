@@ -14,21 +14,24 @@ import {
   Upload,
   UploadProps,
 } from 'antd';
+
 import ru from 'antd/es/date-picker/locale/ru_RU';
-import dayjs from 'dayjs';
 import buddhistEra from 'dayjs/plugin/buddhistEra';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+dayjs.extend(buddhistEra);
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 import { RegisterMutation } from '../../../../types/types.user';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { fetchPositions } from '../../../positions/positionsThunks';
 import { selectPositions } from '../../../positions/positionsSlice';
 import { ClearOutlined, UploadOutlined } from '@ant-design/icons';
 import ContactsInputGroup from './Inputs/ContactsInputGroup';
-import PasswordInput from './Inputs/PasswordInput';
-
-import utc from 'dayjs/plugin/utc';
-
-dayjs.extend(buddhistEra);
-dayjs.extend(utc);
+import PasswordInputGroup from './Inputs/PasswordInputGroup';
+import { createUser } from '../../UsersThunks';
 
 const buddhistLocale: typeof ru = {
   ...ru,
@@ -88,6 +91,7 @@ const RegisterForm: React.FC<Props> = ({
   const closeDrawer = () => {
     onClose();
     form.resetFields();
+    setState((prevState) => ({ ...prevState, photo: null }));
   };
 
   const onSubmit: FormProps<RegisterMutation>['onFinish'] = async (values) => {
@@ -95,14 +99,11 @@ const RegisterForm: React.FC<Props> = ({
       const result: RegisterMutation = {
         ...values,
         photo: state.photo,
-        startDate: dayjs(values.startDate).format(),
+        startDate: state.startDate,
       };
 
-      console.log(dayjs(values.startDate).utc().format());
-
-      // await dispatch(createUser(result)).unwrap();
-      // closeDrawer();
-      console.log(result);
+      await dispatch(createUser(result)).unwrap();
+      closeDrawer();
     } catch (e) {
       console.log(e);
     }
@@ -239,14 +240,21 @@ const RegisterForm: React.FC<Props> = ({
                 allowClear={true}
                 name="startDate"
                 style={{ width: '100%' }}
-                // value={
-                //   state.startDate ? dayjs(state.startDate) : dayjs(new Date())
-                // }
+                onChange={(_date, dateString) => {
+                  if (typeof dateString === 'string') {
+                    setState((prevState) => {
+                      return {
+                        ...prevState,
+                        startDate: new Date(dateString).toISOString(),
+                      };
+                    });
+                  }
+                }}
                 locale={buddhistLocale}
               />
             </Form.Item>
           </Col>
-          <PasswordInput />
+          <PasswordInputGroup />
         </Row>
         <Divider style={{ marginTop: 16 }} />
         <Row

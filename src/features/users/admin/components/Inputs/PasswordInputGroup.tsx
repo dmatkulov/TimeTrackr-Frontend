@@ -2,7 +2,7 @@ import React from 'react';
 import { Col, Form, Input } from 'antd';
 import { RegisterMutation } from '../../../../../types/types.user';
 
-const PasswordInput: React.FC = () => {
+const PasswordInputGroup: React.FC = () => {
   return (
     <>
       <Col xs={{ span: 24 }} md={{ span: 8 }}>
@@ -15,11 +15,11 @@ const PasswordInput: React.FC = () => {
           ]}
           hasFeedback
         >
-          <Input.Password name="password" autoComplete="new-password" />
+          <Input.Password autoComplete="new-password" />
         </Form.Item>
       </Col>
       <Col xs={{ span: 24 }} md={{ span: 8 }}>
-        <Form.Item
+        <Form.Item<RegisterMutation>
           name="confirm"
           label="Подтвердите пароль"
           dependencies={['password']}
@@ -27,6 +27,7 @@ const PasswordInput: React.FC = () => {
           rules={[
             {
               required: true,
+              message: 'Введите пароль повторно',
             },
             ({ getFieldValue }) => ({
               validator(_, value) {
@@ -45,4 +46,4 @@ const PasswordInput: React.FC = () => {
   );
 };
 
-export default PasswordInput;
+export default PasswordInputGroup;
