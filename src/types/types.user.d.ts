@@ -8,7 +8,10 @@ export interface User {
   lastname: string;
   contactInfo: contactInfo;
   photo: string;
-  position: string;
+  position: {
+    _id: string;
+    name: string;
+  };
   role: string;
   startDate: string;
 }

@@ -40,14 +40,12 @@ export const usersSlice = createSlice({
       })
       .addCase(getUsers.fulfilled, (state, { payload: data }) => {
         state.fetchAllLoading = false;
-        state.staff = data.users;
-
-        if (data.message) {
-          void message.error(data.message);
-        }
+        state.staff = data;
       })
-      .addCase(getUsers.rejected, (state) => {
+      .addCase(getUsers.rejected, (state, { payload: error }) => {
         state.fetchAllLoading = false;
+
+        void message.error(error?.message);
       });
 
     builder
