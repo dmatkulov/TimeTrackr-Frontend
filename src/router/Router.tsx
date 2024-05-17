@@ -3,11 +3,11 @@ import { appRoutes } from '../utils/routes';
 import Home from '../Home/Home';
 import Login from '../features/users/Login';
 import ProtectedRoute from '../components/ProtectedRoute/ProtectedRoute';
-import Staff from '../features/users/admin/Staff';
+import StaffTable from '../features/users/admin/StaffTable';
 import Page404 from '../components/UI/404/Page404';
 import AppLayout from '../components/Layout/AppLayout';
 import UserPanel from '../features/users/UserPanel';
-import Positions from '../features/positions/Positions';
+import PositionsTable from '../features/positions/PositionsTable';
 import AuthPage from '../components/UI/AuthPage/AuthPage';
 
 export const router = createBrowserRouter([
@@ -33,7 +33,7 @@ export const router = createBrowserRouter([
         children: [
           {
             path: appRoutes.admin.staff,
-            element: <Staff />,
+            element: <StaffTable />,
             handle: {
               link: appRoutes.admin.staff,
               title: 'Сотрудники',
@@ -41,7 +41,7 @@ export const router = createBrowserRouter([
           },
           {
             path: appRoutes.admin.positions,
-            element: <Positions />,
+            element: <PositionsTable />,
             handle: {
               link: appRoutes.admin.positions,
               title: 'Позиции',

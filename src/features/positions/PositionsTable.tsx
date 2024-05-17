@@ -11,12 +11,12 @@ import Spinner from '../../components/UI/Spin/Spin';
 import { fetchOnePosition } from './positionsThunks';
 import { getUsers } from '../users/UsersThunks';
 
-const Positions: React.FC = () => {
+const PositionsTable: React.FC = () => {
   const dispatch = useAppDispatch();
   const positions = useAppSelector(selectPositions);
   const fetchLoading = useAppSelector(selectPositionsLoading);
 
-  const { md } = useBreakpoint();
+  const { sm, md, lg } = useBreakpoint();
 
   const [open, setOpen] = useState(false);
 
@@ -50,13 +50,20 @@ const Positions: React.FC = () => {
       render: (_, position) => (
         <Space size="middle">
           <Button
+            size={!lg ? 'small' : 'middle'}
             type="primary"
-            icon={<EditOutlined />}
+            shape="round"
             onClick={() => fetchOne(position._id)}
+            icon={<EditOutlined />}
           >
-            {md && 'Редактировать'}
+            {sm && 'Редактировать'}
           </Button>
-          <Button type="text" danger icon={<DeleteOutlined />}>
+          <Button
+            size={!lg ? 'small' : 'middle'}
+            shape="round"
+            danger
+            icon={<DeleteOutlined />}
+          >
             {md && 'Удалить'}
           </Button>
         </Space>
@@ -77,7 +84,7 @@ const Positions: React.FC = () => {
         <Table
           columns={columns}
           dataSource={dataSource}
-          pagination={{ pageSize: 10, position: ['topRight'] }}
+          pagination={{ pageSize: 10, position: ['topRight', 'bottomRight'] }}
         />
       )}
       <EditPositions open={open} onClose={handleClose} />
@@ -85,4 +92,4 @@ const Positions: React.FC = () => {
   );
 };
 
-export default Positions;
+export default PositionsTable;

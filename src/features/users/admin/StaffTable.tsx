@@ -1,60 +1,28 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import React from 'react';
+import { useAppSelector } from '../../../app/hooks';
 import { selectFetchAllLoading, selectStaff } from '../UsersSlice';
 import Spinner from '../../../components/UI/Spin/Spin';
 import {
   Avatar,
   Button,
-  Col,
-  Row,
+  Flex,
   Space,
-  Switch,
   Table,
   TableProps,
   Tag,
   Typography,
 } from 'antd';
 import { FieldTimeOutlined, UserOutlined } from '@ant-design/icons';
-import { StaffData, UserQueryValues } from '../../../types/types.user';
-import FilterForm from './components/FilterForm';
-import { getUsers } from '../UsersThunks';
-import { fetchPositions } from '../../positions/positionsThunks';
-import { selectPositions } from '../../positions/positionsSlice';
+import { StaffData } from '../../../types/types.user';
 import { apiURL } from '../../../utils/constants';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
+import StaffFilterItem from './components/StaffFilterItem';
 
-const Staff: React.FC = () => {
-  const dispatch = useAppDispatch();
+const StaffTable: React.FC = () => {
   const staff = useAppSelector(selectStaff);
-  const positions = useAppSelector(selectPositions);
   const fetchLoading = useAppSelector(selectFetchAllLoading);
 
-  const [isChecked, setIsChecked] = useState(false);
-  const { sm, md, lg } = useBreakpoint();
-
-  const fetchOnInitOrReset = useCallback(async () => {
-    await dispatch(getUsers());
-    await dispatch(fetchPositions());
-  }, [dispatch]);
-
-  const fetchAllStaff = useCallback(async () => {
-    await dispatch(getUsers());
-  }, [dispatch]);
-
-  useEffect(() => {
-    void fetchOnInitOrReset();
-  }, [fetchOnInitOrReset]);
-
-  const handleFormSubmit = async (state: UserQueryValues) => {
-    await dispatch(getUsers(state));
-  };
-
-  const onChange = (checked: boolean) => {
-    setIsChecked(checked);
-    if (!checked) {
-      void fetchAllStaff();
-    }
-  };
+  const { xs, sm, md, lg } = useBreakpoint();
 
   const columns: TableProps<StaffData>['columns'] = [
     {
@@ -79,6 +47,7 @@ const Staff: React.FC = () => {
       title: 'ФИО',
       dataIndex: 'firstname',
       key: 'firstname',
+      width: !lg ? '100%' : '20%',
       render: (_, user) => (
         <>
           <Space size="middle">
@@ -120,23 +89,25 @@ const Staff: React.FC = () => {
       dataIndex: 'action',
       key: 'action',
       render: () => (
-        <Space size={!sm ? 'small' : 'middle'}>
+        <Flex align="center" justify="flex-end" gap={12} wrap={!sm}>
           <Button
-            size={lg ? 'middle' : 'small'}
+            size={!lg ? 'small' : 'middle'}
             shape="round"
             type="primary"
             icon={<FieldTimeOutlined />}
+            style={{ width: '100%' }}
           >
-            {lg && 'Статистика'}
+            {(xs && !sm) || lg ? 'Статистика' : ''}
           </Button>
           <Button
+            size={!lg ? 'small' : 'middle'}
             shape="round"
-            size={lg ? 'middle' : 'small'}
             icon={<UserOutlined />}
+            style={{ width: '100%' }}
           >
-            {lg && 'Профиль'}
+            {(xs && !sm) || lg ? 'Профиль' : ''}
           </Button>
-        </Space>
+        </Flex>
       ),
     },
   ];
@@ -148,25 +119,7 @@ const Staff: React.FC = () => {
 
   return (
     <>
-      <Row style={{ marginBottom: 15 }}>
-        <Col xs={24} lg={4} style={{ marginBottom: '20px' }}>
-          <Space>
-            Фильтры
-            <Switch size="small" checked={isChecked} onChange={onChange} />
-          </Space>
-        </Col>
-        {isChecked && (
-          <Col xs={24} lg={20}>
-            <FilterForm
-              getAllStaff={fetchAllStaff}
-              onSubmit={handleFormSubmit}
-              positions={positions}
-              loading={fetchLoading}
-            />
-          </Col>
-        )}
-      </Row>
-
+      <StaffFilterItem loading={fetchLoading} />
       {fetchLoading ? (
         <Spinner />
       ) : (
@@ -180,4 +133,4 @@ const Staff: React.FC = () => {
   );
 };
 
-export default Staff;
+export default StaffTable;
