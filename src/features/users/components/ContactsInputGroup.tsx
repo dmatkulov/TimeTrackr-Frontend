@@ -1,8 +1,8 @@
 import React from 'react';
-import { RegisterMutation } from '../../../../../types/types.user';
 import { Col, Form, Input } from 'antd';
 import 'react-phone-input-2/lib/style.css';
 import PhoneInput from 'react-phone-input-2';
+import { RegisterMutation } from '../../../types/types.user';
 
 interface Props {
   state: RegisterMutation;

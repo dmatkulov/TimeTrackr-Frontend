@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
-import { selectPositions } from '../../../positions/positionsSlice';
-import { getUsers } from '../../UsersThunks';
-import { fetchPositions } from '../../../positions/positionsThunks';
-import { UserQueryValues } from '../../../../types/types.user';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { selectPositions } from '../../positions/positionsSlice';
+import { getUsers } from '../UsersThunks';
+import { fetchPositions } from '../../positions/positionsThunks';
+import { UserQueryValues } from '../../../types/types.user';
 import { Col, Row, Space, Switch } from 'antd';
 import FilterForm from './FilterForm';
 
