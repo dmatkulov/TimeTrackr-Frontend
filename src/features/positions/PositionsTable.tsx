@@ -2,19 +2,28 @@ import React, { useCallback, useEffect, useState } from 'react';
 import type { TableProps } from 'antd';
 import { Button, Space, Table } from 'antd';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectPositions, selectPositionsLoading } from './positionsSlice';
+import {
+  selectPositionDeleting,
+  selectPositions,
+  selectPositionsLoading,
+} from './positionsSlice';
 import { Position } from '../../types/types.position';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import EditPositions from './EditPositions';
 import Spinner from '../../components/UI/Spin/Spin';
-import { fetchOnePosition } from './positionsThunks';
+import {
+  deletePosition,
+  fetchOnePosition,
+  fetchPositions,
+} from './positionsThunks';
 import { getUsers } from '../users/UsersThunks';
 
 const PositionsTable: React.FC = () => {
   const dispatch = useAppDispatch();
   const positions = useAppSelector(selectPositions);
-  const fetchLoading = useAppSelector(selectPositionsLoading);
+  const loading = useAppSelector(selectPositionsLoading);
+  const deleting = useAppSelector(selectPositionDeleting);
 
   const { sm, md, lg } = useBreakpoint();
 
@@ -23,6 +32,14 @@ const PositionsTable: React.FC = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const handleDelete = useCallback(
+    async (id: string) => {
+      await dispatch(deletePosition(id)).unwrap();
+      await dispatch(fetchPositions());
+    },
+    [dispatch],
+  );
 
   const fetchOne = useCallback(
     async (id: string) => {
@@ -53,8 +70,8 @@ const PositionsTable: React.FC = () => {
             size={!lg ? 'small' : 'middle'}
             type="primary"
             shape="round"
-            onClick={() => fetchOne(position._id)}
             icon={<EditOutlined />}
+            onClick={() => fetchOne(position._id)}
           >
             {sm && 'Редактировать'}
           </Button>
@@ -63,6 +80,8 @@ const PositionsTable: React.FC = () => {
             shape="round"
             danger
             icon={<DeleteOutlined />}
+            disabled={deleting}
+            onClick={() => handleDelete(position._id)}
           >
             {md && 'Удалить'}
           </Button>
@@ -78,7 +97,7 @@ const PositionsTable: React.FC = () => {
 
   return (
     <>
-      {fetchLoading ? (
+      {loading ? (
         <Spinner />
       ) : (
         <Table
