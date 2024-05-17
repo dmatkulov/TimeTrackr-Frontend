@@ -3,7 +3,7 @@ import {
   LoginMutation,
   LoginResponse,
   RegisterMutation,
-  User,
+  StaffData,
   UserQueryParams,
   UserQueryValues,
 } from '../../types/types.user';
@@ -54,7 +54,7 @@ export const createUser = createAsyncThunk<
   }
 });
 export const getUsers = createAsyncThunk<
-  User[],
+  StaffData[],
   UserQueryValues | undefined,
   { rejectValue: GlobalMessage }
 >('users/fetchAll', async (params = {}, thunkAPI) => {
@@ -75,7 +75,7 @@ export const getUsers = createAsyncThunk<
       }
     }
 
-    const response = await axiosApi.get<User[]>(apiRoutes.users, {
+    const response = await axiosApi.get<StaffData[]>(apiRoutes.users, {
       params: query,
     });
 

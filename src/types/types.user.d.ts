@@ -15,7 +15,17 @@ export interface User {
   role: string;
   startDate: string;
 }
-
+export interface StaffData {
+  _id: string;
+  email: string;
+  firstname: string;
+  lastname: string;
+  photo: string;
+  position: {
+    _id: string;
+    name: string;
+  };
+}
 export interface contactInfo {
   mobile: string;
   city: string;

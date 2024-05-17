@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { selectFetchAllLoading, selectStaff } from '../UsersSlice';
 import Spinner from '../../../components/UI/Spin/Spin';
 import {
+  Avatar,
   Button,
   Col,
   Row,
@@ -10,14 +11,16 @@ import {
   Switch,
   Table,
   TableProps,
+  Tag,
   Typography,
 } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
-import { User, UserQueryValues } from '../../../types/types.user';
+import { DeleteOutlined, UserOutlined } from '@ant-design/icons';
+import { StaffData, UserQueryValues } from '../../../types/types.user';
 import FilterForm from './components/FilterForm';
 import { getUsers } from '../UsersThunks';
 import { fetchPositions } from '../../positions/positionsThunks';
 import { selectPositions } from '../../positions/positionsSlice';
+import { apiURL } from '../../../utils/constants';
 
 const Staff: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -51,7 +54,24 @@ const Staff: React.FC = () => {
     }
   };
 
-  const columns: TableProps<User>['columns'] = [
+  const columns: TableProps<StaffData>['columns'] = [
+    {
+      dataIndex: 'photo',
+      key: 'photo',
+      width: '40px',
+      render: (_, user) => {
+        let avatar;
+
+        if (user.photo) {
+          avatar = <Avatar src={apiURL + '/' + user.photo} />;
+        } else {
+          avatar = (
+            <Avatar icon={<UserOutlined />}>{user.firstname.charAt(0)}</Avatar>
+          );
+        }
+        return avatar;
+      },
+    },
     {
       title: 'ФИО',
       dataIndex: 'firstname',
@@ -64,10 +84,12 @@ const Staff: React.FC = () => {
     },
     {
       title: 'Позиция',
-      dataIndex: 'position',
       key: 'position',
-      render: (_, user) => (
-        <Typography.Text>{user.position.name}</Typography.Text>
+      dataIndex: 'position',
+      render: (_, { position }) => (
+        <Tag bordered={false} color="orange" key={position.name}>
+          {position.name}
+        </Tag>
       ),
     },
     {
