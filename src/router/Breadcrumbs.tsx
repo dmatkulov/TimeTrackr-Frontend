@@ -20,7 +20,7 @@ const Breadcrumbs = () => {
     });
 
   const bread: Crumb[] = crumbs.map((crumb, i) => {
-    if (crumbs.length > 1 && i === crumbs.length - 1) {
+    if (crumbs.length > 0 && i === crumbs.length - 1) {
       return {
         title: crumb.title,
       };

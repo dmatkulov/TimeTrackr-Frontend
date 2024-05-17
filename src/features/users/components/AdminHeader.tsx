@@ -3,7 +3,7 @@ import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import { Button, Space } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import RegisterForm from './RegisterForm';
-import AddPosition from '../../../positions/AddPosition';
+import AddPosition from '../../positions/AddPosition';
 
 const AdminHeader: React.FC = () => {
   const { xs } = useBreakpoint();

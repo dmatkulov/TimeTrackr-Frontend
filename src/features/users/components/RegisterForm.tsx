@@ -20,15 +20,15 @@ import buddhistEra from 'dayjs/plugin/buddhistEra';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import { RegisterMutation } from '../../../../types/types.user';
-import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
-import { fetchPositions } from '../../../positions/positionsThunks';
-import { selectPositions } from '../../../positions/positionsSlice';
+import { RegisterMutation } from '../../../types/types.user';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { fetchPositions } from '../../positions/positionsThunks';
+import { selectPositions } from '../../positions/positionsSlice';
 import { ClearOutlined, UploadOutlined } from '@ant-design/icons';
-import ContactsInputGroup from './Inputs/ContactsInputGroup';
-import PasswordInputGroup from './Inputs/PasswordInputGroup';
-import { createUser } from '../../UsersThunks';
-import { selectRegisterLoading } from '../../UsersSlice';
+import ContactsInputGroup from './ContactsInputGroup';
+import PasswordInputGroup from './PasswordInputGroup';
+import { createUser, getUsers } from '../UsersThunks';
+import { selectRegisterLoading } from '../UsersSlice';
 
 dayjs.extend(buddhistEra);
 dayjs.extend(utc);
@@ -105,6 +105,7 @@ const RegisterForm: React.FC<Props> = ({
       };
 
       await dispatch(createUser(result)).unwrap();
+      await dispatch(getUsers());
       closeDrawer();
     } catch (e) {
       console.log(e);
@@ -163,7 +164,9 @@ const RegisterForm: React.FC<Props> = ({
             <Form.Item<RegisterMutation> name="photo" valuePropName="photo">
               <Upload {...props} listType="picture">
                 {!state.photo && (
-                  <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                  <Button icon={<UploadOutlined />}>
+                    Загрузить изображение
+                  </Button>
                 )}
               </Upload>
             </Form.Item>

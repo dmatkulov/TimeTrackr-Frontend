@@ -1,6 +1,6 @@
 import React from 'react';
 import { Col, Form, Input } from 'antd';
-import { RegisterMutation } from '../../../../../types/types.user';
+import { RegisterMutation } from '../../../types/types.user';
 
 const PasswordInputGroup: React.FC = () => {
   return (

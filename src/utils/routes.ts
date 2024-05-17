@@ -7,6 +7,7 @@ export const appRoutes = {
     profile: '/profile/admin',
     staff: '/profile/admin/all-staff',
     positions: '/profile/admin/positions',
+    staffInfo: '/profile/admin/all-staff/profile',
   },
   employee: {
     profile: '/profile/employee',

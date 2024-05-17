@@ -9,6 +9,8 @@ import AppLayout from '../components/Layout/AppLayout';
 import UserPanel from '../features/users/UserPanel';
 import PositionsTable from '../features/positions/PositionsTable';
 import AuthPage from '../components/UI/AuthPage/AuthPage';
+import StaffInfoPage from '../features/users/StaffInfoPage';
+import StaffContainer from '../features/users/admin/StaffContainer';
 
 export const router = createBrowserRouter([
   {
@@ -33,11 +35,25 @@ export const router = createBrowserRouter([
         children: [
           {
             path: appRoutes.admin.staff,
-            element: <StaffTable />,
+            element: <StaffContainer />,
             handle: {
               link: appRoutes.admin.staff,
               title: 'Сотрудники',
             },
+            children: [
+              {
+                path: appRoutes.admin.staff,
+                element: <StaffTable />,
+              },
+              {
+                path: appRoutes.admin.staff + '/profile/:id',
+                element: <StaffInfoPage />,
+                handle: {
+                  link: appRoutes.admin.staff + '/profile/:id',
+                  title: 'Профиль',
+                },
+              },
+            ],
           },
           {
             path: appRoutes.admin.positions,

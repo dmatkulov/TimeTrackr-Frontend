@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Button, Form, FormProps, Input, Select, Space } from 'antd';
 import { ClearOutlined, SearchOutlined } from '@ant-design/icons';
-import { UserQueryValues } from '../../../../types/types.user';
+import { UserQueryValues } from '../../../types/types.user';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
-import { Position } from '../../../../types/types.position';
+import { Position } from '../../../types/types.position';
 
 interface Props {
   onSubmit: (values: UserQueryValues) => void;

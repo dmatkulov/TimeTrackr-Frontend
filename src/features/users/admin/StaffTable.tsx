@@ -16,9 +16,12 @@ import { FieldTimeOutlined, UserOutlined } from '@ant-design/icons';
 import { StaffData } from '../../../types/types.user';
 import { apiURL } from '../../../utils/constants';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
-import StaffFilterItem from './components/StaffFilterItem';
+import StaffFilterItem from '../components/StaffFilterItem';
+import { useNavigate } from 'react-router-dom';
+import { appRoutes } from '../../../utils/routes';
 
 const StaffTable: React.FC = () => {
+  const navigate = useNavigate();
   const staff = useAppSelector(selectStaff);
   const fetchLoading = useAppSelector(selectFetchAllLoading);
 
@@ -88,7 +91,7 @@ const StaffTable: React.FC = () => {
     {
       dataIndex: 'action',
       key: 'action',
-      render: () => (
+      render: (_, user) => (
         <Flex align="center" justify="flex-end" gap={12} wrap={!sm}>
           <Button
             size={!lg ? 'small' : 'middle'}
@@ -104,6 +107,9 @@ const StaffTable: React.FC = () => {
             shape="round"
             icon={<UserOutlined />}
             style={{ width: '100%' }}
+            onClick={() =>
+              navigate(appRoutes.admin.staff + '/profile/' + user._id)
+            }
           >
             {(xs && !sm) || lg ? 'Профиль' : ''}
           </Button>
