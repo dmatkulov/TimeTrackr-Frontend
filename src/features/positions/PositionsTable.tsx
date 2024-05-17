@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import type { TableProps } from 'antd';
-import { Button, Space, Table } from 'antd';
+import { Button, Space, Table, Popconfirm } from 'antd';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   selectPositionDeleting,
@@ -8,7 +8,11 @@ import {
   selectPositionsLoading,
 } from './positionsSlice';
 import { Position } from '../../types/types.position';
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  QuestionCircleOutlined,
+} from '@ant-design/icons';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import EditPositions from './EditPositions';
 import Spinner from '../../components/UI/Spin/Spin';
@@ -75,16 +79,25 @@ const PositionsTable: React.FC = () => {
           >
             {sm && 'Редактировать'}
           </Button>
-          <Button
-            size={!lg ? 'small' : 'middle'}
-            shape="round"
-            danger
-            icon={<DeleteOutlined />}
+          <Popconfirm
+            title="Удаление позиции"
+            description="Вы уверены что хотите удалить?"
             disabled={deleting}
-            onClick={() => handleDelete(position._id)}
+            icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+            okText="Удалить"
+            cancelText="Отменить"
+            onConfirm={() => handleDelete(position._id)}
           >
-            {md && 'Удалить'}
-          </Button>
+            <Button
+              size={!lg ? 'small' : 'middle'}
+              shape="round"
+              danger
+              icon={<DeleteOutlined />}
+              disabled={deleting}
+            >
+              {md && 'Удалить'}
+            </Button>
+          </Popconfirm>
         </Space>
       ),
     },
