@@ -17,6 +17,7 @@ import {
   selectPositionsCreating,
 } from '../positionsSlice';
 import Spinner from '../../../components/UI/Spin/Spin';
+import { tagOptions } from '../../../utils/tagOptions';
 
 interface Props {
   onSubmit: (state: PositionMutation) => void;
@@ -25,19 +26,6 @@ interface Props {
   open: boolean;
   onClose: () => void;
 }
-
-const tagOptions = [
-  { value: 'magenta' },
-  { value: 'red' },
-  { value: 'volcano' },
-  { value: 'orange' },
-  { value: 'gold' },
-  { value: 'lime' },
-  { value: 'green' },
-  { value: 'cyan' },
-  { value: 'blue' },
-  { value: 'purple' },
-];
 
 const PositionForm: React.FC<Props> = ({
   onSubmit,

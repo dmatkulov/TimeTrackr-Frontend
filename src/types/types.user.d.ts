@@ -1,4 +1,5 @@
 import { RcFile } from 'antd/es/upload';
+import { Position } from './types.position';
 
 export interface User {
   _id: string;
@@ -8,10 +9,7 @@ export interface User {
   lastname: string;
   contactInfo: contactInfo;
   photo: string;
-  position: {
-    _id: string;
-    name: string;
-  };
+  position: Position;
   role: string;
   startDate: string;
 }
@@ -21,10 +19,7 @@ export interface StaffData {
   firstname: string;
   lastname: string;
   photo: string;
-  position: {
-    _id: string;
-    name: string;
-  };
+  position: Position;
 }
 export interface contactInfo {
   mobile: string;

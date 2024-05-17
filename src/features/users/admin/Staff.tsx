@@ -14,13 +14,14 @@ import {
   Tag,
   Typography,
 } from 'antd';
-import { DeleteOutlined, UserOutlined } from '@ant-design/icons';
+import { FieldTimeOutlined, UserOutlined } from '@ant-design/icons';
 import { StaffData, UserQueryValues } from '../../../types/types.user';
 import FilterForm from './components/FilterForm';
 import { getUsers } from '../UsersThunks';
 import { fetchPositions } from '../../positions/positionsThunks';
 import { selectPositions } from '../../positions/positionsSlice';
 import { apiURL } from '../../../utils/constants';
+import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 
 const Staff: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -29,6 +30,7 @@ const Staff: React.FC = () => {
   const fetchLoading = useAppSelector(selectFetchAllLoading);
 
   const [isChecked, setIsChecked] = useState(false);
+  const { sm, md, lg } = useBreakpoint();
 
   const fetchOnInitOrReset = useCallback(async () => {
     await dispatch(getUsers());
@@ -59,6 +61,7 @@ const Staff: React.FC = () => {
       dataIndex: 'photo',
       key: 'photo',
       width: '40px',
+      responsive: ['lg'],
       render: (_, user) => {
         let avatar;
 
@@ -77,17 +80,27 @@ const Staff: React.FC = () => {
       dataIndex: 'firstname',
       key: 'firstname',
       render: (_, user) => (
-        <Typography.Text>
-          {user.firstname} {user.lastname}
-        </Typography.Text>
+        <>
+          <Space size="middle">
+            <Typography.Text>
+              {user.firstname} {user.lastname}
+            </Typography.Text>
+            {sm && !md && (
+              <Tag bordered={false} color={user.position.tag}>
+                {user.position.name}
+              </Tag>
+            )}
+          </Space>
+        </>
       ),
     },
     {
       title: 'Позиция',
       key: 'position',
       dataIndex: 'position',
+      responsive: ['md'],
       render: (_, { position }) => (
-        <Tag bordered={false} color="orange" key={position.name}>
+        <Tag bordered={false} color={position.tag}>
           {position.name}
         </Tag>
       ),
@@ -96,17 +109,32 @@ const Staff: React.FC = () => {
       title: 'Почта',
       dataIndex: 'email',
       key: 'email',
-      render: (_, user) => <Typography.Text>{user.email}</Typography.Text>,
+      responsive: ['xl'],
+      render: (_, user) => (
+        <Typography.Link href={'mailto:' + user.email}>
+          {user.email}
+        </Typography.Link>
+      ),
     },
     {
-      title: 'Дейсвия',
       dataIndex: 'action',
       key: 'action',
       render: () => (
-        <Space size="middle">
-          <Button type="link">Редактировать</Button>
-          <Button type="text" danger icon={<DeleteOutlined />}>
-            Удалить
+        <Space size={!sm ? 'small' : 'middle'}>
+          <Button
+            size={lg ? 'middle' : 'small'}
+            shape="round"
+            type="primary"
+            icon={<FieldTimeOutlined />}
+          >
+            {lg && 'Статистика'}
+          </Button>
+          <Button
+            shape="round"
+            size={lg ? 'middle' : 'small'}
+            icon={<UserOutlined />}
+          >
+            {lg && 'Профиль'}
           </Button>
         </Space>
       ),
@@ -117,6 +145,7 @@ const Staff: React.FC = () => {
     ...user,
     key: user._id,
   }));
+
   return (
     <>
       <Row style={{ marginBottom: 15 }}>

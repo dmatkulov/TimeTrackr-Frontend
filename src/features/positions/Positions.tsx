@@ -50,7 +50,7 @@ const Positions: React.FC = () => {
       render: (_, position) => (
         <Space size="middle">
           <Button
-            type="link"
+            type="primary"
             icon={<EditOutlined />}
             onClick={() => fetchOne(position._id)}
           >
