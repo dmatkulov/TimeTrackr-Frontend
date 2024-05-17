@@ -16,8 +16,9 @@ input[type='number'] {
 }
 
 .react-tel-input .form-control {
-  padding-left: 4px;
+  padding-left: 12px;
   outline: 0;
+  border-color: #d9d9d9;
 }
 
 .react-tel-input .form-control:focus {

@@ -1,4 +1,3 @@
-import { RcFile } from 'antd/es/upload';
 import { Position } from './types.position';
 
 export interface User {
@@ -37,11 +36,10 @@ export interface RegisterMutation {
   firstname: string;
   lastname: string;
   contactInfo: contactInfo;
-  photo: RcFile | null;
+  photo: File | null;
   position: string;
   startDate: string;
   password: string;
-  confirm: string;
 }
 
 export interface LoginResponse {
