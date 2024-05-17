@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout } from 'antd';
 import { Outlet } from 'react-router-dom';
-import AdminSlider from './admin/components/AdminSlider';
+import AdminMenu from './admin/components/AdminMenu';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import Breadcrumbs from '../../router/Breadcrumbs';
 
@@ -13,7 +13,7 @@ const UserPanel: React.FC<Props> = () => {
   return (
     <>
       <Layout hasSider style={{ minHeight: '100vh' }}>
-        <AdminSlider />
+        <AdminMenu />
         <Layout
           style={{
             marginLeft: !md ? '0' : '20px',

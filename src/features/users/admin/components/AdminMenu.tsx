@@ -16,7 +16,7 @@ import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
-const AdminSlider: React.FC = () => {
+const AdminMenu: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(true);
@@ -122,4 +122,4 @@ const AdminSlider: React.FC = () => {
   );
 };
 
-export default AdminSlider;
+export default AdminMenu;
