@@ -1,12 +1,23 @@
 import React, { useEffect } from 'react';
 import { PositionMutation } from '../../../types/types.position';
-import { Button, Col, Drawer, Form, FormProps, Input, Row } from 'antd';
+import {
+  Button,
+  Col,
+  Drawer,
+  Form,
+  FormProps,
+  Input,
+  Row,
+  Select,
+  Tag,
+} from 'antd';
 import { useAppSelector } from '../../../app/hooks';
 import {
   selectOnePositionLoading,
   selectPositionsCreating,
 } from '../positionsSlice';
 import Spinner from '../../../components/UI/Spin/Spin';
+import { tagOptions } from '../../../utils/tagOptions';
 
 interface Props {
   onSubmit: (state: PositionMutation) => void;
@@ -45,13 +56,10 @@ const PositionForm: React.FC<Props> = ({
       onSubmit(values);
       closeDrawer();
       form.resetFields();
+      console.log(values);
     } catch (e) {
       console.log(e);
     }
-  };
-
-  const reset = () => {
-    form.setFieldsValue({ name: '' });
   };
 
   return (
@@ -98,6 +106,24 @@ const PositionForm: React.FC<Props> = ({
               </Form.Item>
             </Col>
           </Row>
+          <Row>
+            <Col span={24}>
+              <Form.Item<PositionMutation> name="tag" label="Цвет тэга">
+                <Select
+                  options={tagOptions}
+                  optionRender={(oriOption) => {
+                    return (
+                      <p>
+                        <Tag color={oriOption.value?.toString()}>
+                          {oriOption.value}
+                        </Tag>
+                      </p>
+                    );
+                  }}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
           <Row
             gutter={16}
             style={{
@@ -114,17 +140,6 @@ const PositionForm: React.FC<Props> = ({
                 disabled={creating}
               >
                 {isEdit ? 'Редактировать' : 'Создать'}
-              </Button>
-            </Col>
-            <Col xs={24}>
-              <Button
-                type="text"
-                // htmlType="submit"
-                style={{ width: '100%' }}
-                disabled={creating}
-                onClick={reset}
-              >
-                reset
               </Button>
             </Col>
           </Row>

@@ -73,3 +73,13 @@ export const updatePosition = createAsyncThunk<
     throw e;
   }
 });
+
+export const deletePosition = createAsyncThunk<GlobalMessage, string>(
+  'positions/deleteOne',
+  async (id) => {
+    const response = await axiosApi.delete<GlobalMessage>(
+      `${apiRoutes.deletePositions}/${id}`,
+    );
+    return response.data;
+  },
+);

@@ -1,4 +1,4 @@
-import { User } from '../../types/types.user';
+import { StaffData, User } from '../../types/types.user';
 import { GlobalMessage } from '../../types/types.global';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
@@ -7,7 +7,7 @@ import { message } from 'antd';
 
 interface UsersState {
   user: User | null;
-  staff: User[];
+  staff: StaffData[];
   registerLoading: boolean;
   loginLoading: boolean;
   loginError: GlobalMessage | null;

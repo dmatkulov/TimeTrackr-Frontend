@@ -20,10 +20,6 @@ import buddhistEra from 'dayjs/plugin/buddhistEra';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-dayjs.extend(buddhistEra);
-dayjs.extend(utc);
-dayjs.extend(timezone);
-
 import { RegisterMutation } from '../../../../types/types.user';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { fetchPositions } from '../../../positions/positionsThunks';
@@ -32,6 +28,11 @@ import { ClearOutlined, UploadOutlined } from '@ant-design/icons';
 import ContactsInputGroup from './Inputs/ContactsInputGroup';
 import PasswordInputGroup from './Inputs/PasswordInputGroup';
 import { createUser } from '../../UsersThunks';
+import { selectRegisterLoading } from '../../UsersSlice';
+
+dayjs.extend(buddhistEra);
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const buddhistLocale: typeof ru = {
   ...ru,
@@ -75,6 +76,7 @@ const RegisterForm: React.FC<Props> = ({
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const positions = useAppSelector(selectPositions);
+  const creating = useAppSelector(selectRegisterLoading);
 
   const [state, setState] = useState<RegisterMutation>(existingUser);
 
@@ -279,6 +281,7 @@ const RegisterForm: React.FC<Props> = ({
               htmlType="submit"
               form="register"
               type="primary"
+              disabled={creating}
               style={{ width: '100%' }}
             >
               Отправить

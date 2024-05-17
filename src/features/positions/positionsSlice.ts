@@ -2,6 +2,7 @@ import { Position } from '../../types/types.position';
 import { createSlice } from '@reduxjs/toolkit';
 import {
   createPosition,
+  deletePosition,
   fetchOnePosition,
   fetchPositions,
   updatePosition,
@@ -16,7 +17,7 @@ interface PositionsState {
   fetchOneLoading: boolean;
   createLoading: boolean;
   updateLoading: boolean;
-  positionId: string | null;
+  deleteLoading: boolean;
 }
 
 const initialState: PositionsState = {
@@ -26,17 +27,13 @@ const initialState: PositionsState = {
   fetchOneLoading: false,
   createLoading: false,
   updateLoading: false,
-  positionId: null,
+  deleteLoading: false,
 };
 
 export const positionsSlice = createSlice({
   name: 'positions',
   initialState,
-  reducers: {
-    setPositionId: (state, { payload: action }) => {
-      state.positionId = action;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(createPosition.pending, (state) => {
@@ -92,20 +89,31 @@ export const positionsSlice = createSlice({
 
         void message.error(error?.message);
       });
+
+    builder
+      .addCase(deletePosition.pending, (state) => {
+        state.deleteLoading = true;
+      })
+      .addCase(deletePosition.fulfilled, (state, { payload: data }) => {
+        state.deleteLoading = false;
+        void message.success(data.message);
+      })
+      .addCase(deletePosition.rejected, (state) => {
+        state.deleteLoading = false;
+      });
   },
 });
 
 export const positionsReducer = positionsSlice.reducer;
 
-export const { setPositionId } = positionsSlice.actions;
 export const selectPositions = (state: RootState) => state.positions.items;
 export const selectOnePosition = (state: RootState) => state.positions.item;
-export const selectPositionId = (state: RootState) =>
-  state.positions.positionId;
 export const selectPositionsCreating = (state: RootState) =>
   state.positions.createLoading;
-
 export const selectPositionsLoading = (state: RootState) =>
   state.positions.fetchLoading;
 export const selectOnePositionLoading = (state: RootState) =>
   state.positions.fetchOneLoading;
+
+export const selectPositionDeleting = (state: RootState) =>
+  state.positions.deleteLoading;

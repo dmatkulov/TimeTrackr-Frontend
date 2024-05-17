@@ -2,27 +2,44 @@ import React, { useCallback, useEffect, useState } from 'react';
 import type { TableProps } from 'antd';
 import { Button, Space, Table } from 'antd';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectPositions, selectPositionsLoading } from './positionsSlice';
+import {
+  selectPositionDeleting,
+  selectPositions,
+  selectPositionsLoading,
+} from './positionsSlice';
 import { Position } from '../../types/types.position';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import EditPositions from './EditPositions';
 import Spinner from '../../components/UI/Spin/Spin';
-import { fetchOnePosition } from './positionsThunks';
+import {
+  deletePosition,
+  fetchOnePosition,
+  fetchPositions,
+} from './positionsThunks';
 import { getUsers } from '../users/UsersThunks';
 
-const Positions: React.FC = () => {
+const PositionsTable: React.FC = () => {
   const dispatch = useAppDispatch();
   const positions = useAppSelector(selectPositions);
-  const fetchLoading = useAppSelector(selectPositionsLoading);
+  const loading = useAppSelector(selectPositionsLoading);
+  const deleting = useAppSelector(selectPositionDeleting);
 
-  const { md } = useBreakpoint();
+  const { sm, md, lg } = useBreakpoint();
 
   const [open, setOpen] = useState(false);
 
   const handleClose = () => {
     setOpen(false);
   };
+
+  const handleDelete = useCallback(
+    async (id: string) => {
+      await dispatch(deletePosition(id)).unwrap();
+      await dispatch(fetchPositions());
+    },
+    [dispatch],
+  );
 
   const fetchOne = useCallback(
     async (id: string) => {
@@ -50,13 +67,22 @@ const Positions: React.FC = () => {
       render: (_, position) => (
         <Space size="middle">
           <Button
-            type="link"
+            size={!lg ? 'small' : 'middle'}
+            type="primary"
+            shape="round"
             icon={<EditOutlined />}
             onClick={() => fetchOne(position._id)}
           >
-            {md && 'Редактировать'}
+            {sm && 'Редактировать'}
           </Button>
-          <Button type="text" danger icon={<DeleteOutlined />}>
+          <Button
+            size={!lg ? 'small' : 'middle'}
+            shape="round"
+            danger
+            icon={<DeleteOutlined />}
+            disabled={deleting}
+            onClick={() => handleDelete(position._id)}
+          >
             {md && 'Удалить'}
           </Button>
         </Space>
@@ -71,13 +97,13 @@ const Positions: React.FC = () => {
 
   return (
     <>
-      {fetchLoading ? (
+      {loading ? (
         <Spinner />
       ) : (
         <Table
           columns={columns}
           dataSource={dataSource}
-          pagination={{ pageSize: 10, position: ['topRight'] }}
+          pagination={{ pageSize: 10, position: ['topRight', 'bottomRight'] }}
         />
       )}
       <EditPositions open={open} onClose={handleClose} />
@@ -85,4 +111,4 @@ const Positions: React.FC = () => {
   );
 };
 
-export default Positions;
+export default PositionsTable;

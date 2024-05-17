@@ -19,7 +19,8 @@ export const apiRoutes = {
   newUser: 'staff/register-user',
   sessions: 'staff/sessions',
   positions: 'positions',
+  newPosition: 'positions/new-position',
   positionById: 'positions/info/',
   editPosition: 'positions/edit/',
-  newPosition: 'positions/new-position',
+  deletePositions: 'positions/delete',
 };

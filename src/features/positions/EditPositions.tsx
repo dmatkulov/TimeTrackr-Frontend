@@ -25,6 +25,7 @@ const EditPositions: React.FC<Props> = ({ open, onClose }) => {
   if (position) {
     const mutation: PositionMutation = {
       name: position.name,
+      tag: position.tag,
     };
 
     return (
