@@ -6,13 +6,10 @@ import {
   Divider,
   Drawer,
   Form,
-  FormProps,
   Input,
   Row,
   Select,
   Tooltip,
-  Upload,
-  UploadProps,
 } from 'antd';
 
 import ru from 'antd/es/date-picker/locale/ru_RU';
@@ -20,15 +17,17 @@ import buddhistEra from 'dayjs/plugin/buddhistEra';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+
 import { RegisterMutation } from '../../../types/types.user';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { fetchPositions } from '../../positions/positionsThunks';
 import { selectPositions } from '../../positions/positionsSlice';
-import { ClearOutlined, UploadOutlined } from '@ant-design/icons';
+import { fetchPositions } from '../../positions/positionsThunks';
+import { ClearOutlined } from '@ant-design/icons';
+import PasswordInput from './PasswordInputGroup';
 import ContactsInputGroup from './ContactsInputGroup';
-import PasswordInputGroup from './PasswordInputGroup';
-import { createUser, getUsers } from '../UsersThunks';
 import { selectRegisterLoading } from '../UsersSlice';
+import { createUser, getUsers } from '../UsersThunks';
+import FileInput from './FileInput';
 
 dayjs.extend(buddhistEra);
 dayjs.extend(utc);
@@ -55,10 +54,9 @@ const initialState: RegisterMutation = {
     city: '',
     street: '',
   },
+  password: '',
   startDate: '',
   photo: null,
-  password: '',
-  confirm: '',
 };
 
 interface Props {
@@ -90,40 +88,15 @@ const RegisterForm: React.FC<Props> = ({
     dispatch(fetchPositions());
   }, [dispatch]);
 
-  const closeDrawer = () => {
-    onClose();
-    form.resetFields();
-    setState((prevState) => ({ ...prevState, photo: null }));
-  };
-
-  const onSubmit: FormProps<RegisterMutation>['onFinish'] = async (values) => {
+  const onSubmit = async () => {
     try {
-      const result: RegisterMutation = {
-        ...values,
-        photo: state.photo,
-        startDate: state.startDate,
-      };
-
-      await dispatch(createUser(result)).unwrap();
+      console.log(state);
+      await dispatch(createUser(state)).unwrap();
       await dispatch(getUsers());
       closeDrawer();
     } catch (e) {
       console.log(e);
     }
-  };
-
-  const props: UploadProps = {
-    onRemove: () => {
-      setState((prevState) => ({ ...prevState, photo: null }));
-    },
-    openFileDialogOnClick: true,
-    beforeUpload: (file) => {
-      setState((prevState) => ({
-        ...prevState,
-        photo: file,
-      }));
-      return false;
-    },
   };
 
   const handlePhoneChange = (value: string) => {
@@ -136,6 +109,50 @@ const RegisterForm: React.FC<Props> = ({
         },
       };
     });
+  };
+
+  const closeDrawer = () => {
+    onClose();
+    form.resetFields();
+  };
+
+  const contactInfo = Object.keys(state.contactInfo);
+  const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+
+    setState((prevState) => {
+      return { ...prevState, [name]: value };
+    });
+
+    if (contactInfo.includes(name)) {
+      setState((prevState) => ({
+        ...prevState,
+        [name]: value,
+        contactInfo: {
+          ...prevState.contactInfo,
+          [name]: value,
+        },
+      }));
+    }
+  };
+
+  const deletePhoto = () => {
+    setState((prevState) => ({
+      ...prevState,
+      photo: null,
+    }));
+  };
+
+  const fileInputChangeHandler = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const { name, files } = event.target;
+    if (files) {
+      setState((prevState) => ({
+        ...prevState,
+        [name]: files[0],
+      }));
+    }
   };
 
   return (
@@ -152,7 +169,6 @@ const RegisterForm: React.FC<Props> = ({
       }}
     >
       <Form
-        id="register"
         form={form}
         layout="vertical"
         initialValues={existingUser}
@@ -161,38 +177,46 @@ const RegisterForm: React.FC<Props> = ({
       >
         <Row gutter={16}>
           <Col xs={{ span: 24 }}>
-            <Form.Item<RegisterMutation> name="photo" valuePropName="photo">
-              <Upload {...props} listType="picture">
-                {!state.photo && (
-                  <Button icon={<UploadOutlined />}>
-                    Загрузить изображение
-                  </Button>
-                )}
-              </Upload>
+            <Form.Item name="photo">
+              <FileInput
+                name="photo"
+                onChange={fileInputChangeHandler}
+                onDelete={deletePhoto}
+              />
             </Form.Item>
           </Col>
           <Col xs={{ span: 24 }} md={{ span: 12 }}>
-            <Form.Item<RegisterMutation>
+            <Form.Item
               label="Фамилия"
               name="lastname"
               rules={[{ required: true, message: 'Введите фамилию' }]}
             >
-              <Input placeholder="Фамилия сотрудника" />
+              <Input
+                placeholder="Фамилия сотрудника"
+                name="lastname"
+                value={state.lastname}
+                onChange={inputChangeHandler}
+              />
             </Form.Item>
           </Col>
           <Col xs={{ span: 24 }} md={{ span: 12 }}>
-            <Form.Item<RegisterMutation>
+            <Form.Item
               label="Имя"
               name="firstname"
               rules={[{ required: true, message: 'Введите имя' }]}
             >
-              <Input placeholder="Имя сотрудника" />
+              <Input
+                placeholder="Имя сотрудника"
+                name="firstname"
+                value={state.firstname}
+                onChange={inputChangeHandler}
+              />
             </Form.Item>
           </Col>
         </Row>
         <Row gutter={16}>
           <Col xs={{ span: 24 }} md={{ span: 12 }}>
-            <Form.Item<RegisterMutation>
+            <Form.Item
               label="Почта"
               name="email"
               rules={[
@@ -203,16 +227,28 @@ const RegisterForm: React.FC<Props> = ({
                 { message: 'Неверный формат электронной почты', type: 'email' },
               ]}
             >
-              <Input placeholder="Электронная почта" />
+              <Input
+                placeholder="Электронная почта"
+                name="email"
+                value={state.email}
+                onChange={inputChangeHandler}
+              />
             </Form.Item>
           </Col>
           <Col xs={{ span: 24 }} md={{ span: 12 }}>
-            <Form.Item<RegisterMutation>
+            <Form.Item
               name="position"
               label="Позиция"
               rules={[{ required: true, message: 'Выберите позицию' }]}
             >
               <Select
+                value={state.position}
+                onChange={(value) =>
+                  setState((prevState) => ({
+                    ...prevState,
+                    position: value,
+                  }))
+                }
                 placeholder="Позиция сотрудника"
                 options={[
                   ...positions.map((position) => ({
@@ -224,13 +260,16 @@ const RegisterForm: React.FC<Props> = ({
             </Form.Item>
           </Col>
         </Row>
-        <Divider style={{ marginTop: 16 }} />
         <Row gutter={16}>
-          <ContactsInputGroup state={state} onPhoneChange={handlePhoneChange} />
+          <ContactsInputGroup
+            state={state}
+            onInputChange={inputChangeHandler}
+            onPhoneChange={handlePhoneChange}
+          />
         </Row>
         <Row gutter={16}>
           <Col xs={{ span: 24 }} md={{ span: 8 }}>
-            <Form.Item<RegisterMutation>
+            <Form.Item
               label="Дата начала работы"
               name="startDate"
               rules={[
@@ -242,9 +281,12 @@ const RegisterForm: React.FC<Props> = ({
               ]}
             >
               <DatePicker
-                allowClear={true}
+                allowClear={false}
                 name="startDate"
                 style={{ width: '100%' }}
+                value={
+                  state.startDate ? dayjs(state.startDate) : dayjs(new Date())
+                }
                 onChange={(_date, dateString) => {
                   if (typeof dateString === 'string') {
                     setState((prevState) => {
@@ -259,7 +301,7 @@ const RegisterForm: React.FC<Props> = ({
               />
             </Form.Item>
           </Col>
-          <PasswordInputGroup />
+          <PasswordInput state={state} onChange={inputChangeHandler} />
         </Row>
         <Divider style={{ marginTop: 16 }} />
         <Row
@@ -282,10 +324,9 @@ const RegisterForm: React.FC<Props> = ({
           <Col xs={{ span: 24 }} md={{ span: 8 }}>
             <Button
               htmlType="submit"
-              form="register"
               type="primary"
-              disabled={creating}
               style={{ width: '100%' }}
+              disabled={creating}
             >
               Отправить
             </Button>

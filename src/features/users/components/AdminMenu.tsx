@@ -19,7 +19,7 @@ type MenuItem = Required<MenuProps>['items'][number];
 const AdminMenu: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
   const screens = useBreakpoint();
   const xs = screens.xs;
