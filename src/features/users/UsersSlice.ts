@@ -8,7 +8,7 @@ import { message } from 'antd';
 interface UsersState {
   user: User | null;
   staff: StaffData[];
-  userInfo: User | null;
+  employee: User | null;
   registerLoading: boolean;
   loginLoading: boolean;
   loginError: GlobalMessage | null;
@@ -20,7 +20,7 @@ interface UsersState {
 const initialState: UsersState = {
   user: null,
   staff: [],
-  userInfo: null,
+  employee: null,
   registerLoading: false,
   loginLoading: false,
   loginError: null,
@@ -75,7 +75,7 @@ export const usersSlice = createSlice({
       })
       .addCase(getOneUser.fulfilled, (state, { payload: data }) => {
         state.fetchOneLoading = false;
-        state.userInfo = data;
+        state.employee = data;
       })
       .addCase(getOneUser.rejected, (state) => {
         state.fetchOneLoading = true;
@@ -102,7 +102,7 @@ export const { unsetUser } = usersSlice.actions;
 
 export const selectUser = (state: RootState) => state.users.user;
 export const selectStaff = (state: RootState) => state.users.staff;
-export const selectUserInfo = (state: RootState) => state.users.userInfo;
+export const selectEmployee = (state: RootState) => state.users.employee;
 export const selectRegisterLoading = (state: RootState) =>
   state.users.registerLoading;
 export const selectLoginLoading = (state: RootState) =>
