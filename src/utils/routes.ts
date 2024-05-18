@@ -17,6 +17,7 @@ export const appRoutes = {
 
 export const apiRoutes = {
   users: 'staff',
+  userInfo: 'staff/info/',
   newUser: 'staff/register-user',
   sessions: 'staff/sessions',
   positions: 'positions',

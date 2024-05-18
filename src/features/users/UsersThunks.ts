@@ -4,6 +4,7 @@ import {
   LoginResponse,
   RegisterMutation,
   StaffData,
+  User,
   UserQueryParams,
   UserQueryValues,
 } from '../../types/types.user';
@@ -53,6 +54,14 @@ export const createUser = createAsyncThunk<
     throw e;
   }
 });
+
+export const getOneUser = createAsyncThunk<User, string>(
+  'users/getOne',
+  async (id) => {
+    const response = await axiosApi.get<User>(apiRoutes.userInfo + id);
+    return response.data;
+  },
+);
 export const getUsers = createAsyncThunk<
   StaffData[],
   UserQueryValues | undefined,
