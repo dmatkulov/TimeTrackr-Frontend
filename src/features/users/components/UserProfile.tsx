@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
 import {
@@ -24,11 +24,13 @@ import {
   QuestionCircleOutlined,
 } from '@ant-design/icons';
 import { formatPhoneNumber } from '../../../utils/helpers';
-import { deleteUser, getOneUser } from '../UsersThunks';
+import { deleteUser } from '../UsersThunks';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
-import { useAppDispatch } from '../../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../../utils/routes';
+import { selectDeleteUserLoading } from '../UsersSlice';
+import UpdateUser from '../admin/UpdateUser';
 
 dayjs.locale('ru');
 
@@ -40,6 +42,17 @@ interface Props {
 const UserProfile: React.FC<Props> = ({ employee }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const deleteLoading = useAppSelector(selectDeleteUserLoading);
+
+  const [open, setOpen] = useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
   const { sm, lg } = useBreakpoint();
 
   let photo = noPhoto;
@@ -48,6 +61,7 @@ const UserProfile: React.FC<Props> = ({ employee }) => {
   }
 
   const startDate = dayjs(employee.startDate).format('DD MMMM, YYYY');
+
   const phone = formatPhoneNumber(employee.contactInfo.mobile);
 
   const handleDelete = useCallback(
@@ -112,7 +126,7 @@ const UserProfile: React.FC<Props> = ({ employee }) => {
               size="middle"
               shape="round"
               icon={<EditOutlined />}
-              onClick={() => getOneUser(employee._id)}
+              onClick={handleOpen}
             >
               Редактировать
             </Button>
@@ -122,6 +136,7 @@ const UserProfile: React.FC<Props> = ({ employee }) => {
               icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
               okText="Удалить"
               cancelText="Отменить"
+              disabled={deleteLoading}
               onConfirm={() => handleDelete(employee._id)}
             >
               <Button
@@ -137,6 +152,7 @@ const UserProfile: React.FC<Props> = ({ employee }) => {
           </Flex>
         </Col>
       </Row>
+      <UpdateUser open={open} onClose={handleClose} />
     </>
   );
 };

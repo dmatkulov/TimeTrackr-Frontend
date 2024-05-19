@@ -2,10 +2,10 @@ import React from 'react';
 import 'react-phone-input-2/lib/style.css';
 import PhoneInput from 'react-phone-input-2';
 import { Col, Form, Input } from 'antd';
-import { RegisterMutation } from '../../../types/types.user';
+import { UserMutation } from '../../../types/types.user';
 
 interface Props {
-  state: RegisterMutation;
+  state: UserMutation;
   onPhoneChange: (value: string) => void;
   onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }

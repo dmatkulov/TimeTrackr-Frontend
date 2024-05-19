@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import { Button, Space } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import RegisterForm from './RegisterForm';
 import AddPosition from '../../positions/AddPosition';
+import RegisterUser from '../admin/RegisterUser';
 
 const AdminHeader: React.FC = () => {
   const { xs } = useBreakpoint();
@@ -38,7 +38,7 @@ const AdminHeader: React.FC = () => {
           Создать позицую
         </Button>
       </Space>
-      <RegisterForm open={open} onClose={handleClose} />
+      <RegisterUser open={open} onClose={handleClose} />
       <AddPosition open={openPosition} onClose={handleClosePosition} />
     </>
   );

@@ -16,8 +16,6 @@ const StaffInfoPage: React.FC = () => {
     dispatch(getOneUser(id));
   }, [dispatch]);
 
-  console.log(employee);
-
   return (
     employee && (
       <>{loading ? <Spinner /> : <UserProfile employee={employee} />}</>

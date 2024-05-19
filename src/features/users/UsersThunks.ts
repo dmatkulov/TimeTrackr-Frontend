@@ -2,8 +2,9 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   LoginMutation,
   LoginResponse,
-  RegisterMutation,
+  UserMutation,
   StaffData,
+  UpdateUserArg,
   User,
   UserQueryParams,
   UserQueryValues,
@@ -17,7 +18,7 @@ import { unsetUser } from './UsersSlice';
 
 export const createUser = createAsyncThunk<
   LoginResponse,
-  RegisterMutation,
+  UserMutation,
   { rejectValue: BadRequestError }
 >('users/addUser', async (mutation, { rejectWithValue }) => {
   try {
@@ -30,7 +31,7 @@ export const createUser = createAsyncThunk<
     formData.append('contactInfo[mobile]', mutation.contactInfo.mobile);
     formData.append('contactInfo[city]', mutation.contactInfo.city);
     formData.append('contactInfo[street]', mutation.contactInfo.street);
-    formData.append('password', mutation.password);
+    formData.append('password', mutation.password!);
     formData.append('startDate', mutation.startDate);
 
     if (mutation.photo) {
@@ -118,6 +119,29 @@ export const login = createAsyncThunk<
     throw e;
   }
 });
+
+export const updateUser = createAsyncThunk<LoginResponse, UpdateUserArg>(
+  'users/updateOne',
+  async ({ id, mutation }) => {
+    const formData = new FormData();
+
+    for (const [key, value] of Object.entries(mutation)) {
+      if ((value && key !== 'contactInfo') || value !== null) {
+        formData.append(key, value);
+      }
+    }
+
+    formData.append('contactInfo[mobile]', mutation.contactInfo.mobile);
+    formData.append('contactInfo[city]', mutation.contactInfo.city);
+    formData.append('contactInfo[street]', mutation.contactInfo.street);
+
+    const response = await axiosApi.patch<LoginResponse>(
+      apiRoutes.updateUser + id,
+      mutation,
+    );
+    return response.data;
+  },
+);
 
 export const logOut = createAsyncThunk<void, undefined, { state: RootState }>(
   'users/logout',

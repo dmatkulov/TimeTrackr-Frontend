@@ -8,6 +8,7 @@ import {
   getOneUser,
   getUsers,
   login,
+  updateUser,
 } from './UsersThunks';
 import { message } from 'antd';
 
@@ -21,6 +22,7 @@ interface UsersState {
   logOutLoading: boolean;
   fetchAllLoading: boolean;
   fetchOneLoading: boolean;
+  updateLoading: boolean;
   deleteLoading: boolean;
 }
 
@@ -34,6 +36,7 @@ const initialState: UsersState = {
   logOutLoading: false,
   fetchAllLoading: false,
   fetchOneLoading: false,
+  updateLoading: false,
   deleteLoading: false,
 };
 
@@ -104,12 +107,29 @@ export const usersSlice = createSlice({
       });
 
     builder
+      .addCase(updateUser.pending, (state) => {
+        state.updateLoading = true;
+      })
+      .addCase(updateUser.fulfilled, (state, { payload: data }) => {
+        state.updateLoading = false;
+        state.employee = data.user;
+
+        void message.success(data.message);
+      })
+      .addCase(updateUser.rejected, (state) => {
+        state.updateLoading = false;
+      });
+
+    builder
       .addCase(deleteUser.pending, (state) => {
         state.deleteLoading = true;
       })
       .addCase(deleteUser.fulfilled, (state, { payload: data }) => {
         state.deleteLoading = false;
         void message.success(data.message);
+      })
+      .addCase(deleteUser.rejected, (state) => {
+        state.deleteLoading = false;
       });
   },
 });
@@ -131,6 +151,7 @@ export const selectFetchOneLoading = (state: RootState) =>
 export const selectLoginError = (state: RootState) => state.users.loginLoading;
 export const selectLogoutLoading = (state: RootState) =>
   state.users.logOutLoading;
-
+export const selectUserUpdateLoading = (state: RootState) =>
+  state.users.updateLoading;
 export const selectDeleteUserLoading = (state: RootState) =>
   state.users.deleteLoading;

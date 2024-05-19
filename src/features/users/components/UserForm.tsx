@@ -18,16 +18,14 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 
-import { RegisterMutation } from '../../../types/types.user';
+import { UserMutation } from '../../../types/types.user';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { selectPositions } from '../../positions/positionsSlice';
 import { fetchPositions } from '../../positions/positionsThunks';
 import { ClearOutlined } from '@ant-design/icons';
-import PasswordInput from './PasswordInputGroup';
+import { selectPositions } from '../../positions/positionsSlice';
 import ContactsInputGroup from './ContactsInputGroup';
-import { selectRegisterLoading } from '../UsersSlice';
-import { createUser, getUsers } from '../UsersThunks';
 import FileInput from './FileInput';
+import PasswordInput from './PasswordInputGroup';
 
 dayjs.extend(buddhistEra);
 dayjs.extend(utc);
@@ -44,7 +42,7 @@ const buddhistLocale: typeof ru = {
   },
 };
 
-const initialState: RegisterMutation = {
+const initialState: UserMutation = {
   email: '',
   firstname: '',
   lastname: '',
@@ -60,27 +58,34 @@ const initialState: RegisterMutation = {
 };
 
 interface Props {
-  existingUser?: RegisterMutation;
-  isEdit?: boolean;
+  existingUser?: UserMutation;
   open: boolean;
   onClose: () => void;
+  isEdit?: boolean;
+  loading: boolean;
 }
 
-const RegisterForm: React.FC<Props> = ({
+const UserForm: React.FC<Props> = ({
   existingUser = initialState,
   open,
   onClose,
+  isEdit = false,
+  loading,
 }) => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const positions = useAppSelector(selectPositions);
-  const creating = useAppSelector(selectRegisterLoading);
 
-  const [state, setState] = useState<RegisterMutation>(existingUser);
+  const [state, setState] = useState<UserMutation>(initialState);
 
   useEffect(() => {
     if (existingUser) {
-      form.setFieldsValue(existingUser);
+      setState(existingUser);
+
+      form.setFieldsValue({
+        ...existingUser,
+        startDate: dayjs(existingUser.startDate),
+      });
     }
   }, [existingUser, form]);
 
@@ -91,8 +96,8 @@ const RegisterForm: React.FC<Props> = ({
   const onSubmit = async () => {
     try {
       console.log(state);
-      await dispatch(createUser(state)).unwrap();
-      await dispatch(getUsers());
+      // await dispatch(createUser(state)).unwrap();
+      // await dispatch(getUsers());
       closeDrawer();
     } catch (e) {
       console.log(e);
@@ -139,7 +144,7 @@ const RegisterForm: React.FC<Props> = ({
   const deletePhoto = () => {
     setState((prevState) => ({
       ...prevState,
-      photo: null,
+      photo: existingUser ? 'delete' : null,
     }));
   };
 
@@ -157,7 +162,7 @@ const RegisterForm: React.FC<Props> = ({
 
   return (
     <Drawer
-      title="Добавление нового сотрудника"
+      title={isEdit ? 'Обновление данных сотрудника' : 'Добавить сотрудника'}
       width={720}
       onClose={closeDrawer}
       open={open}
@@ -168,13 +173,7 @@ const RegisterForm: React.FC<Props> = ({
         },
       }}
     >
-      <Form
-        form={form}
-        layout="vertical"
-        initialValues={existingUser}
-        onFinish={onSubmit}
-        autoComplete="off"
-      >
+      <Form form={form} layout="vertical" onFinish={onSubmit}>
         <Row gutter={16}>
           <Col xs={{ span: 24 }}>
             <Form.Item name="photo">
@@ -194,6 +193,7 @@ const RegisterForm: React.FC<Props> = ({
               <Input
                 placeholder="Фамилия сотрудника"
                 name="lastname"
+                id={isEdit ? 'lastnameUpd' : 'lastname'}
                 value={state.lastname}
                 onChange={inputChangeHandler}
               />
@@ -208,6 +208,7 @@ const RegisterForm: React.FC<Props> = ({
               <Input
                 placeholder="Имя сотрудника"
                 name="firstname"
+                id={isEdit ? 'firstnameUpd' : 'firstname'}
                 value={state.firstname}
                 onChange={inputChangeHandler}
               />
@@ -230,6 +231,7 @@ const RegisterForm: React.FC<Props> = ({
               <Input
                 placeholder="Электронная почта"
                 name="email"
+                id={isEdit ? 'emailUpd' : 'email'}
                 value={state.email}
                 onChange={inputChangeHandler}
               />
@@ -239,10 +241,12 @@ const RegisterForm: React.FC<Props> = ({
             <Form.Item
               name="position"
               label="Позиция"
+              id={isEdit ? 'positionUpd' : 'position'}
               rules={[{ required: true, message: 'Выберите позицию' }]}
             >
               <Select
                 value={state.position}
+                id={isEdit ? 'positionUpd' : 'position'}
                 onChange={(value) =>
                   setState((prevState) => ({
                     ...prevState,
@@ -283,6 +287,7 @@ const RegisterForm: React.FC<Props> = ({
               <DatePicker
                 allowClear={false}
                 name="startDate"
+                id={isEdit ? 'startDateUpd' : 'startDate'}
                 style={{ width: '100%' }}
                 value={
                   state.startDate ? dayjs(state.startDate) : dayjs(new Date())
@@ -301,7 +306,9 @@ const RegisterForm: React.FC<Props> = ({
               />
             </Form.Item>
           </Col>
-          <PasswordInput state={state} onChange={inputChangeHandler} />
+          {!isEdit && (
+            <PasswordInput state={state} onChange={inputChangeHandler} />
+          )}
         </Row>
         <Divider style={{ marginTop: 16 }} />
         <Row
@@ -326,9 +333,9 @@ const RegisterForm: React.FC<Props> = ({
               htmlType="submit"
               type="primary"
               style={{ width: '100%' }}
-              disabled={creating}
+              disabled={loading}
             >
-              Отправить
+              {isEdit ? 'Обновить' : 'Отправить'}
             </Button>
           </Col>
         </Row>
@@ -337,4 +344,4 @@ const RegisterForm: React.FC<Props> = ({
   );
 };
 
-export default RegisterForm;
+export default UserForm;
