@@ -1,6 +1,5 @@
 import React from 'react';
 import dayjs from 'dayjs';
-import localizedFormat from 'dayjs/plugin/localizedFormat';
 import 'dayjs/locale/ru';
 import {
   Button,
@@ -28,8 +27,6 @@ import { formatPhoneNumber } from '../../../utils/helpers';
 import { getOneUser } from '../UsersThunks';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 
-dayjs.extend(localizedFormat);
-dayjs().format('L LT');
 dayjs.locale('ru');
 
 const { Title, Text } = Typography;
