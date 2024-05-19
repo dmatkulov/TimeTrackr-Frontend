@@ -2,7 +2,13 @@ import { StaffData, User } from '../../types/types.user';
 import { GlobalMessage } from '../../types/types.global';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { createUser, getOneUser, getUsers, login } from './UsersThunks';
+import {
+  createUser,
+  deleteUser,
+  getOneUser,
+  getUsers,
+  login,
+} from './UsersThunks';
 import { message } from 'antd';
 
 interface UsersState {
@@ -15,6 +21,7 @@ interface UsersState {
   logOutLoading: boolean;
   fetchAllLoading: boolean;
   fetchOneLoading: boolean;
+  deleteLoading: boolean;
 }
 
 const initialState: UsersState = {
@@ -27,6 +34,7 @@ const initialState: UsersState = {
   logOutLoading: false,
   fetchAllLoading: false,
   fetchOneLoading: false,
+  deleteLoading: false,
 };
 
 export const usersSlice = createSlice({
@@ -94,6 +102,15 @@ export const usersSlice = createSlice({
         state.loginLoading = false;
         void message.error(data?.message);
       });
+
+    builder
+      .addCase(deleteUser.pending, (state) => {
+        state.deleteLoading = true;
+      })
+      .addCase(deleteUser.fulfilled, (state, { payload: data }) => {
+        state.deleteLoading = false;
+        void message.success(data.message);
+      });
   },
 });
 
@@ -114,3 +131,6 @@ export const selectFetchOneLoading = (state: RootState) =>
 export const selectLoginError = (state: RootState) => state.users.loginLoading;
 export const selectLogoutLoading = (state: RootState) =>
   state.users.logOutLoading;
+
+export const selectDeleteUserLoading = (state: RootState) =>
+  state.users.deleteLoading;

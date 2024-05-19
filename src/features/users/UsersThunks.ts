@@ -126,3 +126,11 @@ export const logOut = createAsyncThunk<void, undefined, { state: RootState }>(
     dispatch(unsetUser());
   },
 );
+
+export const deleteUser = createAsyncThunk<GlobalMessage, string>(
+  'users/deleteOne',
+  async (id) => {
+    const response = await axiosApi.delete(apiRoutes.deleteUser + id);
+    return response.data;
+  },
+);

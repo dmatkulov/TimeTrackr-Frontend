@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
 import {
@@ -24,8 +24,11 @@ import {
   QuestionCircleOutlined,
 } from '@ant-design/icons';
 import { formatPhoneNumber } from '../../../utils/helpers';
-import { getOneUser } from '../UsersThunks';
+import { deleteUser, getOneUser } from '../UsersThunks';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
+import { useAppDispatch } from '../../../app/hooks';
+import { useNavigate } from 'react-router-dom';
+import { appRoutes } from '../../../utils/routes';
 
 dayjs.locale('ru');
 
@@ -35,6 +38,8 @@ interface Props {
   employee: User;
 }
 const UserProfile: React.FC<Props> = ({ employee }) => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { sm, lg } = useBreakpoint();
 
   let photo = noPhoto;
@@ -44,6 +49,14 @@ const UserProfile: React.FC<Props> = ({ employee }) => {
 
   const startDate = dayjs(employee.startDate).format('DD MMMM, YYYY');
   const phone = formatPhoneNumber(employee.contactInfo.mobile);
+
+  const handleDelete = useCallback(
+    async (id: string) => {
+      await dispatch(deleteUser(id)).unwrap();
+      navigate(appRoutes.admin.staff);
+    },
+    [dispatch],
+  );
 
   return (
     <>
@@ -104,11 +117,12 @@ const UserProfile: React.FC<Props> = ({ employee }) => {
               Редактировать
             </Button>
             <Popconfirm
-              title="Удаление позиции"
-              description="Вы уверены что хотите удалить?"
+              title="Удаление сотрудника"
+              description="Вы уверены, что хотите удалить сотрудника?"
               icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
               okText="Удалить"
               cancelText="Отменить"
+              onConfirm={() => handleDelete(employee._id)}
             >
               <Button
                 style={{ width: !sm ? '280px' : 'auto' }}

@@ -2,13 +2,15 @@ import React, { useEffect } from 'react';
 import UserProfile from './components/UserProfile';
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectEmployee } from './UsersSlice';
+import { selectEmployee, selectFetchOneLoading } from './UsersSlice';
 import { getOneUser } from './UsersThunks';
+import Spinner from '../../components/UI/Spin/Spin';
 
 const StaffInfoPage: React.FC = () => {
   const { id } = useParams() as { id: string };
   const dispatch = useAppDispatch();
   const employee = useAppSelector(selectEmployee);
+  const loading = useAppSelector(selectFetchOneLoading);
 
   useEffect(() => {
     dispatch(getOneUser(id));
@@ -18,9 +20,7 @@ const StaffInfoPage: React.FC = () => {
 
   return (
     employee && (
-      <div>
-        <UserProfile employee={employee} />
-      </div>
+      <>{loading ? <Spinner /> : <UserProfile employee={employee} />}</>
     )
   );
 };

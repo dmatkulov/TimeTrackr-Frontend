@@ -25,4 +25,5 @@ export const apiRoutes = {
   positionById: 'positions/info/',
   editPosition: 'positions/edit/',
   deletePositions: 'positions/delete',
+  deleteUser: 'staff/delete/',
 };
