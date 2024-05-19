@@ -87,7 +87,8 @@ const UserProfile: React.FC<Props> = ({ employee }) => {
               <Space>
                 <PhoneOutlined />
                 <Text>
-                  г. {employee.contactInfo.city}, {employee.contactInfo.street}
+                  г. {employee.contactInfo.city}, ул.{' '}
+                  {employee.contactInfo.street}
                 </Text>
               </Space>
             </Flex>
