@@ -30,10 +30,12 @@ export const createUser = createAsyncThunk<
     formData.append('position', mutation.position);
     formData.append('contactInfo[mobile]', mutation.contactInfo.mobile);
     formData.append('contactInfo[city]', mutation.contactInfo.city);
-    formData.append('contactInfo[street]', mutation.contactInfo.street);
-    formData.append('password', mutation.password!);
     formData.append('startDate', mutation.startDate);
+    formData.append('contactInfo[street]', mutation.contactInfo.street);
 
+    if (mutation.password) {
+      formData.append('password', mutation.password);
+    }
     if (mutation.photo) {
       formData.append('photo', mutation.photo);
     }
@@ -123,23 +125,30 @@ export const login = createAsyncThunk<
 export const updateUser = createAsyncThunk<LoginResponse, UpdateUserArg>(
   'users/updateOne',
   async ({ id, mutation }) => {
-    const formData = new FormData();
+    try {
+      const formData = new FormData();
 
-    for (const [key, value] of Object.entries(mutation)) {
-      if ((value && key !== 'contactInfo') || value !== null) {
-        formData.append(key, value);
+      formData.append('email', mutation.email);
+      formData.append('firstname', mutation.firstname);
+      formData.append('lastname', mutation.lastname);
+      formData.append('position', mutation.position);
+      formData.append('contactInfo[mobile]', mutation.contactInfo.mobile);
+      formData.append('contactInfo[city]', mutation.contactInfo.city);
+      formData.append('contactInfo[street]', mutation.contactInfo.street);
+      formData.append('startDate', mutation.startDate);
+
+      if (mutation.photo) {
+        formData.append('photo', mutation.photo);
       }
+
+      const response = await axiosApi.patch(
+        `${apiRoutes.users}/edit/${id}`,
+        formData,
+      );
+      return response.data;
+    } catch (e) {
+      console.log(e);
     }
-
-    formData.append('contactInfo[mobile]', mutation.contactInfo.mobile);
-    formData.append('contactInfo[city]', mutation.contactInfo.city);
-    formData.append('contactInfo[street]', mutation.contactInfo.street);
-
-    const response = await axiosApi.patch<LoginResponse>(
-      apiRoutes.updateUser + id,
-      mutation,
-    );
-    return response.data;
   },
 );
 

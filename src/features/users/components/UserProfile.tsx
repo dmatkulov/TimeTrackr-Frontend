@@ -6,7 +6,6 @@ import {
   Col,
   Divider,
   Flex,
-  Image,
   Popconfirm,
   Row,
   Space,
@@ -76,12 +75,21 @@ const UserProfile: React.FC<Props> = ({ employee }) => {
     <>
       <Row gutter={44} style={{ paddingTop: 20 }}>
         <Col>
-          <Image
-            width={200}
-            src={photo}
-            alt={employee.lastname}
-            style={{ borderRadius: 12, marginBottom: 30 }}
-          />
+          <div
+            style={{
+              width: '100%',
+              height: '200px',
+              overflow: 'hidden',
+              borderRadius: 12,
+              marginBottom: 30,
+            }}
+          >
+            <img
+              src={photo}
+              alt={employee.lastname}
+              style={{ height: '100%', objectFit: 'cover' }}
+            />
+          </div>
         </Col>
         <Col>
           <Title style={{ margin: '0 0 25px 0' }} level={3}>

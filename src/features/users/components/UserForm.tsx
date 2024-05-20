@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Button,
   Col,
@@ -23,7 +23,7 @@ import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { fetchPositions } from '../../positions/positionsThunks';
 import { ClearOutlined } from '@ant-design/icons';
 import { selectPositions } from '../../positions/positionsSlice';
-import ContactsInputGroup from './ContactsInputGroup';
+import ContactsPhoneInput from './ContactsPhoneInput';
 import FileInput from './FileInput';
 import PasswordInput from './PasswordInputGroup';
 
@@ -53,12 +53,14 @@ const initialState: UserMutation = {
     street: '',
   },
   password: '',
-  startDate: '',
+  startDate: dayjs(new Date()).format('YYYY-MM-DD'),
   photo: null,
 };
 
 interface Props {
+  onSubmit: (state: UserMutation) => void;
   existingUser?: UserMutation;
+  existingImage?: string | null;
   open: boolean;
   onClose: () => void;
   isEdit?: boolean;
@@ -66,7 +68,9 @@ interface Props {
 }
 
 const UserForm: React.FC<Props> = ({
+  onSubmit,
   existingUser = initialState,
+  existingImage,
   open,
   onClose,
   isEdit = false,
@@ -76,7 +80,7 @@ const UserForm: React.FC<Props> = ({
   const dispatch = useAppDispatch();
   const positions = useAppSelector(selectPositions);
 
-  const [state, setState] = useState<UserMutation>(initialState);
+  const [state, setState] = useState<UserMutation>(existingUser);
 
   useEffect(() => {
     if (existingUser) {
@@ -93,11 +97,13 @@ const UserForm: React.FC<Props> = ({
     dispatch(fetchPositions());
   }, [dispatch]);
 
-  const onSubmit = async () => {
+  const onFinish = async () => {
     try {
-      console.log(state);
-      // await dispatch(createUser(state)).unwrap();
-      // await dispatch(getUsers());
+      onSubmit({
+        ...state,
+        photo:
+          existingImage && state.photo === null ? existingImage : state.photo,
+      });
       closeDrawer();
     } catch (e) {
       console.log(e);
@@ -117,8 +123,9 @@ const UserForm: React.FC<Props> = ({
   };
 
   const closeDrawer = () => {
-    onClose();
     form.resetFields();
+    deletePhoto();
+    onClose();
   };
 
   const contactInfo = Object.keys(state.contactInfo);
@@ -144,7 +151,7 @@ const UserForm: React.FC<Props> = ({
   const deletePhoto = () => {
     setState((prevState) => ({
       ...prevState,
-      photo: existingUser ? 'delete' : null,
+      photo: 'delete',
     }));
   };
 
@@ -160,6 +167,16 @@ const UserForm: React.FC<Props> = ({
     }
   };
 
+  const selectedFilename = useMemo(() => {
+    if (state.photo instanceof File) {
+      return state.photo.name;
+    } else if (state.photo === 'delete') {
+      return undefined;
+    } else if (existingImage) {
+      return existingImage.split('/').pop();
+    }
+  }, [state.photo, existingImage]);
+
   return (
     <Drawer
       title={isEdit ? 'Обновление данных сотрудника' : 'Добавить сотрудника'}
@@ -173,12 +190,18 @@ const UserForm: React.FC<Props> = ({
         },
       }}
     >
-      <Form form={form} layout="vertical" onFinish={onSubmit}>
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={onFinish}
+        autoComplete="off"
+      >
         <Row gutter={16}>
           <Col xs={{ span: 24 }}>
             <Form.Item name="photo">
               <FileInput
                 name="photo"
+                filename={selectedFilename}
                 onChange={fileInputChangeHandler}
                 onDelete={deletePhoto}
               />
@@ -265,11 +288,37 @@ const UserForm: React.FC<Props> = ({
           </Col>
         </Row>
         <Row gutter={16}>
-          <ContactsInputGroup
-            state={state}
-            onInputChange={inputChangeHandler}
-            onPhoneChange={handlePhoneChange}
-          />
+          <ContactsPhoneInput state={state} onPhoneChange={handlePhoneChange} />
+          <Col xs={{ span: 24 }} md={{ span: 8 }}>
+            <Form.Item
+              label="Город"
+              name={['contactInfo', 'city']}
+              rules={[{ required: true, message: 'Укажите город' }]}
+            >
+              <Input
+                name="city"
+                id={isEdit ? 'cityUpd' : 'city'}
+                value={state.contactInfo.city}
+                onChange={inputChangeHandler}
+                placeholder="Город проживания"
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={{ span: 24 }} md={{ span: 8 }}>
+            <Form.Item
+              label="Улица"
+              name={['contactInfo', 'street']}
+              rules={[{ required: true, message: 'Укажите улицу' }]}
+            >
+              <Input
+                name="street"
+                id={isEdit ? 'streetUpd' : 'street'}
+                onChange={inputChangeHandler}
+                value={state.contactInfo.street}
+                placeholder="Улица"
+              />
+            </Form.Item>
+          </Col>
         </Row>
         <Row gutter={16}>
           <Col xs={{ span: 24 }} md={{ span: 8 }}>
@@ -289,9 +338,7 @@ const UserForm: React.FC<Props> = ({
                 name="startDate"
                 id={isEdit ? 'startDateUpd' : 'startDate'}
                 style={{ width: '100%' }}
-                value={
-                  state.startDate ? dayjs(state.startDate) : dayjs(new Date())
-                }
+                value={state.startDate}
                 onChange={(_date, dateString) => {
                   if (typeof dateString === 'string') {
                     setState((prevState) => {
