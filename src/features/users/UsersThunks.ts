@@ -125,30 +125,26 @@ export const login = createAsyncThunk<
 export const updateUser = createAsyncThunk<LoginResponse, UpdateUserArg>(
   'users/updateOne',
   async ({ id, mutation }) => {
-    try {
-      const formData = new FormData();
+    const formData = new FormData();
 
-      formData.append('email', mutation.email);
-      formData.append('firstname', mutation.firstname);
-      formData.append('lastname', mutation.lastname);
-      formData.append('position', mutation.position);
-      formData.append('contactInfo[mobile]', mutation.contactInfo.mobile);
-      formData.append('contactInfo[city]', mutation.contactInfo.city);
-      formData.append('contactInfo[street]', mutation.contactInfo.street);
-      formData.append('startDate', mutation.startDate);
+    formData.append('email', mutation.email);
+    formData.append('firstname', mutation.firstname);
+    formData.append('lastname', mutation.lastname);
+    formData.append('position', mutation.position);
+    formData.append('contactInfo[mobile]', mutation.contactInfo.mobile);
+    formData.append('contactInfo[city]', mutation.contactInfo.city);
+    formData.append('contactInfo[street]', mutation.contactInfo.street);
+    formData.append('startDate', mutation.startDate);
 
-      if (mutation.photo) {
-        formData.append('photo', mutation.photo);
-      }
-
-      const response = await axiosApi.patch(
-        `${apiRoutes.users}/edit/${id}`,
-        formData,
-      );
-      return response.data;
-    } catch (e) {
-      console.log(e);
+    if (mutation.photo) {
+      formData.append('photo', mutation.photo);
     }
+
+    const response = await axiosApi.patch<LoginResponse>(
+      `${apiRoutes.users}/edit/${id}`,
+      formData,
+    );
+    return response.data;
   },
 );
 

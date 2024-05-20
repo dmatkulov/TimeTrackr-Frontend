@@ -5,6 +5,8 @@ import { selectEmployee, selectUserUpdateLoading } from '../UsersSlice';
 import dayjs from 'dayjs';
 import { UserMutation } from '../../../types/types.user';
 import { updateUser } from '../UsersThunks';
+import { Navigate } from 'react-router-dom';
+import { appRoutes } from '../../../utils/routes';
 
 interface Props {
   open: boolean;
@@ -13,23 +15,26 @@ interface Props {
 
 const UpdateUser: React.FC<Props> = ({ open, onClose }) => {
   const dispatch = useAppDispatch();
-  const user = useAppSelector(selectEmployee);
+  const employee = useAppSelector(selectEmployee);
   const updating = useAppSelector(selectUserUpdateLoading);
 
+  if (!employee) {
+    return <Navigate to={appRoutes.notFound} />;
+  }
+
   const handleSubmit = async (state: UserMutation) => {
-    if (user) {
-      await dispatch(updateUser({ id: user._id, mutation: state }));
+    if (employee) {
+      await dispatch(updateUser({ id: employee._id, mutation: state }));
     }
-    console.log(state);
   };
 
   let form;
-  if (user) {
-    const startDate = dayjs(user.startDate).format('YYYY-MM-DD');
+  if (employee) {
+    const startDate = dayjs(employee.startDate).format('YYYY-MM-DD');
 
     const mutation: UserMutation = {
-      ...user,
-      position: user.position._id,
+      ...employee,
+      position: employee.position._id,
       startDate: startDate,
       photo: null,
     };
@@ -40,7 +45,7 @@ const UpdateUser: React.FC<Props> = ({ open, onClose }) => {
         open={open}
         onClose={onClose}
         loading={updating}
-        existingImage={user.photo}
+        existingImage={employee.photo}
         isEdit
       />
     );

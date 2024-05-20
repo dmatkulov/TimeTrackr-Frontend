@@ -64,7 +64,7 @@ interface Props {
   open: boolean;
   onClose: () => void;
   isEdit?: boolean;
-  loading: boolean;
+  loading?: boolean;
 }
 
 const UserForm: React.FC<Props> = ({
@@ -74,7 +74,7 @@ const UserForm: React.FC<Props> = ({
   open,
   onClose,
   isEdit = false,
-  loading,
+  loading = false,
 }) => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();

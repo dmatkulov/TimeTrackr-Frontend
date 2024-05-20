@@ -89,7 +89,7 @@ export const usersSlice = createSlice({
         state.employee = data;
       })
       .addCase(getOneUser.rejected, (state) => {
-        state.fetchOneLoading = true;
+        state.fetchOneLoading = false;
       });
 
     builder
@@ -113,7 +113,6 @@ export const usersSlice = createSlice({
       .addCase(updateUser.fulfilled, (state, { payload: data }) => {
         state.updateLoading = false;
         state.employee = data.user;
-
         void message.success(data.message);
       })
       .addCase(updateUser.rejected, (state) => {
