@@ -5,6 +5,7 @@ import { useAppSelector } from '../../../app/hooks';
 import GuestAppBar from './GuestAppBar';
 import UserAppBar from './UserAppBar';
 import Logo from './Logo';
+import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 
 const { Header } = Layout;
 
@@ -14,6 +15,8 @@ const AppBar: React.FC = () => {
   } = theme.useToken();
 
   const user = useAppSelector(selectUser);
+
+  const { sm } = useBreakpoint();
 
   return (
     <>
@@ -33,7 +36,7 @@ const AppBar: React.FC = () => {
           justifyContent: 'space-between',
         }}
       >
-        <Logo />
+        {sm && <Logo />}
         {user ? <UserAppBar user={user} /> : <GuestAppBar />}
       </Header>
     </>

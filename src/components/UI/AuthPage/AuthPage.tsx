@@ -16,7 +16,7 @@ const AuthPage: React.FC = () => {
       if (user.role === 'admin') {
         navigate(appRoutes.admin.staff);
       } else {
-        navigate(appRoutes.employee.profileInfo);
+        navigate(appRoutes.employee.today);
       }
     }
   }, [user, navigate]);

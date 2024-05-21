@@ -1,14 +1,11 @@
-import React, { useState } from 'react';
-import { Button, Menu, MenuProps, Tooltip } from 'antd';
+import React from 'react';
+import { Menu, MenuProps } from 'antd';
 import {
   CalendarOutlined,
   LogoutOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
   TrophyOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import Sider from 'antd/es/layout/Sider';
 import { useAppDispatch } from '../../../../app/hooks';
 import { useNavigate } from 'react-router-dom';
 import { logOut } from '../../UsersThunks';
@@ -19,7 +16,6 @@ type MenuItem = Required<MenuProps>['items'][number];
 const EmployeeMenu: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [collapsed, setCollapsed] = useState(true);
 
   const logOutUser = async () => {
     await dispatch(logOut());
@@ -57,72 +53,20 @@ const EmployeeMenu: React.FC = () => {
         marginTop: 'auto',
       },
     },
-    {
-      type: 'divider',
-      style: {
-        marginBottom: '20px',
-      },
-    },
   ];
 
   return (
-    <Sider
-      collapsible
-      breakpoint="sm"
-      width="250px"
-      trigger={null}
-      collapsed={collapsed}
+    <Menu
+      defaultSelectedKeys={[activeKey]}
+      mode="inline"
+      items={items}
       style={{
-        marginTop: '65px',
-        paddingTop: '40px',
-        paddingLeft: '10px',
-        paddingRight: '10px',
-        background: '#fff',
-        float: 'right',
+        display: 'flex',
+        flexDirection: 'column',
+        border: 'none',
+        flexGrow: 1,
       }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          height: '100%',
-          paddingBottom: '20px',
-        }}
-      >
-        <Menu
-          defaultSelectedKeys={[activeKey]}
-          mode="inline"
-          items={items}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            border: 'none',
-            flexGrow: 1,
-          }}
-        />
-        <Tooltip placement="right" title={collapsed && 'Показать меню'}>
-          <Button
-            type="text"
-            color="#eee"
-            icon={
-              collapsed ? (
-                <MenuUnfoldOutlined />
-              ) : (
-                <MenuFoldOutlined style={{ display: 'inline' }} />
-              )
-            }
-            onClick={() => setCollapsed(!collapsed)}
-            style={{
-              textAlign: 'left',
-              padding: '0 24px',
-              marginInline: '4px',
-            }}
-          >
-            {!collapsed && 'Скрыть меню'}
-          </Button>
-        </Tooltip>
-      </div>
-    </Sider>
+    />
   );
 };
 
