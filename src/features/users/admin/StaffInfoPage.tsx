@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
-import UserProfile from './components/UserProfile';
+import UserProfile from '../components/UserProfile';
 import { useParams } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectEmployee, selectFetchOneLoading } from './UsersSlice';
-import { getOneUser } from './UsersThunks';
-import Spinner from '../../components/UI/Spin/Spin';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { selectEmployee, selectFetchOneLoading } from '../UsersSlice';
+import { getOneUser } from '../UsersThunks';
+import Spinner from '../../../components/UI/Spin/Spin';
 
 const StaffInfoPage: React.FC = () => {
   const { id } = useParams() as { id: string };

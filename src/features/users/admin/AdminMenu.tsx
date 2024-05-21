@@ -29,7 +29,7 @@ const AdminMenu: React.FC = () => {
     navigate(appRoutes.login);
   };
 
-  const activeKey = location.pathname.split('/')[3];
+  const activeKey = location.pathname.split('/')[2];
 
   const items: MenuItem[] = [
     {

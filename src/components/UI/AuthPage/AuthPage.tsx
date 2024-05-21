@@ -14,7 +14,9 @@ const AuthPage: React.FC = () => {
   const navigateToPanel = useCallback(() => {
     if (user) {
       if (user.role === 'admin') {
-        navigate(appRoutes.admin.staff);
+        navigate(appRoutes.admin.staffInfo);
+      } else {
+        navigate(appRoutes.employee.profileInfo);
       }
     }
   }, [user, navigate]);

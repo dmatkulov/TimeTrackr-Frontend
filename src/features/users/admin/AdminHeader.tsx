@@ -4,7 +4,7 @@ import { Button, Space } from 'antd';
 import { purple } from '@ant-design/colors';
 import { PlusOutlined } from '@ant-design/icons';
 import AddPosition from '../../positions/AddPosition';
-import RegisterUser from '../admin/RegisterUser';
+import RegisterUser from './RegisterUser';
 
 const AdminHeader: React.FC = () => {
   const { xs } = useBreakpoint();
