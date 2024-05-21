@@ -19,7 +19,7 @@ const UserAppBar: React.FC<Props> = ({ user }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { sm } = useBreakpoint();
+  const { md } = useBreakpoint();
   const isAdmin = user.role === 'admin';
 
   const logOutUser = async () => {
@@ -54,7 +54,7 @@ const UserAppBar: React.FC<Props> = ({ user }) => {
       >
         {isAdmin ? <AdminHeader /> : <EmployeeHeader />}
 
-        {!sm ? (
+        {!md ? (
           <MobileMenu user={user} />
         ) : (
           <Dropdown menu={{ items }} placement="bottomRight" arrow>

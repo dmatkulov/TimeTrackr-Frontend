@@ -2,21 +2,27 @@ import React, { useState } from 'react';
 import { Button, Layout, Tooltip } from 'antd';
 import { Outlet } from 'react-router-dom';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
-import EmployeeMenu from './components/EmployeeMenu';
+import EmployeeMenu from './employee/components/EmployeeMenu';
 import Sider from 'antd/es/layout/Sider';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
+import { useAppSelector } from '../../app/hooks';
+import { selectUser } from './UsersSlice';
+import AdminMenu from './admin/components/AdminMenu';
 
 const { Content } = Layout;
 
 interface Props extends React.PropsWithChildren {}
-const EmployeePanel: React.FC<Props> = () => {
-  const { sm, md } = useBreakpoint();
+const UserPanel: React.FC<Props> = () => {
+  const user = useAppSelector(selectUser);
+  const { md } = useBreakpoint();
   const [collapsed, setCollapsed] = useState(true);
+
+  const isAdmin = user?.role === 'admin';
 
   return (
     <>
       <Layout hasSider style={{ minHeight: '100vh' }}>
-        {sm && (
+        {md && (
           <Sider
             collapsible
             breakpoint="sm"
@@ -40,7 +46,7 @@ const EmployeePanel: React.FC<Props> = () => {
                 paddingBottom: '20px',
               }}
             >
-              <EmployeeMenu />
+              {isAdmin ? <AdminMenu /> : <EmployeeMenu />}
               <Tooltip placement="right" title={collapsed && 'Показать меню'}>
                 <Button
                   type="text"
@@ -88,4 +94,4 @@ const EmployeePanel: React.FC<Props> = () => {
   );
 };
 
-export default EmployeePanel;
+export default UserPanel;

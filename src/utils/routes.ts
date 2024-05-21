@@ -8,6 +8,7 @@ export const appRoutes = {
     staff: '/admin/all-staff',
     positions: '/admin/positions',
     staffInfo: '/admin/all-staff/profile',
+    stats: '/admin/stats',
   },
   employee: {
     profile: '/profile',

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import type { TableProps } from 'antd';
-import { Button, Space, Table, Popconfirm } from 'antd';
+import { Button, Popconfirm, Space, Table } from 'antd';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   selectPositionDeleting,
@@ -29,7 +29,7 @@ const PositionsTable: React.FC = () => {
   const loading = useAppSelector(selectPositionsLoading);
   const deleting = useAppSelector(selectPositionDeleting);
 
-  const { sm, md, lg } = useBreakpoint();
+  const { sm, md } = useBreakpoint();
 
   const [open, setOpen] = useState(false);
 
@@ -71,11 +71,14 @@ const PositionsTable: React.FC = () => {
       render: (_, position) => (
         <Space size="middle">
           <Button
-            size={!lg ? 'small' : 'middle'}
-            type="primary"
+            size="small"
             shape="round"
             icon={<EditOutlined />}
             onClick={() => fetchOne(position._id)}
+            style={{
+              width: '100%',
+              fontSize: '12px',
+            }}
           >
             {sm && 'Редактировать'}
           </Button>
@@ -89,11 +92,15 @@ const PositionsTable: React.FC = () => {
             onConfirm={() => handleDelete(position._id)}
           >
             <Button
-              size={!lg ? 'small' : 'middle'}
-              shape="round"
+              size="small"
+              type="text"
               danger
               icon={<DeleteOutlined />}
               disabled={deleting}
+              style={{
+                width: '100%',
+                fontSize: '12px',
+              }}
             >
               {md && 'Удалить'}
             </Button>

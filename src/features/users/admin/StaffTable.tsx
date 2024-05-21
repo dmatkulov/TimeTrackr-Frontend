@@ -5,14 +5,20 @@ import Spinner from '../../../components/UI/Spin/Spin';
 import {
   Avatar,
   Button,
+  Dropdown,
   Flex,
+  MenuProps,
   Space,
   Table,
   TableProps,
   Tag,
   Typography,
 } from 'antd';
-import { FieldTimeOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  FieldTimeOutlined,
+  MoreOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import { StaffData } from '../../../types/types.user';
 import { apiURL } from '../../../utils/constants';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
@@ -25,7 +31,20 @@ const StaffTable: React.FC = () => {
   const staff = useAppSelector(selectStaff);
   const fetchLoading = useAppSelector(selectFetchAllLoading);
 
-  const { xs, sm, md, lg } = useBreakpoint();
+  const { sm, lg } = useBreakpoint();
+
+  const items: MenuProps['items'] = [
+    {
+      label: 'Статистика',
+      key: 'stats',
+      icon: <FieldTimeOutlined />,
+    },
+    {
+      label: 'Профиль',
+      key: 'profile',
+      icon: <UserOutlined />,
+    },
+  ];
 
   const columns: TableProps<StaffData>['columns'] = [
     {
@@ -56,16 +75,45 @@ const StaffTable: React.FC = () => {
       width: !lg ? '100%' : '20%',
       render: (_, user) => (
         <>
-          <Space size="middle">
-            <Typography.Text>
-              {user.firstname} {user.lastname}
-            </Typography.Text>
-            {sm && !md && (
-              <Tag bordered={false} color={user.position.tag}>
-                {user.position.name}
-              </Tag>
+          <Flex align="center" justify="space-between">
+            <Space size="middle">
+              <Typography.Text>
+                {user.firstname} {user.lastname}
+              </Typography.Text>
+              {sm && !lg && (
+                <Tag
+                  bordered={false}
+                  color={user.position.tag}
+                  style={{ flexGrow: 1 }}
+                >
+                  {user.position.name}
+                </Tag>
+              )}
+            </Space>
+            {!lg && (
+              <Dropdown
+                menu={{
+                  items,
+                  onClick: ({ key }) => {
+                    if (key === 'stats') {
+                      navigate(appRoutes.admin.stats);
+                    }
+                    if (key === 'profile') {
+                      navigate(appRoutes.admin.staff + '/profile/' + user._id);
+                    }
+                  },
+                }}
+                placement="bottomRight"
+              >
+                <Button
+                  shape="circle"
+                  size="small"
+                  style={{ marginLeft: 'auto' }}
+                  icon={<MoreOutlined />}
+                />
+              </Dropdown>
             )}
-          </Space>
+          </Flex>
         </>
       ),
     },
@@ -73,7 +121,7 @@ const StaffTable: React.FC = () => {
       title: 'Позиция',
       key: 'position',
       dataIndex: 'position',
-      responsive: ['md'],
+      responsive: ['lg'],
       render: (_, { position }) => (
         <Tag bordered={false} color={position.tag}>
           {position.name}
@@ -85,36 +133,36 @@ const StaffTable: React.FC = () => {
       dataIndex: 'email',
       key: 'email',
       responsive: ['xl'],
-      render: (_, user) => (
-        <Typography.Link href={'mailto:' + user.email}>
-          {user.email}
-        </Typography.Link>
-      ),
+      render: (_, user) => <Typography.Text>{user.email}</Typography.Text>,
     },
     {
       dataIndex: 'action',
       key: 'action',
+      responsive: ['lg'],
       render: (_, user) => (
-        <Flex align="center" justify="flex-end" gap={12} wrap={!sm}>
+        <Flex align="center" justify="flex-end" gap={10}>
           <Button
-            size={!lg ? 'small' : 'middle'}
+            size="small"
             shape="round"
-            type="primary"
+            type="link"
             icon={<FieldTimeOutlined />}
-            style={{ width: '100%' }}
+            style={{
+              fontSize: '12px',
+            }}
           >
-            {(xs && !sm) || lg ? 'Статистика' : ''}
+            Статистика
           </Button>
           <Button
-            size={!lg ? 'small' : 'middle'}
+            size="small"
+            type="link"
             shape="round"
             icon={<UserOutlined />}
-            style={{ width: '100%' }}
+            style={{ fontSize: '12px' }}
             onClick={() =>
               navigate(appRoutes.admin.staff + '/profile/' + user._id)
             }
           >
-            {(xs && !sm) || lg ? 'Профиль' : ''}
+            Профиль
           </Button>
         </Flex>
       ),

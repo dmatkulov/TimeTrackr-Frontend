@@ -8,12 +8,11 @@ import AuthPage from './components/UI/AuthPage/AuthPage';
 import Protected from './components/ProtectedRoute/Protected';
 import { useAppSelector } from './app/hooks';
 import { selectUser } from './features/users/UsersSlice';
-import AdminPanel from './features/users/admin/AdminPanel';
 import StaffTable from './features/users/admin/StaffTable';
 import StaffInfo from './features/users/admin/StaffInfo';
 import StaffContainer from './features/users/admin/StaffContainer';
 import PositionsTable from './features/positions/PositionsTable';
-import EmployeePanel from './features/users/employee/EmployeePanel';
+import UserPanel from './features/users/UserPanel';
 import UserInfoPage from './features/users/employee/EmployeeInfo';
 import Today from './features/users/employee/Today';
 import CalendarPage from './features/users/employee/CalendarPage';
@@ -32,7 +31,7 @@ const App = () => {
             path={appRoutes.admin.profile}
             element={
               <Protected isAllowed={user && user.role === 'admin'}>
-                <AdminPanel />
+                <UserPanel />
               </Protected>
             }
           >
@@ -52,7 +51,7 @@ const App = () => {
             path={appRoutes.employee.profile}
             element={
               <Protected isAllowed={user && user.role === 'employee'}>
-                <EmployeePanel />
+                <UserPanel />
               </Protected>
             }
           >

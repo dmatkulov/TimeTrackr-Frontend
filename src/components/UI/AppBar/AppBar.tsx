@@ -16,7 +16,7 @@ const AppBar: React.FC = () => {
 
   const user = useAppSelector(selectUser);
 
-  const { sm } = useBreakpoint();
+  const { md } = useBreakpoint();
 
   return (
     <>
@@ -36,7 +36,7 @@ const AppBar: React.FC = () => {
           justifyContent: 'space-between',
         }}
       >
-        {sm && <Logo />}
+        {md && <Logo />}
         {user ? <UserAppBar user={user} /> : <GuestAppBar />}
       </Header>
     </>

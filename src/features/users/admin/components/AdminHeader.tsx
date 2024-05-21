@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
-import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
-import { Button, Space } from 'antd';
-import { purple } from '@ant-design/colors';
+import { Button, Dropdown, MenuProps, Space } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import AddPosition from '../../../positions/AddPosition';
 import StaffRegister from '../StaffRegister';
+import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 
 const AdminHeader: React.FC = () => {
-  const { xs } = useBreakpoint();
-
   const [open, setOpen] = useState(false);
   const [openPosition, setOpenPosition] = useState(false);
 
+  const { sm } = useBreakpoint();
   const handleClosePosition = () => {
     setOpenPosition(false);
   };
@@ -20,26 +18,47 @@ const AdminHeader: React.FC = () => {
     setOpen(false);
   };
 
+  const items: MenuProps['items'] = [
+    {
+      label: 'Новый сотрудник',
+      key: '1',
+      onClick: () => setOpen(true),
+    },
+    {
+      label: 'Новая позиция',
+      key: '2',
+      onClick: () => setOpenPosition(true),
+    },
+  ];
+
   return (
     <>
-      <Space align="center" style={{ display: xs ? 'none' : 'flex' }}>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => setOpen(true)}
-        >
-          Добавить сотрудника
-        </Button>
-        <Button
-          type="text"
-          icon={<PlusOutlined color={purple.primary} />}
-          iconPosition="start"
-          onClick={() => setOpenPosition(true)}
-          style={{ color: purple.primary }}
-        >
-          Создать позицую
-        </Button>
-      </Space>
+      {!sm ? (
+        <Dropdown menu={{ items }}>
+          <Button type="primary" icon={<PlusOutlined />}>
+            Добавить
+          </Button>
+        </Dropdown>
+      ) : (
+        <Space align="center">
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => setOpen(true)}
+          >
+            Добавить сотрудника
+          </Button>
+          <Button
+            type="link"
+            icon={<PlusOutlined />}
+            iconPosition="start"
+            onClick={() => setOpenPosition(true)}
+          >
+            Создать позицую
+          </Button>
+        </Space>
+      )}
+
       <StaffRegister open={open} onClose={handleClose} />
       <AddPosition open={openPosition} onClose={handleClosePosition} />
     </>
