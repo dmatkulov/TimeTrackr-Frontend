@@ -13,13 +13,24 @@ import { appRoutes } from '../../../../utils/routes';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
-const EmployeeMenu: React.FC = () => {
+interface Props {
+  handleMobile?: () => void;
+}
+const EmployeeMenu: React.FC<Props> = ({ handleMobile }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const logOutUser = async () => {
     await dispatch(logOut());
     navigate(appRoutes.login);
+  };
+
+  const handleNavigate = (path: string) => {
+    navigate(path);
+
+    if (handleMobile) {
+      handleMobile();
+    }
   };
 
   const activeKey = location.pathname;
@@ -29,19 +40,19 @@ const EmployeeMenu: React.FC = () => {
       key: appRoutes.employee.today,
       label: 'Сегодня',
       icon: <TrophyOutlined />,
-      onClick: () => navigate(appRoutes.employee.today),
+      onClick: () => handleNavigate(appRoutes.employee.today),
     },
     {
       key: appRoutes.employee.calendar,
       label: 'Календарь',
       icon: <CalendarOutlined />,
-      onClick: () => navigate(appRoutes.employee.calendar),
+      onClick: () => handleNavigate(appRoutes.employee.calendar),
     },
     {
       key: appRoutes.employee.profileInfo,
       label: 'Мой профиль',
       icon: <UserOutlined />,
-      onClick: () => navigate(appRoutes.employee.profileInfo),
+      onClick: () => handleNavigate(appRoutes.employee.profileInfo),
     },
     {
       key: 'logout',

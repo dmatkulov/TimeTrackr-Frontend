@@ -7,7 +7,7 @@ import { logOut } from '../../../features/users/UsersThunks';
 import { useNavigate } from 'react-router-dom';
 import AdminHeader from '../../../features/users/admin/components/AdminHeader';
 import EmployeeHeader from '../../../features/users/employee/components/EmployeeHeader';
-import UserDrawer from './UserDrawer';
+import MobileMenu from './MobileMenu';
 import UserAvatar from './UserAvatar';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 
@@ -55,7 +55,7 @@ const UserAppBar: React.FC<Props> = ({ user }) => {
         {isAdmin ? <AdminHeader /> : <EmployeeHeader />}
 
         {!sm ? (
-          <UserDrawer user={user} />
+          <MobileMenu user={user} />
         ) : (
           <Dropdown menu={{ items }} placement="bottomRight" arrow>
             <div>
