@@ -7,8 +7,8 @@ import { useAppDispatch } from '../../../app/hooks';
 import { logOut } from '../../../features/users/UsersThunks';
 import { useNavigate } from 'react-router-dom';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
-import AdminHeader from '../../../features/users/admin/AdminHeader';
-import EmployeeHeader from '../../../features/users/components/EmployeeHeader';
+import AdminHeader from '../../../features/users/admin/components/AdminHeader';
+import EmployeeHeader from '../../../features/users/employee/components/EmployeeHeader';
 
 const { Text, Link } = Typography;
 interface Props {

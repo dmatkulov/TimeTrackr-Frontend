@@ -5,8 +5,10 @@ import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { selectEmployee, selectFetchOneLoading } from '../UsersSlice';
 import { getOneUser } from '../UsersThunks';
 import Spinner from '../../../components/UI/Spin/Spin';
+import { Breadcrumb } from 'antd';
+import { appRoutes } from '../../../utils/routes';
 
-const StaffInfoPage: React.FC = () => {
+const StaffInfo: React.FC = () => {
   const { id } = useParams() as { id: string };
   const dispatch = useAppDispatch();
   const employee = useAppSelector(selectEmployee);
@@ -17,10 +19,23 @@ const StaffInfoPage: React.FC = () => {
   }, [dispatch]);
 
   return (
-    employee && (
-      <>{loading ? <Spinner /> : <UserProfile employee={employee} />}</>
-    )
+    <>
+      <Breadcrumb
+        style={{ marginBottom: '20px' }}
+        items={[
+          {
+            title: <a href={appRoutes.admin.staff}>Все сотрудники</a>,
+          },
+          {
+            title: 'Профиль',
+          },
+        ]}
+      />
+      {employee && (
+        <>{loading ? <Spinner /> : <UserProfile employee={employee} />}</>
+      )}
+    </>
   );
 };
 
-export default StaffInfoPage;
+export default StaffInfo;

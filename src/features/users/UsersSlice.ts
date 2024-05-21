@@ -14,8 +14,8 @@ import { message } from 'antd';
 
 interface UsersState {
   user: User | null;
-  staff: StaffData[];
-  employee: User | null;
+  staffAll: StaffData[];
+  staff: User | null;
   registerLoading: boolean;
   loginLoading: boolean;
   loginError: GlobalMessage | null;
@@ -28,8 +28,8 @@ interface UsersState {
 
 const initialState: UsersState = {
   user: null,
-  staff: [],
-  employee: null,
+  staffAll: [],
+  staff: null,
   registerLoading: false,
   loginLoading: false,
   loginError: null,
@@ -55,7 +55,7 @@ export const usersSlice = createSlice({
       })
       .addCase(getUsers.fulfilled, (state, { payload: data }) => {
         state.fetchAllLoading = false;
-        state.staff = data;
+        state.staffAll = data;
       })
       .addCase(getUsers.rejected, (state, { payload: error }) => {
         state.fetchAllLoading = false;
@@ -86,7 +86,7 @@ export const usersSlice = createSlice({
       })
       .addCase(getOneUser.fulfilled, (state, { payload: data }) => {
         state.fetchOneLoading = false;
-        state.employee = data;
+        state.staff = data;
       })
       .addCase(getOneUser.rejected, (state) => {
         state.fetchOneLoading = false;
@@ -114,7 +114,7 @@ export const usersSlice = createSlice({
         state.updateLoading = false;
 
         if (state.user?.role === 'admin') {
-          state.employee = data.user;
+          state.staff = data.user;
         }
         void message.success(data.message);
       })
@@ -141,8 +141,8 @@ export const usersReducer = usersSlice.reducer;
 export const { unsetUser } = usersSlice.actions;
 
 export const selectUser = (state: RootState) => state.users.user;
-export const selectStaff = (state: RootState) => state.users.staff;
-export const selectEmployee = (state: RootState) => state.users.employee;
+export const selectStaff = (state: RootState) => state.users.staffAll;
+export const selectEmployee = (state: RootState) => state.users.staff;
 export const selectRegisterLoading = (state: RootState) =>
   state.users.registerLoading;
 export const selectLoginLoading = (state: RootState) =>

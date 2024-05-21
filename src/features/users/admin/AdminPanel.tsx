@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layout } from 'antd';
-import AdminMenu from './AdminMenu';
+import AdminMenu from './components/AdminMenu';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import { Outlet } from 'react-router-dom';
 

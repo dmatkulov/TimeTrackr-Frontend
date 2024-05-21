@@ -8,15 +8,15 @@ import {
   TeamOutlined,
 } from '@ant-design/icons';
 import Sider from 'antd/es/layout/Sider';
-import { useAppDispatch } from '../../../app/hooks';
+import { useAppDispatch } from '../../../../app/hooks';
 import { useNavigate } from 'react-router-dom';
-import { logOut } from '../UsersThunks';
-import { appRoutes } from '../../../utils/routes';
+import { logOut } from '../../UsersThunks';
+import { appRoutes } from '../../../../utils/routes';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
-const UserMenu: React.FC = () => {
+const EmployeeMenu: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(true);
@@ -128,4 +128,4 @@ const UserMenu: React.FC = () => {
   );
 };
 
-export default UserMenu;
+export default EmployeeMenu;

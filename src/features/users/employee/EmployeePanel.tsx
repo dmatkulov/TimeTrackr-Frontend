@@ -2,17 +2,17 @@ import React from 'react';
 import { Layout } from 'antd';
 import { Outlet } from 'react-router-dom';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
-import UserMenu from './UserMenu';
+import EmployeeMenu from './components/EmployeeMenu';
 
 const { Content } = Layout;
 
 interface Props extends React.PropsWithChildren {}
-const UserPanel: React.FC<Props> = () => {
+const EmployeePanel: React.FC<Props> = () => {
   const { md } = useBreakpoint();
   return (
     <>
       <Layout hasSider style={{ minHeight: '100vh' }}>
-        <UserMenu />
+        <EmployeeMenu />
         <Layout
           style={{
             marginLeft: !md ? '0' : '20px',
@@ -36,4 +36,4 @@ const UserPanel: React.FC<Props> = () => {
   );
 };
 
-export default UserPanel;
+export default EmployeePanel;

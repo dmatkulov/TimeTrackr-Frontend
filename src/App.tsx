@@ -10,11 +10,11 @@ import { useAppSelector } from './app/hooks';
 import { selectUser } from './features/users/UsersSlice';
 import AdminPanel from './features/users/admin/AdminPanel';
 import StaffTable from './features/users/admin/StaffTable';
-import StaffInfoPage from './features/users/admin/StaffInfoPage';
+import StaffInfo from './features/users/admin/StaffInfo';
 import StaffContainer from './features/users/admin/StaffContainer';
 import PositionsTable from './features/positions/PositionsTable';
-import UserPanel from './features/users/employee/UserPanel';
-import UserInfoPage from './features/users/employee/UserIngoPage';
+import EmployeePanel from './features/users/employee/EmployeePanel';
+import UserInfoPage from './features/users/employee/EmployeeInfo';
 import Today from './features/users/employee/Today';
 import CalendarPage from './features/users/employee/CalendarPage';
 
@@ -39,8 +39,8 @@ const App = () => {
             <Route path={appRoutes.admin.staff} element={<StaffContainer />}>
               <Route path={appRoutes.admin.staff} element={<StaffTable />} />
               <Route
-                path={`${appRoutes.admin.staff}/profile/:id`}
-                element={<StaffInfoPage />}
+                path={`${appRoutes.admin.staffInfo}/:id`}
+                element={<StaffInfo />}
               />
             </Route>
             <Route
@@ -52,7 +52,7 @@ const App = () => {
             path={appRoutes.employee.profile}
             element={
               <Protected isAllowed={user && user.role === 'employee'}>
-                <UserPanel />
+                <EmployeePanel />
               </Protected>
             }
           >

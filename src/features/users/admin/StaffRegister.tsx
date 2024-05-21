@@ -10,7 +10,7 @@ interface Props {
   onClose: () => void;
 }
 
-const RegisterUser: React.FC<Props> = ({ open, onClose }) => {
+const StaffRegister: React.FC<Props> = ({ open, onClose }) => {
   const creating = useAppSelector(selectRegisterLoading);
   const dispatch = useAppDispatch();
 
@@ -31,4 +31,4 @@ const RegisterUser: React.FC<Props> = ({ open, onClose }) => {
   );
 };
 
-export default RegisterUser;
+export default StaffRegister;
