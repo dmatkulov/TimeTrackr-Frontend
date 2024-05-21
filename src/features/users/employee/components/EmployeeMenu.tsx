@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
 import { Button, Menu, MenuProps, Tooltip } from 'antd';
 import {
+  CalendarOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  PartitionOutlined,
-  TeamOutlined,
+  TrophyOutlined,
+  UserOutlined,
 } from '@ant-design/icons';
 import Sider from 'antd/es/layout/Sider';
 import { useAppDispatch } from '../../../../app/hooks';
 import { useNavigate } from 'react-router-dom';
 import { logOut } from '../../UsersThunks';
 import { appRoutes } from '../../../../utils/routes';
-import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -21,34 +21,31 @@ const EmployeeMenu: React.FC = () => {
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(true);
 
-  const screens = useBreakpoint();
-  const xs = screens.xs;
-
   const logOutUser = async () => {
     await dispatch(logOut());
     navigate(appRoutes.login);
   };
 
-  const activeKey = location.pathname.split('/')[2];
+  const activeKey = location.pathname;
 
   const items: MenuItem[] = [
     {
-      key: 'info',
-      label: 'Мой профиль',
-      icon: <TeamOutlined />,
-      onClick: () => navigate(appRoutes.employee.profileInfo),
-    },
-    {
-      key: 'today',
+      key: appRoutes.employee.today,
       label: 'Сегодня',
-      icon: <PartitionOutlined />,
+      icon: <TrophyOutlined />,
       onClick: () => navigate(appRoutes.employee.today),
     },
     {
-      key: 'calendar',
+      key: appRoutes.employee.calendar,
       label: 'Календарь',
-      icon: <PartitionOutlined />,
+      icon: <CalendarOutlined />,
       onClick: () => navigate(appRoutes.employee.calendar),
+    },
+    {
+      key: appRoutes.employee.profileInfo,
+      label: 'Мой профиль',
+      icon: <UserOutlined />,
+      onClick: () => navigate(appRoutes.employee.profileInfo),
     },
     {
       key: 'logout',
@@ -71,10 +68,11 @@ const EmployeeMenu: React.FC = () => {
   return (
     <Sider
       collapsible
+      breakpoint="sm"
+      width="250px"
       trigger={null}
       collapsed={collapsed}
       style={{
-        display: xs ? 'none' : 'block',
         marginTop: '65px',
         paddingTop: '40px',
         paddingLeft: '10px',

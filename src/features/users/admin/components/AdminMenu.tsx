@@ -29,17 +29,17 @@ const AdminMenu: React.FC = () => {
     navigate(appRoutes.login);
   };
 
-  const activeKey = location.pathname.split('/')[2];
+  const activeKey = location.pathname;
 
   const items: MenuItem[] = [
     {
-      key: 'all-staff',
+      key: appRoutes.admin.staff,
       label: 'Сотрудники',
       icon: <TeamOutlined />,
       onClick: () => navigate(appRoutes.admin.staff),
     },
     {
-      key: 'positions',
+      key: appRoutes.admin.positions,
       label: 'Позиции',
       icon: <PartitionOutlined />,
       onClick: () => navigate(appRoutes.admin.positions),

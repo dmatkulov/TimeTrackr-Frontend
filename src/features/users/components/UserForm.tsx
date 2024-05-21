@@ -26,6 +26,7 @@ import { selectPositions } from '../../positions/positionsSlice';
 import ContactsPhoneInput from './ContactsPhoneInput';
 import FileInput from './FileInput';
 import PasswordInput from './PasswordInputGroup';
+import { selectUser } from '../UsersSlice';
 
 dayjs.extend(buddhistEra);
 dayjs.extend(utc);
@@ -79,6 +80,7 @@ const UserForm: React.FC<Props> = ({
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const positions = useAppSelector(selectPositions);
+  const user = useAppSelector(selectUser);
 
   const [state, setState] = useState<UserMutation>(existingUser);
 
@@ -269,6 +271,7 @@ const UserForm: React.FC<Props> = ({
             >
               <Select
                 value={state.position}
+                disabled={user?.role === 'employee'}
                 id={isEdit ? 'positionUpd' : 'position'}
                 onChange={(value) =>
                   setState((prevState) => ({

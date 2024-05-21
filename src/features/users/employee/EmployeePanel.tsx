@@ -8,11 +8,11 @@ const { Content } = Layout;
 
 interface Props extends React.PropsWithChildren {}
 const EmployeePanel: React.FC<Props> = () => {
-  const { md } = useBreakpoint();
+  const { sm, md } = useBreakpoint();
   return (
     <>
       <Layout hasSider style={{ minHeight: '100vh' }}>
-        <EmployeeMenu />
+        {sm && <EmployeeMenu />}
         <Layout
           style={{
             marginLeft: !md ? '0' : '20px',

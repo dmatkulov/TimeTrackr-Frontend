@@ -115,6 +115,8 @@ export const usersSlice = createSlice({
 
         if (state.user?.role === 'admin') {
           state.staff = data.user;
+        } else if (state.user?.role === 'employee') {
+          state.user = data.user;
         }
         void message.success(data.message);
       })
