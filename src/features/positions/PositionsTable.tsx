@@ -81,7 +81,7 @@ const PositionsTable: React.FC = () => {
           </Button>
           <Popconfirm
             title="Удаление позиции"
-            description="Вы уверены что хотите удалить?"
+            description="Вы уверены, что хотите удалить?"
             disabled={deleting}
             icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
             okText="Удалить"

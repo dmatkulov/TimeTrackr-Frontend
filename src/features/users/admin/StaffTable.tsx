@@ -40,7 +40,10 @@ const StaffTable: React.FC = () => {
           avatar = <Avatar src={apiURL + '/' + user.photo} />;
         } else {
           avatar = (
-            <Avatar icon={<UserOutlined />}>{user.firstname.charAt(0)}</Avatar>
+            <Avatar>
+              {user.firstname.charAt(0)}
+              {user.lastname.charAt(0)}
+            </Avatar>
           );
         }
         return avatar;

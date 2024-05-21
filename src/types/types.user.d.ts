@@ -31,15 +31,15 @@ export interface LoginMutation {
   password: string;
 }
 
-export interface RegisterMutation {
+export interface UserMutation {
   email: string;
   firstname: string;
   lastname: string;
   contactInfo: contactInfo;
-  photo: File | null;
+  photo: File | null | string;
   position: string;
   startDate: string;
-  password: string;
+  password?: string;
 }
 
 export interface LoginResponse {
@@ -47,9 +47,9 @@ export interface LoginResponse {
   user: User;
 }
 
-export interface UsersResponse {
-  message: string;
-  users: User[];
+export interface UpdateUserArg {
+  id: string;
+  mutation: UserMutation;
 }
 
 export interface UserQueryValues {

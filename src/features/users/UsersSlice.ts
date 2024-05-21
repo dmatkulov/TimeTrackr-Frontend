@@ -2,27 +2,42 @@ import { StaffData, User } from '../../types/types.user';
 import { GlobalMessage } from '../../types/types.global';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { createUser, getUsers, login } from './UsersThunks';
+import {
+  createUser,
+  deleteUser,
+  getOneUser,
+  getUsers,
+  login,
+  updateUser,
+} from './UsersThunks';
 import { message } from 'antd';
 
 interface UsersState {
   user: User | null;
   staff: StaffData[];
+  employee: User | null;
   registerLoading: boolean;
   loginLoading: boolean;
   loginError: GlobalMessage | null;
   logOutLoading: boolean;
   fetchAllLoading: boolean;
+  fetchOneLoading: boolean;
+  updateLoading: boolean;
+  deleteLoading: boolean;
 }
 
 const initialState: UsersState = {
   user: null,
   staff: [],
+  employee: null,
   registerLoading: false,
   loginLoading: false,
   loginError: null,
   logOutLoading: false,
   fetchAllLoading: false,
+  fetchOneLoading: false,
+  updateLoading: false,
+  deleteLoading: false,
 };
 
 export const usersSlice = createSlice({
@@ -66,6 +81,18 @@ export const usersSlice = createSlice({
       });
 
     builder
+      .addCase(getOneUser.pending, (state) => {
+        state.fetchOneLoading = true;
+      })
+      .addCase(getOneUser.fulfilled, (state, { payload: data }) => {
+        state.fetchOneLoading = false;
+        state.employee = data;
+      })
+      .addCase(getOneUser.rejected, (state) => {
+        state.fetchOneLoading = false;
+      });
+
+    builder
       .addCase(login.pending, (state) => {
         state.loginLoading = true;
       })
@@ -78,6 +105,35 @@ export const usersSlice = createSlice({
         state.loginLoading = false;
         void message.error(data?.message);
       });
+
+    builder
+      .addCase(updateUser.pending, (state) => {
+        state.updateLoading = true;
+      })
+      .addCase(updateUser.fulfilled, (state, { payload: data }) => {
+        state.updateLoading = false;
+
+        if (state.user?.role === 'admin') {
+          state.employee = data.user;
+        }
+        void message.success(data.message);
+      })
+      .addCase(updateUser.rejected, (state, { payload: error }) => {
+        state.updateLoading = false;
+        void message.error(error?.message);
+      });
+
+    builder
+      .addCase(deleteUser.pending, (state) => {
+        state.deleteLoading = true;
+      })
+      .addCase(deleteUser.fulfilled, (state, { payload: data }) => {
+        state.deleteLoading = false;
+        void message.success(data.message);
+      })
+      .addCase(deleteUser.rejected, (state) => {
+        state.deleteLoading = false;
+      });
   },
 });
 
@@ -86,12 +142,19 @@ export const { unsetUser } = usersSlice.actions;
 
 export const selectUser = (state: RootState) => state.users.user;
 export const selectStaff = (state: RootState) => state.users.staff;
+export const selectEmployee = (state: RootState) => state.users.employee;
 export const selectRegisterLoading = (state: RootState) =>
   state.users.registerLoading;
 export const selectLoginLoading = (state: RootState) =>
   state.users.loginLoading;
 export const selectFetchAllLoading = (state: RootState) =>
   state.users.fetchAllLoading;
+export const selectFetchOneLoading = (state: RootState) =>
+  state.users.fetchOneLoading;
 export const selectLoginError = (state: RootState) => state.users.loginLoading;
 export const selectLogoutLoading = (state: RootState) =>
   state.users.logOutLoading;
+export const selectUserUpdateLoading = (state: RootState) =>
+  state.users.updateLoading;
+export const selectDeleteUserLoading = (state: RootState) =>
+  state.users.deleteLoading;

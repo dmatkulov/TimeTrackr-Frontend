@@ -2,8 +2,10 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   LoginMutation,
   LoginResponse,
-  RegisterMutation,
+  UserMutation,
   StaffData,
+  UpdateUserArg,
+  User,
   UserQueryParams,
   UserQueryValues,
 } from '../../types/types.user';
@@ -16,7 +18,7 @@ import { unsetUser } from './UsersSlice';
 
 export const createUser = createAsyncThunk<
   LoginResponse,
-  RegisterMutation,
+  UserMutation,
   { rejectValue: BadRequestError }
 >('users/addUser', async (mutation, { rejectWithValue }) => {
   try {
@@ -28,10 +30,12 @@ export const createUser = createAsyncThunk<
     formData.append('position', mutation.position);
     formData.append('contactInfo[mobile]', mutation.contactInfo.mobile);
     formData.append('contactInfo[city]', mutation.contactInfo.city);
-    formData.append('contactInfo[street]', mutation.contactInfo.street);
-    formData.append('password', mutation.password);
     formData.append('startDate', mutation.startDate);
+    formData.append('contactInfo[street]', mutation.contactInfo.street);
 
+    if (mutation.password) {
+      formData.append('password', mutation.password);
+    }
     if (mutation.photo) {
       formData.append('photo', mutation.photo);
     }
@@ -53,12 +57,19 @@ export const createUser = createAsyncThunk<
     throw e;
   }
 });
+
+export const getOneUser = createAsyncThunk<User, string>(
+  'users/getOne',
+  async (id) => {
+    const response = await axiosApi.get<User>(apiRoutes.userInfo + id);
+    return response.data;
+  },
+);
 export const getUsers = createAsyncThunk<
   StaffData[],
   UserQueryValues | undefined,
   { rejectValue: GlobalMessage }
->('users/fetchAll', async (params = {}, thunkAPI) => {
-  const { rejectWithValue } = thunkAPI;
+>('users/fetchAll', async (params = {}, { rejectWithValue }) => {
   try {
     const query: UserQueryParams = {};
 
@@ -110,10 +121,57 @@ export const login = createAsyncThunk<
   }
 });
 
+export const updateUser = createAsyncThunk<
+  LoginResponse,
+  UpdateUserArg,
+  { rejectValue: GlobalMessage }
+>('users/updateOne', async ({ id, mutation }, { rejectWithValue }) => {
+  try {
+    const formData = new FormData();
+
+    formData.append('email', mutation.email);
+    formData.append('firstname', mutation.firstname);
+    formData.append('lastname', mutation.lastname);
+    formData.append('position', mutation.position);
+    formData.append('contactInfo[mobile]', mutation.contactInfo.mobile);
+    formData.append('contactInfo[city]', mutation.contactInfo.city);
+    formData.append('contactInfo[street]', mutation.contactInfo.street);
+    formData.append('startDate', mutation.startDate);
+
+    if (mutation.photo) {
+      formData.append('photo', mutation.photo);
+    }
+
+    const response = await axiosApi.patch<LoginResponse>(
+      `${apiRoutes.users}/edit/${id}`,
+      formData,
+    );
+    return response.data;
+  } catch (e) {
+    if (
+      isAxiosError(e) &&
+      e.response?.status === 400 &&
+      e.response?.data.message
+    ) {
+      return rejectWithValue(e.response.data);
+    }
+
+    throw e;
+  }
+});
+
 export const logOut = createAsyncThunk<void, undefined, { state: RootState }>(
   'users/logout',
   async (_, { dispatch }) => {
     await axiosApi.delete(apiRoutes.sessions);
     dispatch(unsetUser());
+  },
+);
+
+export const deleteUser = createAsyncThunk<GlobalMessage, string>(
+  'users/deleteOne',
+  async (id) => {
+    const response = await axiosApi.delete(apiRoutes.deleteUser + id);
+    return response.data;
   },
 );

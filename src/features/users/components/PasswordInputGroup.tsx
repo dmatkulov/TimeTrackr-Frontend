@@ -1,9 +1,9 @@
 import React from 'react';
 import { Col, Form, Input } from 'antd';
-import { RegisterMutation } from '../../../types/types.user';
+import { UserMutation } from '../../../types/types.user';
 
 interface Props {
-  state: RegisterMutation;
+  state: UserMutation;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -24,6 +24,7 @@ const PasswordInput: React.FC<Props> = ({ state, onChange }) => {
             name="password"
             value={state.password}
             onChange={onChange}
+            autoComplete="new-password"
           />
         </Form.Item>
       </Col>
@@ -48,7 +49,7 @@ const PasswordInput: React.FC<Props> = ({ state, onChange }) => {
             }),
           ]}
         >
-          <Input.Password />
+          <Input.Password autoComplete="new-password" />
         </Form.Item>
       </Col>
     </>
