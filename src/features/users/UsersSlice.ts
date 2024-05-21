@@ -112,11 +112,15 @@ export const usersSlice = createSlice({
       })
       .addCase(updateUser.fulfilled, (state, { payload: data }) => {
         state.updateLoading = false;
-        state.employee = data.user;
+
+        if (state.user?.role === 'admin') {
+          state.employee = data.user;
+        }
         void message.success(data.message);
       })
-      .addCase(updateUser.rejected, (state) => {
+      .addCase(updateUser.rejected, (state, { payload: error }) => {
         state.updateLoading = false;
+        void message.error(error?.message);
       });
 
     builder

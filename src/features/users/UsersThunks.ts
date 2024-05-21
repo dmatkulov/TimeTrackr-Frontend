@@ -69,8 +69,7 @@ export const getUsers = createAsyncThunk<
   StaffData[],
   UserQueryValues | undefined,
   { rejectValue: GlobalMessage }
->('users/fetchAll', async (params = {}, thunkAPI) => {
-  const { rejectWithValue } = thunkAPI;
+>('users/fetchAll', async (params = {}, { rejectWithValue }) => {
   try {
     const query: UserQueryParams = {};
 
@@ -122,9 +121,12 @@ export const login = createAsyncThunk<
   }
 });
 
-export const updateUser = createAsyncThunk<LoginResponse, UpdateUserArg>(
-  'users/updateOne',
-  async ({ id, mutation }) => {
+export const updateUser = createAsyncThunk<
+  LoginResponse,
+  UpdateUserArg,
+  { rejectValue: GlobalMessage }
+>('users/updateOne', async ({ id, mutation }, { rejectWithValue }) => {
+  try {
     const formData = new FormData();
 
     formData.append('email', mutation.email);
@@ -145,8 +147,18 @@ export const updateUser = createAsyncThunk<LoginResponse, UpdateUserArg>(
       formData,
     );
     return response.data;
-  },
-);
+  } catch (e) {
+    if (
+      isAxiosError(e) &&
+      e.response?.status === 400 &&
+      e.response?.data.message
+    ) {
+      return rejectWithValue(e.response.data);
+    }
+
+    throw e;
+  }
+});
 
 export const logOut = createAsyncThunk<void, undefined, { state: RootState }>(
   'users/logout',
