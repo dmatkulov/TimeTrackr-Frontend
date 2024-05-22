@@ -12,13 +12,24 @@ import { appRoutes } from '../../../../utils/routes';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
-const AdminMenu: React.FC = () => {
+interface Props {
+  handleMobile?: () => void;
+}
+const AdminMenu: React.FC<Props> = ({ handleMobile }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const logOutUser = async () => {
     await dispatch(logOut());
     navigate(appRoutes.login);
+  };
+
+  const handleNavigate = (path: string) => {
+    navigate(path);
+
+    if (handleMobile) {
+      handleMobile();
+    }
   };
 
   const activeKey = location.pathname;
@@ -28,13 +39,13 @@ const AdminMenu: React.FC = () => {
       key: appRoutes.admin.staff,
       label: 'Сотрудники',
       icon: <TeamOutlined />,
-      onClick: () => navigate(appRoutes.admin.staff),
+      onClick: () => handleNavigate(appRoutes.admin.staff),
     },
     {
       key: appRoutes.admin.positions,
       label: 'Позиции',
       icon: <PartitionOutlined />,
-      onClick: () => navigate(appRoutes.admin.positions),
+      onClick: () => handleNavigate(appRoutes.admin.positions),
     },
     {
       key: 'logout',

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import type { TableProps } from 'antd';
-import { Button, Popconfirm, Space, Table } from 'antd';
+import { Button, Dropdown, Flex, Popconfirm, Space, Table } from 'antd';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   selectPositionDeleting,
@@ -11,6 +11,7 @@ import { Position } from '../../types/types.position';
 import {
   DeleteOutlined,
   EditOutlined,
+  MoreOutlined,
   QuestionCircleOutlined,
 } from '@ant-design/icons';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
@@ -29,7 +30,7 @@ const PositionsTable: React.FC = () => {
   const loading = useAppSelector(selectPositionsLoading);
   const deleting = useAppSelector(selectPositionDeleting);
 
-  const { sm, md } = useBreakpoint();
+  const { sm } = useBreakpoint();
 
   const [open, setOpen] = useState(false);
 
@@ -57,6 +58,33 @@ const PositionsTable: React.FC = () => {
     dispatch(getUsers());
   }, [dispatch]);
 
+  const menuItems = (position: Position) => [
+    {
+      key: 'edit',
+      label: 'Редактировать',
+      icon: <EditOutlined />,
+      onClick: () => fetchOne(position._id),
+    },
+    {
+      key: 'delete',
+      label: (
+        <Popconfirm
+          title="Удаление позиции"
+          description="Вы уверены, что хотите удалить?"
+          disabled={deleting}
+          icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+          okText="Удалить"
+          cancelText="Отменить"
+          placement="bottomRight"
+          onConfirm={() => handleDelete(position._id)}
+        >
+          Удалить
+        </Popconfirm>
+      ),
+      icon: <DeleteOutlined />,
+    },
+  ];
+
   const columns: TableProps<Position>['columns'] = [
     {
       title: 'Название',
@@ -69,43 +97,64 @@ const PositionsTable: React.FC = () => {
       dataIndex: 'action',
       key: 'action',
       render: (_, position) => (
-        <Space size="middle">
-          <Button
-            size="small"
-            shape="round"
-            icon={<EditOutlined />}
-            onClick={() => fetchOne(position._id)}
-            style={{
-              width: '100%',
-              fontSize: '12px',
-            }}
-          >
-            {sm && 'Редактировать'}
-          </Button>
-          <Popconfirm
-            title="Удаление позиции"
-            description="Вы уверены, что хотите удалить?"
-            disabled={deleting}
-            icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-            okText="Удалить"
-            cancelText="Отменить"
-            onConfirm={() => handleDelete(position._id)}
-          >
-            <Button
-              size="small"
-              type="text"
-              danger
-              icon={<DeleteOutlined />}
-              disabled={deleting}
-              style={{
-                width: '100%',
-                fontSize: '12px',
-              }}
-            >
-              {md && 'Удалить'}
-            </Button>
-          </Popconfirm>
-        </Space>
+        <>
+          {!sm && (
+            <Flex justify="flex-end">
+              <Dropdown
+                menu={{
+                  items: menuItems(position),
+                }}
+                placement="bottomRight"
+              >
+                <Button
+                  shape="circle"
+                  size="small"
+                  style={{ marginLeft: 'auto' }}
+                  icon={<MoreOutlined />}
+                />
+              </Dropdown>
+            </Flex>
+          )}
+          {sm && (
+            <Space size="middle">
+              <Button
+                size="small"
+                shape="round"
+                icon={<EditOutlined />}
+                onClick={() => fetchOne(position._id)}
+                style={{
+                  width: '100%',
+                  fontSize: '12px',
+                }}
+              >
+                Редактировать
+              </Button>
+              <Popconfirm
+                title="Удаление позиции"
+                description="Вы уверены, что хотите удалить?"
+                disabled={deleting}
+                icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                okText="Удалить"
+                cancelText="Отменить"
+                onConfirm={() => handleDelete(position._id)}
+              >
+                <Button
+                  size="small"
+                  type="text"
+                  danger
+                  icon={<DeleteOutlined />}
+                  disabled={deleting}
+                  style={{
+                    width: '100%',
+                    fontSize: '12px',
+                  }}
+                >
+                  Удалить
+                </Button>
+              </Popconfirm>
+            </Space>
+          )}
+        </>
       ),
     },
   ];

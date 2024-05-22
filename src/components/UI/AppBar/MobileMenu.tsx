@@ -34,7 +34,11 @@ const MobileMenu: React.FC<Props> = ({ user }) => {
           <UserAvatar user={user} />
         </div>
 
-        {isAdmin ? <AdminMenu /> : <EmployeeMenu handleMobile={handleClose} />}
+        {isAdmin ? (
+          <AdminMenu handleMobile={handleClose} />
+        ) : (
+          <EmployeeMenu handleMobile={handleClose} />
+        )}
       </Drawer>
     </>
   );
