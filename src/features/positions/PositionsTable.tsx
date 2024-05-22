@@ -23,6 +23,7 @@ import {
   fetchPositions,
 } from './positionsThunks';
 import { getUsers } from '../users/UsersThunks';
+import NoData from '../../components/UI/NoData/NoData';
 
 const PositionsTable: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -93,7 +94,6 @@ const PositionsTable: React.FC = () => {
       width: '70%',
     },
     {
-      title: 'Дейсвия',
       dataIndex: 'action',
       key: 'action',
       render: (_, position) => (
@@ -164,17 +164,18 @@ const PositionsTable: React.FC = () => {
     key: position._id,
   }));
 
+  if (loading) {
+    return <Spinner />;
+  }
+
   return (
     <>
-      {loading ? (
-        <Spinner />
-      ) : (
-        <Table
-          columns={columns}
-          dataSource={dataSource}
-          pagination={{ pageSize: 10, position: ['topRight', 'bottomRight'] }}
-        />
-      )}
+      <Table
+        locale={{ emptyText: <NoData /> }}
+        columns={columns}
+        dataSource={dataSource}
+        pagination={{ pageSize: 10, position: ['topRight', 'bottomRight'] }}
+      />
       <EditPositions open={open} onClose={handleClose} />
     </>
   );

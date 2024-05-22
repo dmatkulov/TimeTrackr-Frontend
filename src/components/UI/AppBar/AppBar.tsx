@@ -36,7 +36,8 @@ const AppBar: React.FC = () => {
           justifyContent: 'space-between',
         }}
       >
-        {md && <Logo />}
+        {!user && <Logo />}
+        {user && md && <Logo />}
         {user ? <UserAppBar user={user} /> : <GuestAppBar />}
       </Header>
     </>

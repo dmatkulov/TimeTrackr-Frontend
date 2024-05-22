@@ -25,7 +25,6 @@ const UserPanel: React.FC<Props> = () => {
         {md && (
           <Sider
             collapsible
-            breakpoint="sm"
             width="250px"
             trigger={null}
             collapsed={collapsed}

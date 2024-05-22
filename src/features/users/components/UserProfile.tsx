@@ -139,27 +139,28 @@ const UserProfile: React.FC<Props> = ({ employee }) => {
             >
               Редактировать
             </Button>
-            {currentUser?.role === 'admin' && (
-              <Popconfirm
-                title="Удаление сотрудника"
-                description="Вы уверены, что хотите удалить сотрудника?"
-                icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-                okText="Удалить"
-                cancelText="Отменить"
-                disabled={deleteLoading}
-                onConfirm={() => handleDelete(employee._id)}
-              >
-                <Button
-                  style={{ width: !sm ? '280px' : 'auto' }}
-                  shape="round"
-                  size="middle"
-                  danger
-                  icon={<DeleteOutlined />}
+            {currentUser?.role === 'admin' &&
+              currentUser?._id !== employee._id && (
+                <Popconfirm
+                  title="Удаление сотрудника"
+                  description="Вы уверены, что хотите удалить сотрудника?"
+                  icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                  okText="Удалить"
+                  cancelText="Отменить"
+                  disabled={deleteLoading}
+                  onConfirm={() => handleDelete(employee._id)}
                 >
-                  Удалить сотрудника
-                </Button>
-              </Popconfirm>
-            )}
+                  <Button
+                    style={{ width: !sm ? '280px' : 'auto' }}
+                    shape="round"
+                    size="middle"
+                    danger
+                    icon={<DeleteOutlined />}
+                  >
+                    Удалить сотрудника
+                  </Button>
+                </Popconfirm>
+              )}
           </Flex>
         </Col>
       </Row>

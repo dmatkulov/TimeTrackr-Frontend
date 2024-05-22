@@ -25,6 +25,7 @@ import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import StaffFilterItem from './components/StaffFilterItem';
 import { useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../../utils/routes';
+import NoData from '../../../components/UI/NoData/NoData';
 
 const StaffTable: React.FC = () => {
   const navigate = useNavigate();
@@ -181,6 +182,7 @@ const StaffTable: React.FC = () => {
         <Spinner />
       ) : (
         <Table
+          locale={{ emptyText: <NoData /> }}
           columns={columns}
           dataSource={dataSource}
           pagination={{ pageSize: 10, position: ['topRight', 'bottomRight'] }}
