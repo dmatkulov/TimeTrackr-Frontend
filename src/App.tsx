@@ -14,7 +14,7 @@ import StaffContainer from './features/users/admin/StaffContainer';
 import PositionsTable from './features/positions/PositionsTable';
 import UserPanel from './features/users/UserPanel';
 import UserInfoPage from './features/users/employee/EmployeeInfo';
-import Today from './features/users/employee/Today';
+import TodayPage from './features/users/employee/TodayPage';
 import CalendarPage from './features/users/employee/CalendarPage';
 
 const App = () => {
@@ -59,7 +59,7 @@ const App = () => {
               path={appRoutes.employee.profileInfo}
               element={<UserInfoPage />}
             />
-            <Route path={appRoutes.employee.today} element={<Today />} />
+            <Route path={appRoutes.employee.today} element={<TodayPage />} />
             <Route
               path={appRoutes.employee.calendar}
               element={<CalendarPage />}

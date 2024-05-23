@@ -81,7 +81,7 @@ const UserPanel: React.FC<Props> = () => {
           <Content style={{ margin: '0' }}>
             <div
               style={{
-                padding: '15px 30px',
+                padding: '30px',
               }}
             >
               <Outlet />

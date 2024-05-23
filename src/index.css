@@ -15,24 +15,10 @@ input[type='number'] {
   display: none;
 }
 
-/*.form-control {*/
-/*  padding-left: 12px;*/
-/*  outline: none;*/
-/*  border-color: #d9d9d9;*/
-/*  border-radius: 6px;*/
-/*}*/
-
 .special-label {
   display: none;
 }
 
-/*.form-control:focus {*/
-/*  background-color: #ffffff;*/
-/*  border-color: #1677ff;*/
-/*  box-shadow: 0 0 0 2px rgba(5, 145, 255, 0.1);*/
-/*}*/
-
-/*.form-control:hover {*/
-/*  background-color: #ffffff;*/
-/*  border-color: #4096ff;*/
-/*}*/
+.ant-picker-range {
+  width: 100%;
+}

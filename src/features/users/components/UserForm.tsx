@@ -9,10 +9,7 @@ import {
   Input,
   Row,
   Select,
-  Tooltip,
 } from 'antd';
-
-import ru from 'antd/es/date-picker/locale/ru_RU';
 import buddhistEra from 'dayjs/plugin/buddhistEra';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -21,27 +18,16 @@ import timezone from 'dayjs/plugin/timezone';
 import { UserMutation } from '../../../types/types.user';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { fetchPositions } from '../../positions/positionsThunks';
-import { ClearOutlined } from '@ant-design/icons';
 import { selectPositions } from '../../positions/positionsSlice';
 import ContactsPhoneInput from './ContactsPhoneInput';
 import FileInput from './FileInput';
 import PasswordInput from './PasswordInputGroup';
 import { selectUser } from '../UsersSlice';
+import { buddhistLocale } from '../../../utils/constants';
 
 dayjs.extend(buddhistEra);
 dayjs.extend(utc);
 dayjs.extend(timezone);
-
-const buddhistLocale: typeof ru = {
-  ...ru,
-  lang: {
-    ...ru.lang,
-    fieldDateFormat: 'YYYY-MM-DD',
-    fieldDateTimeFormat: 'YYYY-MM-DD HH:mm:ss',
-    yearFormat: 'YYYY',
-    cellYearFormat: 'YYYY',
-  },
-};
 
 const initialState: UserMutation = {
   email: '',
@@ -361,23 +347,7 @@ const UserForm: React.FC<Props> = ({
           )}
         </Row>
         <Divider style={{ marginTop: 16 }} />
-        <Row
-          gutter={16}
-          style={{
-            display: 'flex',
-            marginTop: 30,
-            justifyContent: 'space-between',
-          }}
-        >
-          <Col>
-            <Tooltip placement="right" title="Очистить">
-              <Button
-                icon={<ClearOutlined />}
-                danger
-                onClick={() => form.resetFields()}
-              />
-            </Tooltip>
-          </Col>
+        <Row gutter={16} style={{ justifyContent: 'flex-end' }}>
           <Col xs={{ span: 24 }} md={{ span: 8 }}>
             <Button
               htmlType="submit"
