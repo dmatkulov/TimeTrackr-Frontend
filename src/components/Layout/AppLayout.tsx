@@ -1,13 +1,11 @@
 import React from 'react';
 import AppBar from '../UI/AppBar/AppBar';
-import { Outlet } from 'react-router-dom';
 
-interface Props extends React.PropsWithChildren {}
-const AppLayout: React.FC<Props> = () => {
+const AppLayout: React.FC<React.PropsWithChildren> = ({ children }) => {
   return (
     <>
       <AppBar />
-      <Outlet />
+      {children}
     </>
   );
 };

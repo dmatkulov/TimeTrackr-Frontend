@@ -28,8 +28,8 @@ import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../../utils/routes';
-import { selectDeleteUserLoading } from '../UsersSlice';
-import UpdateUser from '../admin/UpdateUser';
+import { selectDeleteUserLoading, selectUser } from '../UsersSlice';
+import UserUpdate from './UserUpdate';
 
 dayjs.locale('ru');
 
@@ -40,6 +40,7 @@ interface Props {
 }
 const UserProfile: React.FC<Props> = ({ employee }) => {
   const dispatch = useAppDispatch();
+  const currentUser = useAppSelector(selectUser);
   const navigate = useNavigate();
   const deleteLoading = useAppSelector(selectDeleteUserLoading);
 
@@ -138,29 +139,32 @@ const UserProfile: React.FC<Props> = ({ employee }) => {
             >
               Редактировать
             </Button>
-            <Popconfirm
-              title="Удаление сотрудника"
-              description="Вы уверены, что хотите удалить сотрудника?"
-              icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-              okText="Удалить"
-              cancelText="Отменить"
-              disabled={deleteLoading}
-              onConfirm={() => handleDelete(employee._id)}
-            >
-              <Button
-                style={{ width: !sm ? '280px' : 'auto' }}
-                shape="round"
-                size="middle"
-                danger
-                icon={<DeleteOutlined />}
-              >
-                Удалить сотрудника
-              </Button>
-            </Popconfirm>
+            {currentUser?.role === 'admin' &&
+              currentUser?._id !== employee._id && (
+                <Popconfirm
+                  title="Удаление сотрудника"
+                  description="Вы уверены, что хотите удалить сотрудника?"
+                  icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                  okText="Удалить"
+                  cancelText="Отменить"
+                  disabled={deleteLoading}
+                  onConfirm={() => handleDelete(employee._id)}
+                >
+                  <Button
+                    style={{ width: !sm ? '280px' : 'auto' }}
+                    shape="round"
+                    size="middle"
+                    danger
+                    icon={<DeleteOutlined />}
+                  >
+                    Удалить сотрудника
+                  </Button>
+                </Popconfirm>
+              )}
           </Flex>
         </Col>
       </Row>
-      <UpdateUser open={open} onClose={handleClose} />
+      <UserUpdate employee={employee} open={open} onClose={handleClose} />
     </>
   );
 };

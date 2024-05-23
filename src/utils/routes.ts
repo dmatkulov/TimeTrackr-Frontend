@@ -4,13 +4,17 @@ export const appRoutes = {
   register: '/admin/register',
   login: '/login',
   admin: {
-    profile: '/profile/admin',
-    staff: '/profile/admin/all-staff',
-    positions: '/profile/admin/positions',
-    staffInfo: '/profile/admin/all-staff/profile',
+    profile: '/admin',
+    staff: '/admin/all-staff',
+    positions: '/admin/positions',
+    staffInfo: '/admin/all-staff/profile',
+    stats: '/admin/stats',
   },
   employee: {
-    profile: '/profile/employee',
+    profile: '/profile',
+    profileInfo: '/profile/info',
+    today: '/profile/today',
+    calendar: '/profile/calendar',
   },
   notFound: '*',
 };

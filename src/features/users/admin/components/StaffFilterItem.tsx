@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { selectPositions } from '../../positions/positionsSlice';
-import { getUsers } from '../UsersThunks';
-import { fetchPositions } from '../../positions/positionsThunks';
-import { UserQueryValues } from '../../../types/types.user';
+import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
+import { selectPositions } from '../../../positions/positionsSlice';
+import { getUsers } from '../../UsersThunks';
+import { fetchPositions } from '../../../positions/positionsThunks';
+import { UserQueryValues } from '../../../../types/types.user';
 import { Col, Row, Space, Switch } from 'antd';
-import FilterForm from './FilterForm';
+import StaffFilterForm from './StaffFilterForm';
 
 interface Props {
   loading: boolean;
@@ -49,7 +49,7 @@ const StaffFilterItem: React.FC<Props> = ({ loading }) => {
       </Col>
       {isChecked && (
         <Col xs={24} lg={20}>
-          <FilterForm
+          <StaffFilterForm
             getAllStaff={fetchAllStaff}
             onSubmit={handleFormSubmit}
             positions={positions}

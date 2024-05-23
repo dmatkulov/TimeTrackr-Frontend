@@ -1,9 +1,9 @@
 import React from 'react';
-import UserForm from '../components/UserForm';
+import UserForm from './UserForm';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { selectEmployee, selectUserUpdateLoading } from '../UsersSlice';
+import { selectUserUpdateLoading } from '../UsersSlice';
 import dayjs from 'dayjs';
-import { UserMutation } from '../../../types/types.user';
+import { User, UserMutation } from '../../../types/types.user';
 import { updateUser } from '../UsersThunks';
 import { Navigate } from 'react-router-dom';
 import { appRoutes } from '../../../utils/routes';
@@ -11,11 +11,11 @@ import { appRoutes } from '../../../utils/routes';
 interface Props {
   open: boolean;
   onClose: () => void;
+  employee: User;
 }
 
-const UpdateUser: React.FC<Props> = ({ open, onClose }) => {
+const UserUpdate: React.FC<Props> = ({ open, onClose, employee }) => {
   const dispatch = useAppDispatch();
-  const employee = useAppSelector(selectEmployee);
   const updating = useAppSelector(selectUserUpdateLoading);
 
   if (!employee) {
@@ -54,4 +54,4 @@ const UpdateUser: React.FC<Props> = ({ open, onClose }) => {
   return <>{form}</>;
 };
 
-export default UpdateUser;
+export default UserUpdate;

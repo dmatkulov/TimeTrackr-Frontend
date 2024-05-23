@@ -1,5 +1,4 @@
 import React from 'react';
-import 'react-phone-input-2/lib/style.css';
 import PhoneInput from 'react-phone-input-2';
 import { Col, Form } from 'antd';
 import { UserMutation } from '../../../types/types.user';
@@ -32,6 +31,7 @@ const ContactsPhoneInput: React.FC<Props> = ({ state, onPhoneChange }) => {
             countryCodeEditable={false}
             value={state.contactInfo.mobile}
             onChange={onPhoneChange}
+            inputClass="ant-input css-dev-only-do-not-override-1r287do ant-input-outlined"
             inputStyle={{
               width: '100%',
               height: '100%',

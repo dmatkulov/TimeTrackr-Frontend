@@ -1,26 +1,25 @@
 import React from 'react';
-import { Avatar, Dropdown, Flex, MenuProps, Space, Typography } from 'antd';
+import { Dropdown, Flex, MenuProps, Typography } from 'antd';
 import { User } from '../../../types/types.user';
-import { apiURL } from '../../../utils/constants';
 import { appRoutes } from '../../../utils/routes';
 import { useAppDispatch } from '../../../app/hooks';
 import { logOut } from '../../../features/users/UsersThunks';
 import { useNavigate } from 'react-router-dom';
+import AdminHeader from '../../../features/users/admin/components/AdminHeader';
+import EmployeeHeader from '../../../features/users/employee/components/EmployeeHeader';
+import MobileMenu from './MobileMenu';
+import UserAvatar from './UserAvatar';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
-import AdminHeader from '../../../features/users/components/AdminHeader';
-import EmployeeHeader from '../../../features/users/components/EmployeeHeader';
 
-const { Text, Link } = Typography;
+const { Link } = Typography;
 interface Props {
   user: User;
 }
 const UserAppBar: React.FC<Props> = ({ user }) => {
-  const src = `${apiURL}/${user.photo}`;
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { lg } = useBreakpoint();
-
+  const { md } = useBreakpoint();
   const isAdmin = user.role === 'admin';
 
   const logOutUser = async () => {
@@ -32,7 +31,7 @@ const UserAppBar: React.FC<Props> = ({ user }) => {
     {
       key: '1',
       label: (
-        <Link href={appRoutes.admin.staff}>
+        <Link href={isAdmin ? appRoutes.admin.staff : appRoutes.employee.today}>
           {isAdmin ? 'Панель управления' : 'Мой кабинет'}
         </Link>
       ),
@@ -55,20 +54,15 @@ const UserAppBar: React.FC<Props> = ({ user }) => {
       >
         {isAdmin ? <AdminHeader /> : <EmployeeHeader />}
 
-        <Dropdown menu={{ items }} placement="bottomRight" arrow>
-          <Space style={{ alignItems: 'center' }}>
-            <Text style={{ display: lg ? 'block' : 'none' }}>
-              {user.firstname} {user.lastname}
-            </Text>
-            {user.photo ? (
-              <Avatar src={src} alt={user.firstname} />
-            ) : (
-              <Avatar style={{ backgroundColor: '#f56a00' }}>
-                {user.firstname.charAt(0)}
-              </Avatar>
-            )}
-          </Space>
-        </Dropdown>
+        {!md ? (
+          <MobileMenu user={user} />
+        ) : (
+          <Dropdown menu={{ items }} placement="bottomRight" arrow>
+            <div>
+              <UserAvatar user={user} />
+            </div>
+          </Dropdown>
+        )}
       </Flex>
     </>
   );

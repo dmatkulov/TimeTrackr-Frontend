@@ -41,8 +41,8 @@ const App: React.FC = () => {
   return (
     <>
       {logoutLoading && <Spinner />}
-      <Row style={{ marginTop: '140px' }}>
-        <Col span={8} offset={8}>
+      <Row justify="center" style={{ marginTop: '80px' }}>
+        <Col xs={{ span: 18 }} sm={{ span: 8 }}>
           <Title
             level={3}
             style={{
@@ -61,12 +61,16 @@ const App: React.FC = () => {
           >
             Введите адрес электронной почты и пароль
           </Paragraph>
-          <Form
-            form={form}
-            layout="vertical"
-            initialValues={{ remember: true }}
-            onFinish={onSubmit}
-          >
+        </Col>
+      </Row>
+      <Form
+        form={form}
+        layout="vertical"
+        initialValues={{ remember: true }}
+        onFinish={onSubmit}
+      >
+        <Row justify="center">
+          <Col xs={{ span: 18 }} sm={{ span: 8 }}>
             <Form.Item<LoginMutation>
               name="email"
               label="Почта"
@@ -75,13 +79,19 @@ const App: React.FC = () => {
                   required: true,
                   message: 'Введите адрес электронной почты',
                 },
-                { message: 'Неверный формат электронной почты', type: 'email' },
+                {
+                  message: 'Неверный формат электронной почты',
+                  type: 'email',
+                },
               ]}
               style={{ marginBottom: '16px' }}
             >
               <Input autoComplete="current-email" />
             </Form.Item>
-
+          </Col>
+        </Row>
+        <Row justify="center">
+          <Col xs={{ span: 18 }} sm={{ span: 8 }}>
             <Form.Item<LoginMutation>
               label="Пароль"
               name="password"
@@ -90,8 +100,12 @@ const App: React.FC = () => {
             >
               <Input.Password autoComplete="current-password" />
             </Form.Item>
+          </Col>
+        </Row>
 
-            <Form.Item wrapperCol={{ span: 24 }}>
+        <Row justify="center">
+          <Col xs={{ span: 18 }} sm={{ span: 8 }}>
+            <Form.Item>
               <Button
                 type="primary"
                 htmlType="submit"
@@ -101,9 +115,9 @@ const App: React.FC = () => {
                 Войти
               </Button>
             </Form.Item>
-          </Form>
-        </Col>
-      </Row>
+          </Col>
+        </Row>
+      </Form>
     </>
   );
 };

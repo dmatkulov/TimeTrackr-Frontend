@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import type { TableProps } from 'antd';
-import { Button, Space, Table, Popconfirm } from 'antd';
+import { Button, Dropdown, Flex, Popconfirm, Space, Table } from 'antd';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   selectPositionDeleting,
@@ -11,6 +11,7 @@ import { Position } from '../../types/types.position';
 import {
   DeleteOutlined,
   EditOutlined,
+  MoreOutlined,
   QuestionCircleOutlined,
 } from '@ant-design/icons';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
@@ -22,6 +23,7 @@ import {
   fetchPositions,
 } from './positionsThunks';
 import { getUsers } from '../users/UsersThunks';
+import NoData from '../../components/UI/NoData/NoData';
 
 const PositionsTable: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -29,7 +31,7 @@ const PositionsTable: React.FC = () => {
   const loading = useAppSelector(selectPositionsLoading);
   const deleting = useAppSelector(selectPositionDeleting);
 
-  const { sm, md, lg } = useBreakpoint();
+  const { sm } = useBreakpoint();
 
   const [open, setOpen] = useState(false);
 
@@ -57,6 +59,33 @@ const PositionsTable: React.FC = () => {
     dispatch(getUsers());
   }, [dispatch]);
 
+  const menuItems = (position: Position) => [
+    {
+      key: 'edit',
+      label: 'Редактировать',
+      icon: <EditOutlined />,
+      onClick: () => fetchOne(position._id),
+    },
+    {
+      key: 'delete',
+      label: (
+        <Popconfirm
+          title="Удаление позиции"
+          description="Вы уверены, что хотите удалить?"
+          disabled={deleting}
+          icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+          okText="Удалить"
+          cancelText="Отменить"
+          placement="bottomRight"
+          onConfirm={() => handleDelete(position._id)}
+        >
+          Удалить
+        </Popconfirm>
+      ),
+      icon: <DeleteOutlined />,
+    },
+  ];
+
   const columns: TableProps<Position>['columns'] = [
     {
       title: 'Название',
@@ -65,40 +94,67 @@ const PositionsTable: React.FC = () => {
       width: '70%',
     },
     {
-      title: 'Дейсвия',
       dataIndex: 'action',
       key: 'action',
       render: (_, position) => (
-        <Space size="middle">
-          <Button
-            size={!lg ? 'small' : 'middle'}
-            type="primary"
-            shape="round"
-            icon={<EditOutlined />}
-            onClick={() => fetchOne(position._id)}
-          >
-            {sm && 'Редактировать'}
-          </Button>
-          <Popconfirm
-            title="Удаление позиции"
-            description="Вы уверены, что хотите удалить?"
-            disabled={deleting}
-            icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-            okText="Удалить"
-            cancelText="Отменить"
-            onConfirm={() => handleDelete(position._id)}
-          >
-            <Button
-              size={!lg ? 'small' : 'middle'}
-              shape="round"
-              danger
-              icon={<DeleteOutlined />}
-              disabled={deleting}
-            >
-              {md && 'Удалить'}
-            </Button>
-          </Popconfirm>
-        </Space>
+        <>
+          {!sm && (
+            <Flex justify="flex-end">
+              <Dropdown
+                menu={{
+                  items: menuItems(position),
+                }}
+                placement="bottomRight"
+              >
+                <Button
+                  shape="circle"
+                  size="small"
+                  style={{ marginLeft: 'auto' }}
+                  icon={<MoreOutlined />}
+                />
+              </Dropdown>
+            </Flex>
+          )}
+          {sm && (
+            <Space size="middle">
+              <Button
+                size="small"
+                shape="round"
+                icon={<EditOutlined />}
+                onClick={() => fetchOne(position._id)}
+                style={{
+                  width: '100%',
+                  fontSize: '12px',
+                }}
+              >
+                Редактировать
+              </Button>
+              <Popconfirm
+                title="Удаление позиции"
+                description="Вы уверены, что хотите удалить?"
+                disabled={deleting}
+                icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                okText="Удалить"
+                cancelText="Отменить"
+                onConfirm={() => handleDelete(position._id)}
+              >
+                <Button
+                  size="small"
+                  type="text"
+                  danger
+                  icon={<DeleteOutlined />}
+                  disabled={deleting}
+                  style={{
+                    width: '100%',
+                    fontSize: '12px',
+                  }}
+                >
+                  Удалить
+                </Button>
+              </Popconfirm>
+            </Space>
+          )}
+        </>
       ),
     },
   ];
@@ -108,17 +164,18 @@ const PositionsTable: React.FC = () => {
     key: position._id,
   }));
 
+  if (loading) {
+    return <Spinner />;
+  }
+
   return (
     <>
-      {loading ? (
-        <Spinner />
-      ) : (
-        <Table
-          columns={columns}
-          dataSource={dataSource}
-          pagination={{ pageSize: 10, position: ['topRight', 'bottomRight'] }}
-        />
-      )}
+      <Table
+        locale={{ emptyText: <NoData /> }}
+        columns={columns}
+        dataSource={dataSource}
+        pagination={{ pageSize: 10, position: ['topRight', 'bottomRight'] }}
+      />
       <EditPositions open={open} onClose={handleClose} />
     </>
   );

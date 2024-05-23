@@ -5,7 +5,7 @@ import { Button } from 'antd';
 const EmployeeHeader: React.FC = () => {
   return (
     <>
-      <Button type="dashed" icon={<PlusOutlined />} iconPosition="start">
+      <Button type="primary" icon={<PlusOutlined />} iconPosition="start">
         Добавить задачу
       </Button>
     </>
