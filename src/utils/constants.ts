@@ -4,10 +4,9 @@ export const apiURL = 'http://localhost:8000';
 
 export enum TaskLabel {
   Testing = 'Тестирование',
-  Research = 'Исследование',
-  Design = 'UI/UX Design',
+  Task = 'Задача',
+  Bug = 'Баг',
   Management = 'Менеджмент',
-  Development = 'Разработка',
 }
 
 export const buddhistLocale: typeof ru = {

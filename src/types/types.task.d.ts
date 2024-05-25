@@ -1,5 +1,3 @@
-import { TaskLabel } from '../utils/constants';
-
 export interface TaskMutation {
   executionDate: string;
   tasks: TaskItem[];
@@ -10,5 +8,5 @@ interface TaskItem {
   endTime: string;
   title: string;
   description: string;
-  label: TaskLabel;
+  label: string;
 }

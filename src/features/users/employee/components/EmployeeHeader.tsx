@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
-import TaskForm from './TaskForm';
+import TestTaskForm from './testForm';
 
 const EmployeeHeader: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -23,7 +23,8 @@ const EmployeeHeader: React.FC = () => {
       >
         Добавить задачу
       </Button>
-      <TaskForm onClose={handleClose} open={open} />
+      {/*<TaskForm onClose={handleClose} open={open} />*/}
+      <TestTaskForm onClose={handleClose} open={open} />
     </>
   );
 };
