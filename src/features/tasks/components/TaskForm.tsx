@@ -9,9 +9,10 @@ import {
   FormProps,
   Input,
   Row,
+  Select,
   TimePicker,
 } from 'antd';
-import { TaskMutation } from '../../../../types/types.task';
+import { TaskMutation } from '../../../types/types.task';
 
 import buddhistEra from 'dayjs/plugin/buddhistEra';
 import dayjs from 'dayjs';
@@ -24,8 +25,12 @@ import {
   format,
   formattedDay,
   formattedTime,
-} from '../../../../utils/constants';
+} from '../../../utils/constants';
 import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
+import { labelOptions } from '../../../utils/labelOptions';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { createTask } from '../tasksThunks';
+import { selectTasksCreating } from '../tasksSlice';
 
 dayjs.extend(buddhistEra);
 dayjs.extend(utc);
@@ -38,14 +43,16 @@ interface Props {
   onClose: () => void;
   executionDate?: string;
 }
-const TestTaskForm: React.FC<Props> = ({
+const TaskForm: React.FC<Props> = ({
   open,
   onClose,
   executionDate = currentDay,
 }) => {
+  const dispatch = useAppDispatch();
+  const creating = useAppSelector(selectTasksCreating);
   const [form] = Form.useForm();
 
-  const onSubmit: FormProps<TaskMutation>['onFinish'] = (values) => {
+  const onSubmit: FormProps<TaskMutation>['onFinish'] = async (values) => {
     const formattedTasks = values.tasks.map((task) => ({
       ...task,
       startTime: formattedTime(task.startTime),
@@ -56,18 +63,30 @@ const TestTaskForm: React.FC<Props> = ({
       endTime: formattedTime(task.endTime),
     }));
 
-    const state = {
+    const mutation = {
       ...values,
       executionDate: new Date(formattedDay(values.executionDate)).toISOString(),
       tasks: formattedTasks,
     };
 
-    console.log(state);
+    await dispatch(createTask(mutation));
+    form.resetFields();
+    onClose();
   };
 
   useEffect(() => {
     form.setFieldsValue({
       executionDate: dayjs(executionDate),
+      tasks: [
+        {
+          startTime: '',
+          endTime: '',
+          timeSpent: '',
+          title: '',
+          description: '',
+          label: labelOptions[0].value,
+        },
+      ],
     });
   }, [form]);
 
@@ -122,11 +141,13 @@ const TestTaskForm: React.FC<Props> = ({
                   key={key}
                   style={{ marginBottom: '15px' }}
                   extra={
-                    <CloseOutlined
-                      onClick={() => {
-                        remove(name);
-                      }}
-                    />
+                    fields.length > 1 && (
+                      <CloseOutlined
+                        onClick={() => {
+                          remove(name);
+                        }}
+                      />
+                    )
                   }
                 >
                   <Form.Item
@@ -183,6 +204,14 @@ const TestTaskForm: React.FC<Props> = ({
                       placeholder="Напишите описание"
                     />
                   </Form.Item>
+                  <Form.Item<TaskMutation['tasks']>
+                    name={[name, 'label']}
+                    label="Тип задачи"
+                    style={{ border: 'none' }}
+                    rules={[{ required: true, message: 'укажите тип задачи' }]}
+                  >
+                    <Select options={labelOptions} />
+                  </Form.Item>
                 </Card>
               ))}
               <Form.Item>
@@ -200,7 +229,12 @@ const TestTaskForm: React.FC<Props> = ({
         </Form.List>
         <Row gutter={16} style={{ justifyContent: 'flex-end' }}>
           <Col xs={{ span: 24 }} md={{ span: 8 }}>
-            <Button htmlType="submit" type="primary" style={{ width: '100%' }}>
+            <Button
+              htmlType="submit"
+              type="primary"
+              style={{ width: '100%' }}
+              disabled={creating}
+            >
               Сохранить
             </Button>
           </Col>
@@ -210,4 +244,4 @@ const TestTaskForm: React.FC<Props> = ({
   );
 };
 
-export default TestTaskForm;
+export default TaskForm;

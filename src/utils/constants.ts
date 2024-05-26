@@ -3,13 +3,6 @@ import dayjs from 'dayjs';
 
 export const apiURL = 'http://localhost:8000';
 
-export enum TaskLabel {
-  Testing = 'Тестирование',
-  Task = 'Задача',
-  Bug = 'Баг',
-  Management = 'Менеджмент',
-}
-
 export const buddhistLocale: typeof ru = {
   ...ru,
   lang: {
