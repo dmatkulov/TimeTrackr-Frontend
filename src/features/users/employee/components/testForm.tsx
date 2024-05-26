@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   Button,
   Card,
@@ -17,65 +17,48 @@ import buddhistEra from 'dayjs/plugin/buddhistEra';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import { buddhistLocale } from '../../../../utils/constants';
+import {
+  buddhistLocale,
+  countTimeSpent,
+  disabledTime,
+  format,
+  formattedDay,
+  formattedTime,
+} from '../../../../utils/constants';
 import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
 
 dayjs.extend(buddhistEra);
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-type DisabledTimes = {
-  disabledHours?: () => number[];
-  disabledMinutes?: (selectedHour: number) => number[];
-  disabledSeconds?: (selectedHour: number, selectedMinute: number) => number[];
-};
-const initialState: TaskMutation = {
-  executionDate: dayjs(new Date()).format('YYYY-MM-DD'),
-  tasks: [
-    {
-      startTime: '',
-      endTime: '',
-      title: '',
-      description: '',
-      label: '',
-    },
-  ],
-};
+const currentDay = formattedDay(new Date());
+
 interface Props {
   open: boolean;
   onClose: () => void;
+  executionDate?: string;
 }
-const TestTaskForm: React.FC<Props> = ({ open, onClose }) => {
+const TestTaskForm: React.FC<Props> = ({
+  open,
+  onClose,
+  executionDate = currentDay,
+}) => {
   const [form] = Form.useForm();
-  const [state, setState] = useState<TaskMutation>(initialState);
-
-  const format = 'HH:mm';
-  const disabledTime = (): DisabledTimes => {
-    return {
-      disabledHours: () => {
-        const disabled: number[] = [];
-        for (let i = 0; i < 24; i++) {
-          if (i < 9 || i > 18) {
-            disabled.push(i);
-          }
-        }
-        return disabled;
-      },
-    };
-  };
 
   const onSubmit: FormProps<TaskMutation>['onFinish'] = (values) => {
     const formattedTasks = values.tasks.map((task) => ({
       ...task,
-      startTime: dayjs(task.startTime).format(format),
-      endTime: dayjs(task.endTime).format(format),
+      startTime: formattedTime(task.startTime),
+      timeSpent: countTimeSpent(
+        formattedTime(task.startTime),
+        formattedTime(task.endTime),
+      ),
+      endTime: formattedTime(task.endTime),
     }));
 
     const state = {
       ...values,
-      executionDate: new Date(
-        dayjs(values.executionDate).format('YYYY-MM-DD'),
-      ).toISOString(),
+      executionDate: new Date(formattedDay(values.executionDate)).toISOString(),
       tasks: formattedTasks,
     };
 
@@ -84,13 +67,13 @@ const TestTaskForm: React.FC<Props> = ({ open, onClose }) => {
 
   useEffect(() => {
     form.setFieldsValue({
-      executionDate: dayjs(dayjs(new Date()).format('YYYY-MM-DD')),
+      executionDate: dayjs(executionDate),
     });
   }, [form]);
 
   return (
     <Drawer
-      title="Новая заадча"
+      title="Новая задача"
       width={440}
       onClose={onClose}
       open={open}
@@ -124,17 +107,6 @@ const TestTaskForm: React.FC<Props> = ({ open, onClose }) => {
                 name="executionDate"
                 style={{ width: '100%' }}
                 allowClear={false}
-                value={state.executionDate}
-                onChange={(_date, dateString) => {
-                  if (typeof dateString === 'string') {
-                    setState((prevState) => {
-                      return {
-                        ...prevState,
-                        executionDate: new Date(dateString).toISOString(),
-                      };
-                    });
-                  }
-                }}
                 locale={buddhistLocale}
               />
             </Form.Item>
@@ -172,6 +144,7 @@ const TestTaskForm: React.FC<Props> = ({ open, onClose }) => {
                       minuteStep={5}
                       format={format}
                       needConfirm={false}
+                      locale={buddhistLocale}
                     />
                   </Form.Item>
                   <Form.Item
@@ -189,6 +162,7 @@ const TestTaskForm: React.FC<Props> = ({ open, onClose }) => {
                       minuteStep={5}
                       format={format}
                       needConfirm={false}
+                      locale={buddhistLocale}
                     />
                   </Form.Item>
                   <Form.Item<TaskMutation['tasks']>

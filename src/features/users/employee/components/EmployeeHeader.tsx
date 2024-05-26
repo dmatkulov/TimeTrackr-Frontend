@@ -23,7 +23,6 @@ const EmployeeHeader: React.FC = () => {
       >
         Добавить задачу
       </Button>
-      {/*<TaskForm onClose={handleClose} open={open} />*/}
       <TestTaskForm onClose={handleClose} open={open} />
     </>
   );

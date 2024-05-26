@@ -23,7 +23,7 @@ import ContactsPhoneInput from './ContactsPhoneInput';
 import FileInput from './FileInput';
 import PasswordInput from './PasswordInputGroup';
 import { selectUser } from '../UsersSlice';
-import { buddhistLocale } from '../../../utils/constants';
+import { buddhistLocale, formattedDay } from '../../../utils/constants';
 
 dayjs.extend(buddhistEra);
 dayjs.extend(utc);
@@ -40,7 +40,7 @@ const initialState: UserMutation = {
     street: '',
   },
   password: '',
-  startDate: dayjs(new Date()).format('YYYY-MM-DD'),
+  startDate: formattedDay(new Date()),
   photo: null,
 };
 

@@ -6,6 +6,7 @@ export interface TaskMutation {
 interface TaskItem {
   startTime: string;
   endTime: string;
+  timeSpent: string;
   title: string;
   description: string;
   label: string;
