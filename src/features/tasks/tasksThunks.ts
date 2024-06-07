@@ -1,6 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { BadRequestError, GlobalMessage } from '../../types/types.global';
-import { TaskMutation } from '../../types/types.task';
+import {
+  TaskData,
+  TaskMutation,
+  TaskQueryParams,
+} from '../../types/types.task';
 import { isAxiosError } from 'axios';
 import axiosApi from '../../utils/axiosApi';
 import { apiRoutes } from '../../utils/routes';
@@ -29,3 +33,21 @@ export const createTask = createAsyncThunk<
     throw e;
   }
 });
+
+export const getTasks = createAsyncThunk<TaskData, TaskQueryParams | undefined>(
+  'tasks/get',
+  async (params = {}) => {
+    const query: TaskQueryParams = {};
+
+    if (params) {
+      if (params.date) {
+        query.date = params.date;
+      }
+    }
+    const response = await axiosApi.get<TaskData>(apiRoutes.tasks, {
+      params: query,
+    });
+
+    return response.data;
+  },
+);

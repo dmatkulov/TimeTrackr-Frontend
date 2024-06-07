@@ -1,11 +1,11 @@
-import { TaskData } from '../../types/types.task';
+import { Task } from '../../types/types.task';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { createTask } from './tasksThunks';
+import { createTask, getTasks } from './tasksThunks';
 import { message } from 'antd';
 
 interface TasksState {
-  items: TaskData[];
+  items: Task[];
   fetchLoading: boolean;
   fetchOneLoading: boolean;
   createLoading: boolean;
@@ -38,6 +38,18 @@ export const tasksSlice = createSlice({
       .addCase(createTask.rejected, (state, { payload: error }) => {
         state.createLoading = false;
         void message.error(error?.message);
+      });
+
+    builder
+      .addCase(getTasks.pending, (state) => {
+        state.fetchLoading = true;
+      })
+      .addCase(getTasks.fulfilled, (state, { payload: data }) => {
+        state.fetchLoading = false;
+        state.items = data.tasks;
+      })
+      .addCase(getTasks.rejected, (state) => {
+        state.fetchLoading = false;
       });
   },
 });

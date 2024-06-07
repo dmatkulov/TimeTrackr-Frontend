@@ -227,18 +227,19 @@ const TaskForm: React.FC<Props> = ({
             </>
           )}
         </Form.List>
-        <Row gutter={16} style={{ justifyContent: 'flex-end' }}>
-          <Col xs={{ span: 24 }} md={{ span: 8 }}>
+        <Form.Item wrapperCol={{ span: 12 }} shouldUpdate>
+          {() => (
             <Button
               htmlType="submit"
               type="primary"
               style={{ width: '100%' }}
               disabled={creating}
+              loading={creating}
             >
               Сохранить
             </Button>
-          </Col>
-        </Row>
+          )}
+        </Form.Item>
       </Form>
     </Drawer>
   );

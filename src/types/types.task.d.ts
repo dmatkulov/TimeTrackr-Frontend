@@ -25,5 +25,10 @@ export interface Task {
 export interface TaskData {
   _id: string;
   executionDate: string;
-  tasks: Task;
+  tasks: Task[];
+}
+
+export interface TaskQueryParams {
+  userId?: string;
+  date?: string;
 }
