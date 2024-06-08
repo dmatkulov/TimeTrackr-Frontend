@@ -38,6 +38,7 @@ export const format = 'HH:mm';
 export const formattedTime = (time: string) => {
   return dayjs(time).format(format);
 };
+
 function secondsToHoursAndMinutes(seconds: number): string {
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
@@ -62,21 +63,3 @@ export const countTimeSpent = (start: string, end: string) => {
   const result = secondsB - secondsA;
   return secondsToHoursAndMinutes(result);
 };
-
-// const getDisabledEndTime = (name: number): DisabledTimes => {
-//   const startTime = form.getFieldValue(['tasks', name, 'startTime']);
-//
-//   return {
-//     disabledHours: () => {
-//       const disabled: number[] = [];
-//       const startHour = formattedTime(startTime).split(':');
-//       const hour = +startHour[0];
-//       for (let i = 0; i < 24; i++) {
-//         if (i < hour || i > 18) {
-//           disabled.push(i);
-//         }
-//       }
-//       return disabled;
-//     },
-//   };
-// };

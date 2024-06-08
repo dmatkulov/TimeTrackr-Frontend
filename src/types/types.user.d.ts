@@ -12,6 +12,7 @@ export interface User {
   role: string;
   startDate: string;
 }
+
 export interface StaffData {
   _id: string;
   email: string;
@@ -20,10 +21,17 @@ export interface StaffData {
   photo: string;
   position: Position;
 }
+
 export interface contactInfo {
   mobile: string;
   city: string;
   street: string;
+}
+
+export interface Author {
+  _id: string;
+  firstname: string;
+  lastname: string;
 }
 
 export interface LoginMutation {

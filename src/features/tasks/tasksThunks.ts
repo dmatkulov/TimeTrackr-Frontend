@@ -3,6 +3,7 @@ import { BadRequestError, GlobalMessage } from '../../types/types.global';
 import {
   TaskData,
   TaskDeleteArgs,
+  TaskDetails,
   TaskMutation,
   TaskQueryParams,
 } from '../../types/types.task';
@@ -49,6 +50,16 @@ export const getTasks = createAsyncThunk<TaskData, TaskQueryParams | undefined>(
       params: query,
     });
 
+    return response.data;
+  },
+);
+
+export const getOneTask = createAsyncThunk<TaskDetails, TaskDeleteArgs>(
+  'tasks/getOne',
+  async (params) => {
+    const response = await axiosApi.get<TaskDetails>(
+      apiRoutes.getTask + '/' + params.id + '?taskId=' + params.taskId,
+    );
     return response.data;
   },
 );

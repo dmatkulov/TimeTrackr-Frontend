@@ -1,6 +1,7 @@
 body {
   margin: 0;
 }
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -21,4 +22,15 @@ input[type='number'] {
 
 .ant-picker-filled {
   width: 100%;
+}
+
+.taskField {
+  padding: 8px;
+  margin-top: 0;
+  border-radius: 6px;
+}
+
+.taskField:hover {
+  background-color: #f6f6f6;
+  cursor: pointer;
 }

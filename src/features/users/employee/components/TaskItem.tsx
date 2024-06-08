@@ -1,26 +1,30 @@
 import React from 'react';
-import { Card, Dropdown, Flex, MenuProps, Space, Tag } from 'antd';
+import { Card, Dropdown, Flex, MenuProps, Space } from 'antd';
 import { Task } from '../../../../types/types.task';
 import {
   ClockCircleOutlined,
   DeleteOutlined,
   MoreOutlined,
-  ProductFilled,
-  RocketFilled,
-  SettingFilled,
 } from '@ant-design/icons';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import { useMediaQuery } from 'react-responsive';
-import { useAppSelector } from '../../../../app/hooks';
-import { selectDeleteTaskLoading } from '../../../tasks/tasksSlice';
+import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
+import {
+  selectDeleteTaskLoading,
+  toggleModal,
+} from '../../../tasks/tasksSlice';
+import TaskTag from './TaskTag';
 
 interface Props {
   task: Task;
   onDelete: (taskId: string) => void;
+  onFetchOne: (taskId: string) => void;
 }
 
-const TaskItem: React.FC<Props> = ({ task, onDelete }) => {
+const TaskItem: React.FC<Props> = ({ task, onDelete, onFetchOne }) => {
+  const dispatch = useAppDispatch();
   const deleting = useAppSelector(selectDeleteTaskLoading);
+
   const { md, lg } = useBreakpoint();
   const lgXl = useMediaQuery({
     query: '(min-width: 1200px) and (max-width: 1340px)',
@@ -29,27 +33,9 @@ const TaskItem: React.FC<Props> = ({ task, onDelete }) => {
     query: '(min-width: 320px) and (max-width: 360px)',
   });
 
-  let tagColor = 'processing';
-  let icon = <RocketFilled />;
-  if (task.label === 'Доработка') {
-    tagColor = 'purple';
-    icon = <SettingFilled />;
-  } else if (task.label === 'Менеджмент') {
-    tagColor = 'orange';
-    icon = <ProductFilled />;
-  }
-
   const items: MenuProps['items'] = [
     {
       key: '1',
-      label: 'Описание',
-    },
-    {
-      key: '2',
-      label: 'Редактировать',
-    },
-    {
-      key: '3',
       danger: true,
       label: 'Удалить',
       onClick: () => onDelete(task._id),
@@ -58,16 +44,33 @@ const TaskItem: React.FC<Props> = ({ task, onDelete }) => {
     },
   ];
 
+  const handleDropdownClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+  };
+
+  const handToggleModal = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+    void onFetchOne(task._id);
+    dispatch(toggleModal(true));
+  };
+
   return (
     <Card
       title={task.title}
       bordered={false}
       hoverable
-      style={{ boxShadow: 'none', height: '100%' }}
+      style={{ height: '100%' }}
       styles={{ header: { border: 'none' } }}
       extra={
-        <Dropdown menu={{ items }} placement="bottomRight" arrow>
+        <Dropdown
+          menu={{ items }}
+          placement="bottomRight"
+          arrow
+          overlayStyle={{ zIndex: 10 }}
+          trigger={['click']}
+        >
           <div
+            onClick={handleDropdownClick}
             style={{
               width: '24px',
               height: '24px',
@@ -83,6 +86,7 @@ const TaskItem: React.FC<Props> = ({ task, onDelete }) => {
           </div>
         </Dropdown>
       }
+      onClick={handToggleModal}
     >
       <Flex
         justify="space-between"
@@ -102,9 +106,7 @@ const TaskItem: React.FC<Props> = ({ task, onDelete }) => {
         >
           <ClockCircleOutlined color="blue" /> {task.timeSpent}
         </Space>
-        <Tag color={tagColor} bordered={false} icon={icon}>
-          {task.label}
-        </Tag>
+        <TaskTag task={task} />
       </Flex>
     </Card>
   );

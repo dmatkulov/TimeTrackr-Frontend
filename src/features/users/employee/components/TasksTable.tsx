@@ -14,6 +14,7 @@ import PageHeader from './PageHeader';
 import TasksList from './TasksList';
 import { Button, Space, Typography } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import TaskDescription from './TaskDescription';
 
 interface Props {
   date: string;
@@ -52,6 +53,7 @@ const TasksTable: React.FC<Props> = ({ date }) => {
 
   return (
     <>
+      <TaskDescription />
       <PageHeader handleOpen={handleOpen} date={date} />
       {fetching && <Spinner />}
       {tasksData && tasksData.tasks.length > 0 ? (

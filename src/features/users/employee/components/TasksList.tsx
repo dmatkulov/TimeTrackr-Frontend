@@ -2,7 +2,7 @@ import React from 'react';
 import { Task } from '../../../../types/types.task';
 import { Col, Row } from 'antd';
 import TaskItem from './TaskItem';
-import { deleteTask } from '../../../tasks/tasksThunks';
+import { deleteTask, getOneTask } from '../../../tasks/tasksThunks';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import { selectTasks } from '../../../tasks/tasksSlice';
 
@@ -22,6 +22,12 @@ const TasksList: React.FC<Props> = ({ tasks, fetchTasks }) => {
     }
   };
 
+  const doFetchOne = async (taskId: string) => {
+    if (tasksData) {
+      await dispatch(getOneTask({ id: tasksData?._id, taskId }));
+    }
+  };
+
   return (
     <Row gutter={16}>
       {tasks.map((task) => (
@@ -33,7 +39,11 @@ const TasksList: React.FC<Props> = ({ tasks, fetchTasks }) => {
           lg={{ span: 8 }}
           xl={{ span: 6 }}
         >
-          <TaskItem task={task} onDelete={handleDelete} />
+          <TaskItem
+            task={task}
+            onDelete={handleDelete}
+            onFetchOne={doFetchOne}
+          />
         </Col>
       ))}
     </Row>

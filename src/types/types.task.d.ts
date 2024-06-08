@@ -1,3 +1,5 @@
+import { Author } from './types.user';
+
 export interface TaskMutation {
   executionDate: string;
   tasks: TaskItem[];
@@ -24,8 +26,16 @@ export interface Task {
 
 export interface TaskData {
   _id: string;
+  userId: Author;
   executionDate: string;
   tasks: Task[];
+}
+
+export interface TaskDetails {
+  _id: string;
+  executionDate: string;
+  user: Author;
+  task: Task;
 }
 
 export interface TaskQueryParams {
