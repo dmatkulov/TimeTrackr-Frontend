@@ -1,11 +1,11 @@
-import { Task } from '../../types/types.task';
+import { TaskData } from '../../types/types.task';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { createTask, getTasks } from './tasksThunks';
+import { createTask, deleteTask, getTasks } from './tasksThunks';
 import { message } from 'antd';
 
 interface TasksState {
-  items: Task[];
+  items: TaskData | null;
   fetchLoading: boolean;
   fetchOneLoading: boolean;
   createLoading: boolean;
@@ -14,7 +14,7 @@ interface TasksState {
 }
 
 const initialState: TasksState = {
-  items: [],
+  items: null,
   fetchLoading: false,
   fetchOneLoading: false,
   createLoading: false,
@@ -46,10 +46,22 @@ export const tasksSlice = createSlice({
       })
       .addCase(getTasks.fulfilled, (state, { payload: data }) => {
         state.fetchLoading = false;
-        state.items = data.tasks;
+        state.items = data;
       })
       .addCase(getTasks.rejected, (state) => {
         state.fetchLoading = false;
+      });
+
+    builder
+      .addCase(deleteTask.pending, (state) => {
+        state.deleteLoading = true;
+      })
+      .addCase(deleteTask.fulfilled, (state, { payload: data }) => {
+        state.deleteLoading = false;
+        void message.success(data.message);
+      })
+      .addCase(deleteTask.rejected, (state) => {
+        state.deleteLoading = false;
       });
   },
 });
@@ -58,6 +70,7 @@ export const tasksReducer = tasksSlice.reducer;
 export const selectTasks = (state: RootState) => state.tasks.items;
 export const selectTasksLoading = (state: RootState) =>
   state.tasks.fetchLoading;
-
 export const selectTasksCreating = (state: RootState) =>
   state.tasks.createLoading;
+export const selectDeleteTaskLoading = (state: RootState) =>
+  state.tasks.deleteLoading;

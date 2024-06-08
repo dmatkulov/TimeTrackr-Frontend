@@ -6,15 +6,16 @@ import { useAppDispatch } from '../../../app/hooks';
 import { logOut } from '../../../features/users/UsersThunks';
 import { useNavigate } from 'react-router-dom';
 import AdminHeader from '../../../features/users/admin/components/AdminHeader';
-import EmployeeHeader from '../../../features/users/employee/components/EmployeeHeader';
 import MobileMenu from './MobileMenu';
 import UserAvatar from './UserAvatar';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 
 const { Link } = Typography;
+
 interface Props {
   user: User;
 }
+
 const UserAppBar: React.FC<Props> = ({ user }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -52,7 +53,7 @@ const UserAppBar: React.FC<Props> = ({ user }) => {
         vertical={false}
         style={{ flexGrow: 1 }}
       >
-        {isAdmin ? <AdminHeader /> : <EmployeeHeader />}
+        <div style={{ flexGrow: 1 }}>{isAdmin && <AdminHeader />}</div>
 
         {!md ? (
           <MobileMenu user={user} />

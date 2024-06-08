@@ -37,7 +37,8 @@ const AppBar: React.FC = () => {
         }}
       >
         {!user && <Logo />}
-        {user && md && <Logo />}
+        {user?.role === 'admin' && md && <Logo />}
+        {user?.role === 'employee' && <Logo />}
         {user ? <UserAppBar user={user} /> : <GuestAppBar />}
       </Header>
     </>

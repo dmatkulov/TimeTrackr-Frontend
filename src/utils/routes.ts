@@ -32,5 +32,6 @@ export const apiRoutes = {
   deleteUser: 'staff/delete/',
   updateUser: 'staff/edit',
   tasks: 'tasks',
-  newTask: 'tasks/new-task',
+  createTask: 'tasks/new-task',
+  deleteTask: 'tasks/delete',
 };

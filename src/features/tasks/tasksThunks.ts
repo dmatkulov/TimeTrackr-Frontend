@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { BadRequestError, GlobalMessage } from '../../types/types.global';
 import {
   TaskData,
+  TaskDeleteArgs,
   TaskMutation,
   TaskQueryParams,
 } from '../../types/types.task';
@@ -16,7 +17,7 @@ export const createTask = createAsyncThunk<
 >('tasks/create', async (mutation, { rejectWithValue }) => {
   try {
     const response = await axiosApi.post<GlobalMessage>(
-      apiRoutes.newTask,
+      apiRoutes.createTask,
       mutation,
     );
     return response.data;
@@ -48,6 +49,19 @@ export const getTasks = createAsyncThunk<TaskData, TaskQueryParams | undefined>(
       params: query,
     });
 
+    return response.data;
+  },
+);
+
+export const deleteTask = createAsyncThunk<GlobalMessage, TaskDeleteArgs>(
+  'tasks/deleteOne',
+  async (params) => {
+    const url =
+      apiRoutes.deleteTask + '/' + params.id + '?taskId=' + params.taskId;
+    const response = await axiosApi.delete<GlobalMessage>(
+      apiRoutes.deleteTask + '/' + params.id + '?taskId=' + params.taskId,
+    );
+    console.log(url);
     return response.data;
   },
 );

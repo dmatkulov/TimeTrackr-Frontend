@@ -28,31 +28,31 @@ import {
 } from '../../../utils/constants';
 import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
 import { labelOptions } from '../../../utils/labelOptions';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { createTask } from '../tasksThunks';
-import { selectTasksCreating } from '../tasksSlice';
 
 dayjs.extend(buddhistEra);
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-const currentDay = formattedDay(new Date());
-
 interface Props {
+  onSubmit: (mutation: TaskMutation) => void;
   open: boolean;
   onClose: () => void;
   executionDate?: string;
+  isToday?: boolean;
+  creating: boolean;
 }
+
 const TaskForm: React.FC<Props> = ({
+  onSubmit,
   open,
   onClose,
-  executionDate = currentDay,
+  executionDate = formattedDay(new Date()),
+  isToday = false,
+  creating,
 }) => {
-  const dispatch = useAppDispatch();
-  const creating = useAppSelector(selectTasksCreating);
   const [form] = Form.useForm();
 
-  const onSubmit: FormProps<TaskMutation>['onFinish'] = async (values) => {
+  const handleSubmit: FormProps<TaskMutation>['onFinish'] = async (values) => {
     const formattedTasks = values.tasks.map((task) => ({
       ...task,
       startTime: formattedTime(task.startTime),
@@ -69,7 +69,7 @@ const TaskForm: React.FC<Props> = ({
       tasks: formattedTasks,
     };
 
-    await dispatch(createTask(mutation));
+    onSubmit(mutation);
     form.resetFields();
     onClose();
   };
@@ -90,9 +90,11 @@ const TaskForm: React.FC<Props> = ({
     });
   }, [form]);
 
+  const day = dayjs(executionDate).format('D MMMM, YYYY');
+
   return (
     <Drawer
-      title="Новая задача"
+      title={day}
       width={440}
       onClose={onClose}
       open={open}
@@ -107,30 +109,32 @@ const TaskForm: React.FC<Props> = ({
         form={form}
         layout="vertical"
         autoComplete="off"
-        onFinish={onSubmit}
+        onFinish={handleSubmit}
       >
-        <Row gutter={16}>
-          <Col xs={{ span: 24 }}>
-            <Form.Item
-              label="День выполнения"
-              name="executionDate"
-              rules={[
-                {
-                  type: 'object' as const,
-                  required: true,
-                  message: 'Введите дату',
-                },
-              ]}
-            >
-              <DatePicker
+        {!isToday && (
+          <Row gutter={16}>
+            <Col xs={{ span: 24 }}>
+              <Form.Item
+                label="День выполнения"
                 name="executionDate"
-                style={{ width: '100%' }}
-                allowClear={false}
-                locale={buddhistLocale}
-              />
-            </Form.Item>
-          </Col>
-        </Row>
+                rules={[
+                  {
+                    type: 'object' as const,
+                    required: true,
+                    message: 'Введите дату',
+                  },
+                ]}
+              >
+                <DatePicker
+                  name="executionDate"
+                  style={{ width: '100%' }}
+                  allowClear={false}
+                  locale={buddhistLocale}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+        )}
         <Form.List name="tasks">
           {(fields, { add, remove }) => (
             <>

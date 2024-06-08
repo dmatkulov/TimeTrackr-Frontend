@@ -12,6 +12,7 @@ import AdminMenu from './admin/components/AdminMenu';
 const { Content } = Layout;
 
 interface Props extends React.PropsWithChildren {}
+
 const UserPanel: React.FC<Props> = () => {
   const user = useAppSelector(selectUser);
   const { md } = useBreakpoint();

@@ -32,3 +32,8 @@ export interface TaskQueryParams {
   userId?: string;
   date?: string;
 }
+
+export interface TaskDeleteArgs {
+  id: string;
+  taskId: string;
+}
