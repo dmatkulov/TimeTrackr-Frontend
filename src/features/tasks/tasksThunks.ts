@@ -56,12 +56,9 @@ export const getTasks = createAsyncThunk<TaskData, TaskQueryParams | undefined>(
 export const deleteTask = createAsyncThunk<GlobalMessage, TaskDeleteArgs>(
   'tasks/deleteOne',
   async (params) => {
-    const url =
-      apiRoutes.deleteTask + '/' + params.id + '?taskId=' + params.taskId;
     const response = await axiosApi.delete<GlobalMessage>(
       apiRoutes.deleteTask + '/' + params.id + '?taskId=' + params.taskId,
     );
-    console.log(url);
     return response.data;
   },
 );
