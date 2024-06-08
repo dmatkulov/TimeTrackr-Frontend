@@ -2,7 +2,11 @@ import React, { useCallback, useEffect, useState } from 'react';
 import TaskForm from '../../../tasks/components/TaskForm';
 import { formattedDay } from '../../../../utils/constants';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
-import { selectTasks, selectTasksCreating, selectTasksLoading } from '../../../tasks/tasksSlice';
+import {
+  selectTasks,
+  selectTasksCreating,
+  selectTasksLoading,
+} from '../../../tasks/tasksSlice';
 import { createTask, getTasks } from '../../../tasks/tasksThunks';
 import { TaskMutation } from '../../../../types/types.task';
 import Spinner from '../../../../components/UI/Spin/Spin';
@@ -20,32 +24,32 @@ const TasksTable: React.FC<Props> = ({ date }) => {
   const tasksData = useAppSelector(selectTasks);
   const creating = useAppSelector(selectTasksCreating);
   const fetching = useAppSelector(selectTasksLoading);
-  
+
   const currentDay = formattedDay(date);
-  
+
   const [open, setOpen] = useState(false);
-  
+
   const doFetchAll = useCallback(async () => {
     await dispatch(getTasks({ date: currentDay }));
   }, [dispatch]);
-  
+
   useEffect(() => {
     void doFetchAll();
   }, [doFetchAll]);
-  
+
   const handleClose = async () => {
     setOpen(false);
   };
-  
+
   const handleOpen = () => {
     setOpen(true);
   };
-  
+
   const handleSubmit = async (mutation: TaskMutation) => {
     await dispatch(createTask(mutation));
     await doFetchAll();
   };
-  
+
   return (
     <>
       <PageHeader handleOpen={handleOpen} date={date} />
@@ -54,7 +58,9 @@ const TasksTable: React.FC<Props> = ({ date }) => {
         <TasksList tasks={tasksData.tasks} fetchTasks={doFetchAll} />
       ) : (
         <Space wrap={true} size="middle" align="center">
-          <Typography.Text style={{ color: '#8c8c8c' }}>У вас пока нет задач на эту дату</Typography.Text>
+          <Typography.Text style={{ color: '#8c8c8c' }}>
+            У вас пока нет задач на эту дату
+          </Typography.Text>
           <Button
             onClick={handleOpen}
             type="link"
@@ -66,7 +72,7 @@ const TasksTable: React.FC<Props> = ({ date }) => {
           </Button>
         </Space>
       )}
-      
+
       <TaskForm
         onSubmit={handleSubmit}
         onClose={handleClose}
