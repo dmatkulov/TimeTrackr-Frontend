@@ -34,7 +34,7 @@ export interface TaskData {
 export interface TaskDetails {
   _id: string;
   executionDate: string;
-  user: Author;
+  userId: Author;
   task: Task;
 }
 

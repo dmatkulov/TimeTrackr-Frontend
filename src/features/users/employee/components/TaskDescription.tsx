@@ -1,6 +1,15 @@
 import React from 'react';
-import { Button, Col, Modal, Row, Space, Typography } from 'antd';
-import { EditOutlined, SwapOutlined } from '@ant-design/icons';
+import {
+  Button,
+  Col,
+  Divider,
+  Flex,
+  Modal,
+  Row,
+  Space,
+  Typography,
+} from 'antd';
+import { DeleteOutlined, EditOutlined, SwapOutlined } from '@ant-design/icons';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import {
   selectModal,
@@ -10,6 +19,8 @@ import {
 import { selectFetchOneLoading } from '../../UsersSlice';
 import Spinner from '../../../../components/UI/Spin/Spin';
 import TaskTag from './TaskTag';
+import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
+import { gray } from '@ant-design/colors';
 
 const TaskDescription: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -17,35 +28,54 @@ const TaskDescription: React.FC = () => {
   const taskDetails = useAppSelector(selectTaskDetails);
   const loading = useAppSelector(selectFetchOneLoading);
 
+  const { sm } = useBreakpoint();
+
   const task = taskDetails?.task;
+
+  const handleClose = () => dispatch(toggleModal(false));
+
+  const subtitleStyle = {
+    fontWeight: 'bolder',
+    paddingLeft: '8px',
+    color: gray[1],
+  };
 
   return (
     <>
       <Modal
         footer={[
-          <Button
-            key="1"
-            size="small"
-            style={{ fontSize: '12px', boxShadow: 'none' }}
-          >
-            <EditOutlined />
-            Редактировать
-          </Button>,
-          <Button
-            key="2"
-            size="small"
-            style={{ fontSize: '12px', boxShadow: 'none' }}
-            shape="round"
-            type="text"
-            danger
-          >
-            <EditOutlined />
-            Удалить
-          </Button>,
+          <Flex key="1" justify="space-between" align="center">
+            <Flex
+              justify="space-between"
+              gap={20}
+              style={{ width: !sm ? '100%' : 'auto' }}
+            >
+              <Button style={{ boxShadow: 'none' }} type="primary">
+                <EditOutlined />
+                Редактировать
+              </Button>
+              <Button style={{ boxShadow: 'none' }} danger>
+                <DeleteOutlined />
+                {sm && 'Удалить'}
+              </Button>
+            </Flex>
+            {sm && (
+              <Button style={{ boxShadow: 'none' }} onClick={handleClose}>
+                Закрыть
+              </Button>
+            )}
+          </Flex>,
         ]}
         open={open}
-        onCancel={() => dispatch(toggleModal(false))}
+        onCancel={handleClose}
         width={1000}
+        styles={{
+          body: {
+            marginBottom: '30px',
+            borderBottom: '1px solid #efefef',
+            paddingBottom: '30px',
+          },
+        }}
         forceRender
       >
         {loading ? (
@@ -54,14 +84,7 @@ const TaskDescription: React.FC = () => {
           taskDetails &&
           task && (
             <Row gutter={24}>
-              <Col
-                xs={{ span: 24 }}
-                sm={{ span: 16 }}
-                style={{
-                  borderRight: '1px solid #efefef',
-                  paddingRight: '32px',
-                }}
-              >
+              <Col xs={{ span: 24 }} sm={{ span: 15 }}>
                 <Typography.Title
                   className="taskField"
                   level={4}
@@ -70,7 +93,9 @@ const TaskDescription: React.FC = () => {
                   {task.title}
                 </Typography.Title>
                 <div>
-                  <b style={{ paddingLeft: '8px' }}>Описание</b>
+                  <Typography.Text style={subtitleStyle}>
+                    Описание
+                  </Typography.Text>
                   <p className="taskField">
                     {task.description ? (
                       task.description
@@ -84,7 +109,9 @@ const TaskDescription: React.FC = () => {
                   </p>
                 </div>
                 <Space direction="vertical">
-                  <b style={{ paddingLeft: '8px' }}>Тип задачи</b>
+                  <Typography.Text style={subtitleStyle}>
+                    Тип задачи
+                  </Typography.Text>
                   <Space>
                     <TaskTag task={task} />
                     <Button
@@ -95,14 +122,25 @@ const TaskDescription: React.FC = () => {
                   </Space>
                 </Space>
               </Col>
-              <Col
-                xs={{ span: 24 }}
-                sm={{ span: 8 }}
-                style={{ paddingLeft: '32px' }}
-              >
-                <p>Автор</p>
-                <p>Дата</p>
-                <p>Всего часов</p>
+              <Col xs={{ span: 24 }} sm={{ span: 1 }}>
+                <Divider
+                  type={!sm ? 'horizontal' : 'vertical'}
+                  style={{ height: '100%' }}
+                />
+              </Col>
+              <Col xs={{ span: 24 }} sm={{ span: 8 }}>
+                <Row>
+                  <Col span={8}>
+                    <Typography.Text style={subtitleStyle}>
+                      Автор
+                    </Typography.Text>
+                  </Col>
+                  <Col>
+                    {`${taskDetails?.userId.firstname} ${taskDetails?.userId.lastname}`}
+                  </Col>
+                </Row>
+                <Typography.Text style={subtitleStyle}>Дата</Typography.Text>
+                <Typography.Text style={subtitleStyle}>Время</Typography.Text>
               </Col>
             </Row>
           )
