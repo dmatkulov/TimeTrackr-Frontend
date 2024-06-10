@@ -12,6 +12,7 @@ import AdminMenu from './admin/components/AdminMenu';
 const { Content } = Layout;
 
 interface Props extends React.PropsWithChildren {}
+
 const UserPanel: React.FC<Props> = () => {
   const user = useAppSelector(selectUser);
   const { md } = useBreakpoint();
@@ -81,7 +82,7 @@ const UserPanel: React.FC<Props> = () => {
           <Content style={{ margin: '0' }}>
             <div
               style={{
-                padding: '15px 30px',
+                padding: '30px',
               }}
             >
               <Outlet />

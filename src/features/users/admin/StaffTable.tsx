@@ -109,7 +109,12 @@ const StaffTable: React.FC = () => {
                 <Button
                   shape="circle"
                   size="small"
-                  style={{ marginLeft: 'auto' }}
+                  style={{
+                    marginLeft: 'auto',
+                    border: '1px solid #fafafa',
+                    backgroundColor: '#fafafa',
+                    boxShadow: 'none',
+                  }}
                   icon={<MoreOutlined />}
                 />
               </Dropdown>

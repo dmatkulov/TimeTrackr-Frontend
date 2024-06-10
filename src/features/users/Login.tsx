@@ -70,7 +70,7 @@ const App: React.FC = () => {
         onFinish={onSubmit}
       >
         <Row justify="center">
-          <Col xs={{ span: 18 }} sm={{ span: 8 }}>
+          <Col xs={{ span: 18 }} sm={{ span: 14 }} md={{ span: 6 }}>
             <Form.Item<LoginMutation>
               name="email"
               label="Почта"
@@ -91,7 +91,7 @@ const App: React.FC = () => {
           </Col>
         </Row>
         <Row justify="center">
-          <Col xs={{ span: 18 }} sm={{ span: 8 }}>
+          <Col xs={{ span: 18 }} sm={{ span: 14 }} md={{ span: 6 }}>
             <Form.Item<LoginMutation>
               label="Пароль"
               name="password"
@@ -104,7 +104,7 @@ const App: React.FC = () => {
         </Row>
 
         <Row justify="center">
-          <Col xs={{ span: 18 }} sm={{ span: 8 }}>
+          <Col xs={{ span: 18 }} sm={{ span: 14 }} md={{ span: 6 }}>
             <Form.Item>
               <Button
                 type="primary"

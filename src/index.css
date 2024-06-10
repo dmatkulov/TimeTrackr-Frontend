@@ -1,6 +1,7 @@
 body {
   margin: 0;
 }
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -15,24 +16,21 @@ input[type='number'] {
   display: none;
 }
 
-/*.form-control {*/
-/*  padding-left: 12px;*/
-/*  outline: none;*/
-/*  border-color: #d9d9d9;*/
-/*  border-radius: 6px;*/
-/*}*/
-
 .special-label {
   display: none;
 }
 
-/*.form-control:focus {*/
-/*  background-color: #ffffff;*/
-/*  border-color: #1677ff;*/
-/*  box-shadow: 0 0 0 2px rgba(5, 145, 255, 0.1);*/
-/*}*/
+.ant-picker-filled {
+  width: 100%;
+}
 
-/*.form-control:hover {*/
-/*  background-color: #ffffff;*/
-/*  border-color: #4096ff;*/
-/*}*/
+.taskField {
+  padding: 8px;
+  margin-top: 0;
+  border-radius: 6px;
+}
+
+.taskField:hover {
+  background-color: #f6f6f6;
+  cursor: pointer;
+}

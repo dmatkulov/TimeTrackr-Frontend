@@ -14,8 +14,8 @@ import StaffContainer from './features/users/admin/StaffContainer';
 import PositionsTable from './features/positions/PositionsTable';
 import UserPanel from './features/users/UserPanel';
 import UserInfoPage from './features/users/employee/EmployeeInfo';
-import Today from './features/users/employee/Today';
 import CalendarPage from './features/users/employee/CalendarPage';
+import Today from './features/users/employee/Today';
 
 const App = () => {
   const user = useAppSelector(selectUser);
