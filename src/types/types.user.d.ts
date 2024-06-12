@@ -30,6 +30,7 @@ export interface contactInfo {
 
 export interface Author {
   _id: string;
+  photo: string;
   firstname: string;
   lastname: string;
 }

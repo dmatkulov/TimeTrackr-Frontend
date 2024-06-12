@@ -1,10 +1,14 @@
 import React from 'react';
-import TasksTable from './components/TasksTable';
+import TasksTable from '../../tasks/components/TasksTable';
 
 const Today: React.FC = () => {
   const date = new Date().toISOString();
 
-  return <TasksTable date={date} />;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <TasksTable date={date} />
+    </div>
+  );
 };
 
 export default Today;

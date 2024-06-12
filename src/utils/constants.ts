@@ -39,27 +39,21 @@ export const formattedTime = (time: string) => {
   return dayjs(time).format(format);
 };
 
-function secondsToHoursAndMinutes(seconds: number): string {
+export const convertTime = (seconds: number): string => {
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
-  if (minutes > 0) {
-    return `${hours} ч. ${minutes} мин.`;
+
+  let message: string;
+  if (hours === 0) {
+    message = `${minutes} минут`;
+  } else if (minutes === 0) {
+    message = `${hours} часов`;
   } else {
-    return `${hours} ч.`;
+    message = `${hours} ч. ${minutes} мин.`;
   }
-}
+  return message;
+};
 
 export const formattedDay = (day: Date | string) => {
   return dayjs(day).format('YYYY-MM-DD');
-};
-
-export const countTimeSpent = (start: string, end: string) => {
-  const a = start.split(':');
-  const b = end.split(':');
-
-  const secondsA = +a[0] * 60 * 60 + +a[1] * 60;
-  const secondsB = +b[0] * 60 * 60 + +b[1] * 60;
-
-  const result = secondsB - secondsA;
-  return secondsToHoursAndMinutes(result);
 };

@@ -20,7 +20,6 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import {
   buddhistLocale,
-  countTimeSpent,
   disabledTime,
   format,
   formattedDay,
@@ -56,10 +55,6 @@ const TaskForm: React.FC<Props> = ({
     const formattedTasks = values.tasks.map((task) => ({
       ...task,
       startTime: formattedTime(task.startTime),
-      timeSpent: countTimeSpent(
-        formattedTime(task.startTime),
-        formattedTime(task.endTime),
-      ),
       endTime: formattedTime(task.endTime),
     }));
 
@@ -81,7 +76,6 @@ const TaskForm: React.FC<Props> = ({
         {
           startTime: '',
           endTime: '',
-          timeSpent: '',
           title: '',
           description: '',
           label: labelOptions[0].value,

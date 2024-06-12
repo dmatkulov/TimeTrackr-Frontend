@@ -83,6 +83,7 @@ const UserPanel: React.FC<Props> = () => {
             <div
               style={{
                 padding: '30px',
+                height: '100%',
               }}
             >
               <Outlet />

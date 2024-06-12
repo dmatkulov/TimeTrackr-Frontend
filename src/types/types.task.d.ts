@@ -8,7 +8,6 @@ export interface TaskMutation {
 interface TaskItem {
   startTime: string;
   endTime: string;
-  timeSpent: string;
   title: string;
   description: string;
   label: string;
@@ -18,7 +17,7 @@ export interface Task {
   _id: string;
   startTime: string;
   endTime: string;
-  timeSpent: string;
+  timeSpent: number;
   title: string;
   description: string;
   label: string;
@@ -28,6 +27,7 @@ export interface TaskData {
   _id: string;
   userId: Author;
   executionDate: string;
+  totalTimeSpent: number;
   tasks: Task[];
 }
 

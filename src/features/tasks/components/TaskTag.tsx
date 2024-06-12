@@ -1,5 +1,5 @@
 import React from 'react';
-import { Task } from '../../../../types/types.task';
+import { Task } from '../../../types/types.task';
 import { ProductFilled, RocketFilled, SettingFilled } from '@ant-design/icons';
 import { Tag } from 'antd';
 

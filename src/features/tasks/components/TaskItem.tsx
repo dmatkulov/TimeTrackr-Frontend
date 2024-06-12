@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Dropdown, Flex, MenuProps, Space } from 'antd';
-import { Task } from '../../../../types/types.task';
+import { Task } from '../../../types/types.task';
 import {
   ClockCircleOutlined,
   DeleteOutlined,
@@ -8,12 +8,10 @@ import {
 } from '@ant-design/icons';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import { useMediaQuery } from 'react-responsive';
-import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
-import {
-  selectDeleteTaskLoading,
-  toggleModal,
-} from '../../../tasks/tasksSlice';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { selectDeleteTaskLoading, toggleModal } from '../tasksSlice';
 import TaskTag from './TaskTag';
+import { convertTime } from '../../../utils/constants';
 
 interface Props {
   task: Task;
@@ -38,7 +36,10 @@ const TaskItem: React.FC<Props> = ({ task, onDelete, onFetchOne }) => {
       key: '1',
       danger: true,
       label: 'Удалить',
-      onClick: () => onDelete(task._id),
+      onClick: (info) => {
+        info.domEvent.stopPropagation();
+        onDelete(task._id);
+      },
       icon: <DeleteOutlined />,
       disabled: deleting,
     },
@@ -54,6 +55,8 @@ const TaskItem: React.FC<Props> = ({ task, onDelete, onFetchOne }) => {
     dispatch(toggleModal(true));
   };
 
+  const timeSpent = convertTime(task.timeSpent);
+
   return (
     <Card
       title={task.title}
@@ -64,7 +67,7 @@ const TaskItem: React.FC<Props> = ({ task, onDelete, onFetchOne }) => {
       extra={
         <Dropdown
           menu={{ items }}
-          placement="bottomRight"
+          placement="topRight"
           arrow
           overlayStyle={{ zIndex: 10 }}
           trigger={['click']}
@@ -104,7 +107,7 @@ const TaskItem: React.FC<Props> = ({ task, onDelete, onFetchOne }) => {
             width: lgXl ? '100%' : 'auto',
           }}
         >
-          <ClockCircleOutlined color="blue" /> {task.timeSpent}
+          <ClockCircleOutlined color="blue" /> {timeSpent}
         </Space>
         <TaskTag task={task} />
       </Flex>

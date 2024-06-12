@@ -1,10 +1,10 @@
 import React from 'react';
-import { Task } from '../../../../types/types.task';
+import { Task } from '../../../types/types.task';
 import { Col, Row } from 'antd';
 import TaskItem from './TaskItem';
-import { deleteTask, getOneTask } from '../../../tasks/tasksThunks';
-import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
-import { selectTasks } from '../../../tasks/tasksSlice';
+import { deleteTask, getOneTask } from '../tasksThunks';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { selectTasks } from '../tasksSlice';
 
 interface Props {
   tasks: Task[];

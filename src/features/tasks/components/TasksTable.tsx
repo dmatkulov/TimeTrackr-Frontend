@@ -1,20 +1,21 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import TaskForm from '../../../tasks/components/TaskForm';
-import { formattedDay } from '../../../../utils/constants';
-import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
+import TaskForm from './TaskForm';
+import { convertTime, formattedDay } from '../../../utils/constants';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import {
   selectTasks,
   selectTasksCreating,
   selectTasksLoading,
-} from '../../../tasks/tasksSlice';
-import { createTask, getTasks } from '../../../tasks/tasksThunks';
-import { TaskMutation } from '../../../../types/types.task';
-import Spinner from '../../../../components/UI/Spin/Spin';
-import PageHeader from './PageHeader';
+} from '../tasksSlice';
+import { createTask, getTasks } from '../tasksThunks';
+import { TaskMutation } from '../../../types/types.task';
+import Spinner from '../../../components/UI/Spin/Spin';
+import PageHeader from '../../users/employee/components/PageHeader';
 import TasksList from './TasksList';
 import { Button, Space, Typography } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import TaskDescription from './TaskDescription';
+import Statistics from './Statistics';
 
 interface Props {
   date: string;
@@ -51,13 +52,31 @@ const TasksTable: React.FC<Props> = ({ date }) => {
     await doFetchAll();
   };
 
+  let totalTimeSpent;
+  let amount;
+
+  if (tasksData) {
+    totalTimeSpent = convertTime(tasksData.totalTimeSpent);
+    amount = tasksData.tasks.length;
+  }
+
   return (
     <>
       <TaskDescription />
       <PageHeader handleOpen={handleOpen} date={date} />
       {fetching && <Spinner />}
       {tasksData && tasksData.tasks.length > 0 ? (
-        <TasksList tasks={tasksData.tasks} fetchTasks={doFetchAll} />
+        <div
+          style={{
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'space-between',
+            flexDirection: 'column',
+          }}
+        >
+          <TasksList tasks={tasksData.tasks} fetchTasks={doFetchAll} />
+          <Statistics totalTimeSpent={totalTimeSpent} amount={amount} />
+        </div>
       ) : (
         <Space wrap={true} size="middle" align="center">
           <Typography.Text style={{ color: '#8c8c8c' }}>
@@ -74,7 +93,6 @@ const TasksTable: React.FC<Props> = ({ date }) => {
           </Button>
         </Space>
       )}
-
       <TaskForm
         onSubmit={handleSubmit}
         onClose={handleClose}
