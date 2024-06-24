@@ -51,8 +51,8 @@ const TaskItem: React.FC<Props> = ({ task, onDelete, onFetchOne }) => {
 
   const handToggleModal = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
-    void onFetchOne(task._id);
     dispatch(toggleModal(true));
+    void onFetchOne(task._id);
   };
 
   const timeSpent = convertTime(task.timeSpent);

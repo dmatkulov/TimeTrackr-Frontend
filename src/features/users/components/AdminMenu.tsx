@@ -5,16 +5,17 @@ import {
   PartitionOutlined,
   TeamOutlined,
 } from '@ant-design/icons';
-import { useAppDispatch } from '../../../../app/hooks';
+import { useAppDispatch } from '../../../app/hooks';
 import { useNavigate } from 'react-router-dom';
-import { logOut } from '../../UsersThunks';
-import { appRoutes } from '../../../../utils/routes';
+import { logOut } from '../UsersThunks';
+import { appRoutes } from '../../../utils/routes';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
 interface Props {
   handleMobile?: () => void;
 }
+
 const AdminMenu: React.FC<Props> = ({ handleMobile }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();

@@ -1,13 +1,19 @@
 import React from 'react';
-import { Task } from '../../../types/types.task';
-import { ProductFilled, RocketFilled, SettingFilled } from '@ant-design/icons';
-import { Tag } from 'antd';
+import { TaskMutation } from '../../../types/types.task';
+import {
+  MoreOutlined,
+  ProductFilled,
+  RocketFilled,
+  SettingFilled,
+} from '@ant-design/icons';
+import { Space, Tag } from 'antd';
 
 interface Props {
-  task: Task;
+  task: TaskMutation;
+  dropdown?: boolean;
 }
 
-const TaskTag: React.FC<Props> = ({ task }) => {
+const TaskTag: React.FC<Props> = ({ task, dropdown = false }) => {
   let tagColor = 'processing';
   let icon = <RocketFilled />;
   if (task.label === 'Доработка') {
@@ -18,8 +24,24 @@ const TaskTag: React.FC<Props> = ({ task }) => {
     icon = <ProductFilled />;
   }
   return (
-    <Tag color={tagColor} bordered={false} icon={icon}>
-      {task.label}
+    <Tag
+      color={tagColor}
+      bordered={false}
+      icon={icon}
+      style={{
+        height: '28px',
+        display: 'flex',
+        alignItems: 'center',
+        marginRight: 0,
+      }}
+    >
+      {dropdown ? (
+        <Space>
+          {task.label} <MoreOutlined />
+        </Space>
+      ) : (
+        task.label
+      )}
     </Tag>
   );
 };

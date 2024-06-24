@@ -12,7 +12,7 @@ import {
   Select,
   TimePicker,
 } from 'antd';
-import { TaskMutation } from '../../../types/types.task';
+import { Tasks } from '../../../types/types.task';
 
 import buddhistEra from 'dayjs/plugin/buddhistEra';
 import dayjs from 'dayjs';
@@ -33,7 +33,7 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 interface Props {
-  onSubmit: (mutation: TaskMutation) => void;
+  onSubmit: (mutation: Tasks) => void;
   open: boolean;
   onClose: () => void;
   executionDate?: string;
@@ -51,7 +51,7 @@ const TaskForm: React.FC<Props> = ({
 }) => {
   const [form] = Form.useForm();
 
-  const handleSubmit: FormProps<TaskMutation>['onFinish'] = async (values) => {
+  const handleSubmit: FormProps<Tasks>['onFinish'] = async (values) => {
     const formattedTasks = values.tasks.map((task) => ({
       ...task,
       startTime: formattedTime(task.startTime),
@@ -184,7 +184,7 @@ const TaskForm: React.FC<Props> = ({
                       locale={buddhistLocale}
                     />
                   </Form.Item>
-                  <Form.Item<TaskMutation['tasks']>
+                  <Form.Item<Tasks['tasks']>
                     {...restField}
                     label="Заголовок"
                     name={[name, 'title']}
@@ -192,7 +192,7 @@ const TaskForm: React.FC<Props> = ({
                   >
                     <Input placeholder="Введите заголовок" />
                   </Form.Item>
-                  <Form.Item<TaskMutation['tasks']>
+                  <Form.Item<Tasks['tasks']>
                     {...restField}
                     label="Описание"
                     name={[name, 'description']}
@@ -202,7 +202,7 @@ const TaskForm: React.FC<Props> = ({
                       placeholder="Напишите описание"
                     />
                   </Form.Item>
-                  <Form.Item<TaskMutation['tasks']>
+                  <Form.Item<Tasks['tasks']>
                     name={[name, 'label']}
                     label="Тип задачи"
                     style={{ border: 'none' }}

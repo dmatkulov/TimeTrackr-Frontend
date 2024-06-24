@@ -1,11 +1,11 @@
 import { Author } from './types.user';
 
-export interface TaskMutation {
+export interface Tasks {
   executionDate: string;
-  tasks: TaskItem[];
+  tasks: TaskMutation[];
 }
 
-interface TaskItem {
+interface TaskMutation {
   startTime: string;
   endTime: string;
   title: string;

@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { Button, Layout, Tooltip } from 'antd';
 import { Outlet } from 'react-router-dom';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
-import EmployeeMenu from './employee/components/EmployeeMenu';
+import EmployeeMenu from './components/EmployeeMenu';
 import Sider from 'antd/es/layout/Sider';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import { useAppSelector } from '../../app/hooks';
 import { selectUser } from './UsersSlice';
-import AdminMenu from './admin/components/AdminMenu';
+import AdminMenu from './components/AdminMenu';
 
 const { Content } = Layout;
 
@@ -75,7 +75,7 @@ const UserPanel: React.FC<Props> = () => {
           style={{
             marginLeft: !md ? '0' : '20px',
             marginTop: '65px',
-            height: '90vh',
+            height: '95vh',
             overflow: 'auto',
           }}
         >

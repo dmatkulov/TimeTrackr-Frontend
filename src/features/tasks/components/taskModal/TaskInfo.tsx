@@ -2,8 +2,8 @@ import React from 'react';
 import { Avatar, Col, Row, Space, Typography } from 'antd';
 import { gray } from '@ant-design/colors';
 import { CalendarOutlined } from '@ant-design/icons';
-import { Author } from '../../../types/types.user';
-import { apiURL } from '../../../utils/constants';
+import { Author } from '../../../../types/types.user';
+import { apiURL } from '../../../../utils/constants';
 import dayjs from 'dayjs';
 
 interface Props {

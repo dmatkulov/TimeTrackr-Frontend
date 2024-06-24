@@ -4,8 +4,8 @@ import {
   TaskData,
   TaskDeleteArgs,
   TaskDetails,
-  TaskMutation,
   TaskQueryParams,
+  Tasks,
 } from '../../types/types.task';
 import { isAxiosError } from 'axios';
 import axiosApi from '../../utils/axiosApi';
@@ -13,7 +13,7 @@ import { apiRoutes } from '../../utils/routes';
 
 export const createTask = createAsyncThunk<
   GlobalMessage,
-  TaskMutation,
+  Tasks,
   { rejectValue: BadRequestError }
 >('tasks/create', async (mutation, { rejectWithValue }) => {
   try {

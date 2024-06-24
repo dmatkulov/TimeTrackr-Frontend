@@ -5,7 +5,7 @@ import { appRoutes } from '../../../utils/routes';
 import { useAppDispatch } from '../../../app/hooks';
 import { logOut } from '../../../features/users/UsersThunks';
 import { useNavigate } from 'react-router-dom';
-import AdminHeader from '../../../features/users/admin/components/AdminHeader';
+import AdminHeader from '../../../features/users/components/AdminHeader';
 import MobileMenu from './MobileMenu';
 import UserAvatar from './UserAvatar';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';

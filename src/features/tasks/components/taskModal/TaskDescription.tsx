@@ -1,9 +1,9 @@
 import React from 'react';
 import { Col, Divider, Modal, Row } from 'antd';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { selectModal, selectTaskDetails, toggleModal } from '../tasksSlice';
-import { selectFetchOneLoading } from '../../users/UsersSlice';
-import Spinner from '../../../components/UI/Spin/Spin';
+import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
+import { selectModal, selectTaskDetails, toggleModal } from '../../tasksSlice';
+import { selectFetchOneLoading } from '../../../users/UsersSlice';
+import Spinner from '../../../../components/UI/Spin/Spin';
 import EditTaskForm from './EditTaskForm';
 import TaskModalFooter from './TaskModalFooter';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
@@ -15,7 +15,6 @@ const TaskDescription: React.FC = () => {
   const open = useAppSelector(selectModal);
   const taskDetails = useAppSelector(selectTaskDetails);
   const loading = useAppSelector(selectFetchOneLoading);
-  const task = taskDetails?.task;
 
   const handleClose = () => dispatch(toggleModal(false));
 
@@ -39,10 +38,10 @@ const TaskDescription: React.FC = () => {
           <Spinner />
         ) : (
           taskDetails &&
-          task && (
+          taskDetails.task && (
             <Row gutter={24}>
               <Col xs={{ span: 24 }} sm={{ span: 15 }}>
-                <EditTaskForm task={task} />
+                {<EditTaskForm task={taskDetails.task} />}
               </Col>
               <Col xs={{ span: 24 }} sm={{ span: 1 }}>
                 <Divider

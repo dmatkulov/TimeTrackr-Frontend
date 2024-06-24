@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import TaskForm from './TaskForm';
-import { convertTime, formattedDay } from '../../../utils/constants';
+import { formattedDay } from '../../../utils/constants';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import {
   selectTasks,
@@ -8,13 +8,13 @@ import {
   selectTasksLoading,
 } from '../tasksSlice';
 import { createTask, getTasks } from '../tasksThunks';
-import { TaskMutation } from '../../../types/types.task';
+import { Tasks } from '../../../types/types.task';
 import Spinner from '../../../components/UI/Spin/Spin';
-import PageHeader from '../../users/employee/components/PageHeader';
+import PageHeader from '../../users/components/PageHeader';
 import TasksList from './TasksList';
 import { Button, Space, Typography } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import TaskDescription from './TaskDescription';
+import TaskDescription from './taskModal/TaskDescription';
 import Statistics from './Statistics';
 
 interface Props {
@@ -47,7 +47,7 @@ const TasksTable: React.FC<Props> = ({ date }) => {
     setOpen(true);
   };
 
-  const handleSubmit = async (mutation: TaskMutation) => {
+  const handleSubmit = async (mutation: Tasks) => {
     await dispatch(createTask(mutation));
     await doFetchAll();
   };
@@ -56,7 +56,7 @@ const TasksTable: React.FC<Props> = ({ date }) => {
   let amount;
 
   if (tasksData) {
-    totalTimeSpent = convertTime(tasksData.totalTimeSpent);
+    totalTimeSpent = tasksData.totalTimeSpent;
     amount = tasksData.tasks.length;
   }
 
@@ -75,7 +75,10 @@ const TasksTable: React.FC<Props> = ({ date }) => {
           }}
         >
           <TasksList tasks={tasksData.tasks} fetchTasks={doFetchAll} />
-          <Statistics totalTimeSpent={totalTimeSpent} amount={amount} />
+          <Statistics
+            totalTimeSpent={totalTimeSpent || 0}
+            amount={amount || 0}
+          />
         </div>
       ) : (
         <Space wrap={true} size="middle" align="center">
