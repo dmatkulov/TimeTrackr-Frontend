@@ -14,7 +14,12 @@ import { currentDay } from '../../../utils/constants';
 import dayjs from 'dayjs';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { selectOneTaskLoading, selectTask, toggleModal } from '../tasksSlice';
+import {
+  selectEditForm,
+  selectOneTaskLoading,
+  selectTask,
+  toggleEditForm,
+} from '../tasksSlice';
 import { TaskMutation } from '../../../types/types.task';
 import { editTask, getOneTask, getTasks } from '../tasksThunks';
 import { colStyle } from '../styles/taskModalStyles';
@@ -30,14 +35,14 @@ const TaskModal: React.FC<Props> = ({ open }) => {
   const dispatch = useAppDispatch();
   const task = useAppSelector(selectTask);
   const loading = useAppSelector(selectOneTaskLoading);
-
+  const isEdit = useAppSelector(selectEditForm);
   const date = dayjs(task?.executionDate).format('D MMMM, dddd');
 
   const [toggleBtn, setToggleBtn] = useState(false);
-  const [toggleEdit, setToggleEdit] = useState(false);
+
   const handleClose = () => {
     setToggleBtn(false);
-    dispatch(toggleModal(false));
+    dispatch(toggleEditForm(false));
     void doFetchAll();
   };
 
@@ -70,7 +75,6 @@ const TaskModal: React.FC<Props> = ({ open }) => {
         task={mutation}
         onSubmit={handleUpdate}
         timeSpent={task.timeSpent ? task.timeSpent : 0}
-        isEdit={toggleEdit}
       />
     );
   }
@@ -89,8 +93,8 @@ const TaskModal: React.FC<Props> = ({ open }) => {
             <Button
               onClick={() => {
                 setToggleBtn(!toggleBtn);
-                if (toggleEdit) {
-                  setToggleEdit(false);
+                if (isEdit) {
+                  dispatch(toggleEditForm(false));
                 }
               }}
               icon={<MoreOutlined />}
@@ -121,8 +125,8 @@ const TaskModal: React.FC<Props> = ({ open }) => {
                 <Button
                   style={{ boxShadow: 'none' }}
                   icon={<EditOutlined />}
-                  disabled={toggleEdit}
-                  onClick={() => setToggleEdit(true)}
+                  disabled={isEdit}
+                  onClick={() => dispatch(toggleEditForm(true))}
                 >
                   {sm && 'Редактировать'}
                 </Button>
@@ -143,7 +147,7 @@ const TaskModal: React.FC<Props> = ({ open }) => {
         forceRender={true}
       >
         {loading ? (
-          <Spinner />
+          <Spinner isSmall />
         ) : (
           task && (
             <Row gutter={24}>

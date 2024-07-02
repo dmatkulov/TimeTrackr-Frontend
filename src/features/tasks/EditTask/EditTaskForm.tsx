@@ -23,13 +23,18 @@ import { SwapOutlined } from '@ant-design/icons';
 import { labelOptions } from '../../../utils/labelOptions';
 import dayjs, { Dayjs } from 'dayjs';
 import EditFormActions from './EditFormActions';
-import { subtitleStyle } from '../styles/taskModalStyles';
+import { rowStyle, subtitleStyle } from '../styles/taskModalStyles';
+import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import {
+  selectEditForm,
+  selectTaskUpdateLoading,
+  toggleEditForm,
+} from '../tasksSlice';
 
 interface Props {
   task: TaskMutation;
   onSubmit: (task: TaskMutation) => void;
   timeSpent: number;
-  isEdit: boolean;
 }
 
 interface TaskEdit {
@@ -43,16 +48,13 @@ const initialState: TaskEdit = {
   description: false,
   time: false,
 };
-const EditTaskForm: React.FC<Props> = ({
-  task,
-  onSubmit,
-  timeSpent,
-  isEdit = false,
-}) => {
+
+const EditTaskForm: React.FC<Props> = ({ task, onSubmit, timeSpent }) => {
+  const dispatch = useAppDispatch();
+  const isEdit = useAppSelector(selectEditForm);
+  const isLoading = useAppSelector(selectTaskUpdateLoading);
   const [form] = Form.useForm();
   const [state, setState] = useState<TaskMutation>(task);
-  const [edit, setEdit] = useState<boolean>(isEdit);
-
   const [toggleForm, setToggleForm] = useState<TaskEdit>(initialState);
 
   useEffect(() => {
@@ -65,8 +67,9 @@ const EditTaskForm: React.FC<Props> = ({
     setToggleForm(initialState);
   }, [task, form]);
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     onSubmit(state);
+    dispatch(toggleEditForm(false));
   };
 
   const toggleField = (field: keyof TaskEdit) => {
@@ -74,6 +77,17 @@ const EditTaskForm: React.FC<Props> = ({
       ...prevState,
       [field]: !prevState[field],
     }));
+
+    const keys = Object.keys(toggleForm) as (keyof TaskEdit)[];
+
+    keys.forEach((key) => {
+      if (key !== field) {
+        setToggleForm((prevState) => ({
+          ...prevState,
+          [key]: false,
+        }));
+      }
+    });
   };
 
   const cancelEditForm = (field: keyof TaskMutation | 'time') => {
@@ -98,7 +112,10 @@ const EditTaskForm: React.FC<Props> = ({
     }
   };
 
-  const handleLabelChange = (value: string) => {
+  const handleLabelChange = async (value: string) => {
+    if (!isEdit) {
+      onSubmit({ ...state, label: value });
+    }
     setState((prevState) => ({ ...prevState, label: value }));
   };
 
@@ -126,24 +143,30 @@ const EditTaskForm: React.FC<Props> = ({
     }
   };
 
+  const sendUpdate = async (field: keyof TaskEdit) => {
+    onSubmit(state);
+    toggleField(field);
+  };
+
   const items: MenuProps['items'] = labelOptions.map((label) => ({
     key: label.value,
     label: label.value,
-    onClick: () => handleLabelChange(label.value),
+    onClick: async () => handleLabelChange(label.value),
   }));
 
   return (
     <Form form={form} layout="vertical" onFinish={handleSubmit}>
-      <Row>
+      <Row style={rowStyle}>
         <Col xs={24}>
-          {toggleForm.title || edit ? (
+          {toggleForm.title || isEdit ? (
             <Row gutter={20}>
-              <Col xs={20}>
+              <Col xs={isEdit ? 24 : 20}>
                 <Form.Item
                   name="title"
                   rules={[{ required: true, message: 'Введите заголовок' }]}
                 >
                   <Input
+                    style={{ height: '44px' }}
                     name="title"
                     value={state.title}
                     onChange={handleInputChange}
@@ -151,21 +174,23 @@ const EditTaskForm: React.FC<Props> = ({
                   />
                 </Form.Item>
               </Col>
-              <Col xs={4}>
-                <EditFormActions
-                  onApprove={() => toggleField('title')}
-                  onCancel={() => {
-                    cancelEditForm('title');
-                    toggleField('title');
-                  }}
-                />
-              </Col>
+              {!isEdit && (
+                <Col xs={4}>
+                  <EditFormActions
+                    isLoading={isLoading}
+                    onApprove={() => sendUpdate('title')}
+                    onCancel={() => {
+                      cancelEditForm('title');
+                      toggleField('title');
+                    }}
+                  />
+                </Col>
+              )}
             </Row>
           ) : (
             <Typography.Title
               className="taskField"
               level={4}
-              style={{ marginTop: 0, marginBottom: '32px' }}
               onClick={() => toggleField('title')}
             >
               {state.title}
@@ -174,15 +199,15 @@ const EditTaskForm: React.FC<Props> = ({
         </Col>
       </Row>
 
-      <Row>
+      <Row style={rowStyle}>
         <Col xs={24} style={{ marginBottom: 5 }}>
           <Typography.Text style={subtitleStyle}>Описание</Typography.Text>
         </Col>
 
         <Col xs={24}>
-          {toggleForm.description || edit ? (
+          {toggleForm.description || isEdit ? (
             <Row gutter={20}>
-              <Col xs={20}>
+              <Col xs={isEdit ? 24 : 20}>
                 <Form.Item name="description">
                   <Input.TextArea
                     name="description"
@@ -193,15 +218,18 @@ const EditTaskForm: React.FC<Props> = ({
                   />
                 </Form.Item>
               </Col>
-              <Col xs={4}>
-                <EditFormActions
-                  onApprove={() => toggleField('description')}
-                  onCancel={() => {
-                    cancelEditForm('description');
-                    toggleField('description');
-                  }}
-                />
-              </Col>
+              {!isEdit && (
+                <Col xs={4}>
+                  <EditFormActions
+                    isLoading={isLoading}
+                    onApprove={() => sendUpdate('description')}
+                    onCancel={() => {
+                      cancelEditForm('description');
+                      toggleField('description');
+                    }}
+                  />
+                </Col>
+              )}
             </Row>
           ) : (
             <Col
@@ -217,13 +245,13 @@ const EditTaskForm: React.FC<Props> = ({
         </Col>
       </Row>
 
-      <Row>
+      <Row style={rowStyle}>
         <Col xs={24}>
           <Typography.Text style={subtitleStyle}>Учет времени</Typography.Text>
         </Col>
 
         <Col xs={24}>
-          {toggleForm.time || edit ? (
+          {toggleForm.time || isEdit ? (
             <Row gutter={20}>
               <Col xs={20}>
                 <Space align="center">
@@ -272,15 +300,18 @@ const EditTaskForm: React.FC<Props> = ({
                   </Form.Item>
                 </Space>
               </Col>
-              <Col xs={4}>
-                <EditFormActions
-                  onApprove={() => toggleField('time')}
-                  onCancel={() => {
-                    cancelEditForm('time');
-                    toggleField('time');
-                  }}
-                />
-              </Col>
+              {!isEdit && (
+                <Col xs={4}>
+                  <EditFormActions
+                    isLoading={isLoading}
+                    onApprove={() => sendUpdate('time')}
+                    onCancel={() => {
+                      cancelEditForm('time');
+                      toggleField('time');
+                    }}
+                  />
+                </Col>
+              )}
             </Row>
           ) : (
             <Col
@@ -316,14 +347,23 @@ const EditTaskForm: React.FC<Props> = ({
         </Col>
       </Row>
 
-      <Row>
-        <Space style={{ padding: '8px' }}>
-          <Button htmlType="submit">Сохранить</Button>
-          <Button type="text" onClick={() => setEdit(false)}>
-            Отменить
-          </Button>
-        </Space>
-      </Row>
+      {isEdit && (
+        <Row>
+          <Space style={{ padding: '8px' }}>
+            <Button
+              loading={isLoading}
+              disabled={isLoading}
+              type="primary"
+              htmlType="submit"
+            >
+              Сохранить
+            </Button>
+            <Button type="text" onClick={() => dispatch(toggleEditForm(false))}>
+              Отменить
+            </Button>
+          </Space>
+        </Row>
+      )}
     </Form>
   );
 };

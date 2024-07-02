@@ -1,7 +1,10 @@
-import React from 'react';
 import { Flex, Spin } from 'antd';
 
-const Spinner: React.FC = () => {
+interface Props {
+  isSmall?: boolean;
+}
+
+const Spinner = ({ isSmall }: Props) => {
   const contentStyle = {
     padding: 50,
     background: 'rgba(0, 0, 0, 0.05)',
@@ -16,7 +19,7 @@ const Spinner: React.FC = () => {
       vertical
       align="center"
       justify="center"
-      style={{ height: '100vh' }}
+      style={{ height: isSmall ? '100%' : '100vh' }}
     >
       <Flex gap="small">
         <Spin tip="Загрузка" size="large">

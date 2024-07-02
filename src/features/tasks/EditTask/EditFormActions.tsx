@@ -10,12 +10,23 @@ const btnStyle: CSSProperties = {
 interface Props {
   onApprove: () => void;
   onCancel: () => void;
+  isLoading: boolean;
 }
 
-const EditFormActions: React.FC<Props> = ({ onApprove, onCancel }) => {
+const EditFormActions: React.FC<Props> = ({
+  onApprove,
+  onCancel,
+  isLoading,
+}) => {
   return (
     <Space>
-      <Button icon={<CheckOutlined />} style={btnStyle} onClick={onApprove} />
+      <Button
+        icon={<CheckOutlined />}
+        style={btnStyle}
+        onClick={onApprove}
+        loading={isLoading}
+        disabled={isLoading}
+      />
       <Button icon={<CloseOutlined />} style={btnStyle} onClick={onCancel} />
     </Space>
   );

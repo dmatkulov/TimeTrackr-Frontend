@@ -14,3 +14,7 @@ export const subtitleStyle: CSSProperties = {
   color: gray[1],
   marginBottom: '16px',
 };
+
+export const rowStyle: CSSProperties = {
+  marginBottom: '20px',
+};

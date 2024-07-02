@@ -19,7 +19,7 @@ interface TasksState {
   createLoading: boolean;
   updateLoading: boolean;
   deleteLoading: boolean;
-  modal: boolean;
+  isEdit: boolean;
 }
 
 const initialState: TasksState = {
@@ -31,15 +31,15 @@ const initialState: TasksState = {
   createLoading: false,
   updateLoading: false,
   deleteLoading: false,
-  modal: false,
+  isEdit: false,
 };
 
 export const tasksSlice = createSlice({
   name: 'tasks',
   initialState,
   reducers: {
-    toggleModal: (state, { payload }) => {
-      state.modal = payload;
+    toggleEditForm: (state, { payload }) => {
+      state.isEdit = payload;
     },
   },
   extraReducers: (builder) => {
@@ -108,7 +108,7 @@ export const tasksSlice = createSlice({
 
 export const tasksReducer = tasksSlice.reducer;
 
-export const { toggleModal } = tasksSlice.actions;
+export const { toggleEditForm } = tasksSlice.actions;
 export const selectTasks = (state: RootState) => state.tasks.taskData;
 export const selectTask = (state: RootState) => state.tasks.task;
 export const selectTasksLoading = (state: RootState) =>
@@ -119,4 +119,7 @@ export const selectTasksCreating = (state: RootState) =>
   state.tasks.createLoading;
 export const selectDeleteTaskLoading = (state: RootState) =>
   state.tasks.deleteLoading;
-export const selectModal = (state: RootState) => state.tasks.modal;
+
+export const selectTaskUpdateLoading = (state: RootState) =>
+  state.tasks.updateLoading;
+export const selectEditForm = (state: RootState) => state.tasks.isEdit;
