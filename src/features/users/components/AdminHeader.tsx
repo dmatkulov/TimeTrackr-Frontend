@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Button, Dropdown, MenuProps, Space } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import AddPosition from '../../../positions/AddPosition';
-import StaffRegister from '../StaffRegister';
+import AddPosition from '../../positions/AddPosition';
+import StaffRegister from '../admin/StaffRegister';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 
 const AdminHeader: React.FC = () => {

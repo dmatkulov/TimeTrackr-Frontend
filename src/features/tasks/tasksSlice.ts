@@ -1,39 +1,45 @@
-import { TaskData, TaskDetails } from '../../types/types.task';
+import { TaskInfo, Tasks } from '../../types/types.task';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { createTask, deleteTask, getOneTask, getTasks } from './tasksThunks';
+import {
+  createTask,
+  deleteTask,
+  editTask,
+  getOneTask,
+  getTasks,
+} from './tasksThunks';
 import { message } from 'antd';
 
 interface TasksState {
-  taskData: TaskData | null;
-  tasks: TaskData[];
-  taskDetails: TaskDetails | null;
+  tasks: Tasks[];
+  taskData: Tasks | null;
+  task: TaskInfo | null;
   fetchLoading: boolean;
   fetchOneLoading: boolean;
   createLoading: boolean;
   updateLoading: boolean;
   deleteLoading: boolean;
-  modal: boolean;
+  isEdit: boolean;
 }
 
 const initialState: TasksState = {
-  taskData: null,
   tasks: [],
-  taskDetails: null,
+  taskData: null,
+  task: null,
   fetchLoading: false,
   fetchOneLoading: false,
   createLoading: false,
   updateLoading: false,
   deleteLoading: false,
-  modal: false,
+  isEdit: false,
 };
 
 export const tasksSlice = createSlice({
   name: 'tasks',
   initialState,
   reducers: {
-    toggleModal: (state, { payload }) => {
-      state.modal = payload;
+    toggleEditForm: (state, { payload }) => {
+      state.isEdit = payload;
     },
   },
   extraReducers: (builder) => {
@@ -68,10 +74,22 @@ export const tasksSlice = createSlice({
       })
       .addCase(getOneTask.fulfilled, (state, { payload: data }) => {
         state.fetchOneLoading = false;
-        state.taskDetails = data;
+        state.task = data;
       })
       .addCase(getOneTask.rejected, (state) => {
         state.fetchOneLoading = false;
+      });
+
+    builder
+      .addCase(editTask.pending, (state) => {
+        state.updateLoading = true;
+      })
+      .addCase(editTask.fulfilled, (state, { payload: data }) => {
+        state.updateLoading = false;
+        void message.success(data.message);
+      })
+      .addCase(editTask.rejected, (state) => {
+        state.updateLoading = false;
       });
 
     builder
@@ -90,9 +108,9 @@ export const tasksSlice = createSlice({
 
 export const tasksReducer = tasksSlice.reducer;
 
-export const { toggleModal } = tasksSlice.actions;
+export const { toggleEditForm } = tasksSlice.actions;
 export const selectTasks = (state: RootState) => state.tasks.taskData;
-export const selectTaskDetails = (state: RootState) => state.tasks.taskDetails;
+export const selectTask = (state: RootState) => state.tasks.task;
 export const selectTasksLoading = (state: RootState) =>
   state.tasks.fetchLoading;
 export const selectOneTaskLoading = (state: RootState) =>
@@ -101,4 +119,7 @@ export const selectTasksCreating = (state: RootState) =>
   state.tasks.createLoading;
 export const selectDeleteTaskLoading = (state: RootState) =>
   state.tasks.deleteLoading;
-export const selectModal = (state: RootState) => state.tasks.modal;
+
+export const selectTaskUpdateLoading = (state: RootState) =>
+  state.tasks.updateLoading;
+export const selectEditForm = (state: RootState) => state.tasks.isEdit;

@@ -5,6 +5,7 @@ import {
   Col,
   DatePicker,
   Drawer,
+  Flex,
   Form,
   FormProps,
   Input,
@@ -12,7 +13,7 @@ import {
   Select,
   TimePicker,
 } from 'antd';
-import { TaskMutation } from '../../../types/types.task';
+import { TasksMutation } from '../../../types/types.task';
 
 import buddhistEra from 'dayjs/plugin/buddhistEra';
 import dayjs from 'dayjs';
@@ -20,7 +21,6 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import {
   buddhistLocale,
-  countTimeSpent,
   disabledTime,
   format,
   formattedDay,
@@ -34,7 +34,7 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 interface Props {
-  onSubmit: (mutation: TaskMutation) => void;
+  onSubmit: (mutation: TasksMutation) => void;
   open: boolean;
   onClose: () => void;
   executionDate?: string;
@@ -52,14 +52,10 @@ const TaskForm: React.FC<Props> = ({
 }) => {
   const [form] = Form.useForm();
 
-  const handleSubmit: FormProps<TaskMutation>['onFinish'] = async (values) => {
+  const handleSubmit: FormProps<TasksMutation>['onFinish'] = async (values) => {
     const formattedTasks = values.tasks.map((task) => ({
       ...task,
       startTime: formattedTime(task.startTime),
-      timeSpent: countTimeSpent(
-        formattedTime(task.startTime),
-        formattedTime(task.endTime),
-      ),
       endTime: formattedTime(task.endTime),
     }));
 
@@ -74,14 +70,15 @@ const TaskForm: React.FC<Props> = ({
     onClose();
   };
 
+  const time = dayjs().format('HH:mm');
+
   useEffect(() => {
     form.setFieldsValue({
       executionDate: dayjs(executionDate),
       tasks: [
         {
-          startTime: '',
-          endTime: '',
-          timeSpent: '',
+          startTime: dayjs(time, 'HH:mm'),
+          endTime: dayjs('18:00', 'HH:mm'),
           title: '',
           description: '',
           label: labelOptions[0].value,
@@ -154,43 +151,46 @@ const TaskForm: React.FC<Props> = ({
                     )
                   }
                 >
-                  <Form.Item
-                    {...restField}
-                    style={{ marginTop: 5 }}
-                    label="Укажите время"
-                    name={[name, 'startTime']}
-                    rules={[{ required: true, message: 'Время не указано' }]}
-                  >
-                    <TimePicker
-                      disabledTime={disabledTime}
-                      hideDisabledOptions={true}
-                      variant="filled"
-                      placeholder="Начало"
-                      minuteStep={5}
-                      format={format}
-                      needConfirm={false}
-                      locale={buddhistLocale}
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    {...restField}
-                    style={{ marginTop: 5 }}
-                    label="Укажите время"
-                    name={[name, 'endTime']}
-                    rules={[{ required: true, message: 'Время не указано' }]}
-                  >
-                    <TimePicker
-                      disabledTime={disabledTime}
-                      hideDisabledOptions={true}
-                      variant="filled"
-                      placeholder="Начало"
-                      minuteStep={5}
-                      format={format}
-                      needConfirm={false}
-                      locale={buddhistLocale}
-                    />
-                  </Form.Item>
-                  <Form.Item<TaskMutation['tasks']>
+                  <Flex style={{ width: '100%' }} gap={10}>
+                    <Form.Item
+                      {...restField}
+                      style={{ marginTop: 5, width: '100%' }}
+                      label="Начало"
+                      name={[name, 'startTime']}
+                      rules={[{ required: true, message: 'Время не указано' }]}
+                    >
+                      <TimePicker
+                        disabledTime={disabledTime}
+                        hideDisabledOptions={true}
+                        variant="filled"
+                        placeholder="Начало"
+                        minuteStep={5}
+                        format={format}
+                        needConfirm={false}
+                        locale={buddhistLocale}
+                        width="100%"
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      {...restField}
+                      style={{ marginTop: 5, width: '100%' }}
+                      label="Конец"
+                      name={[name, 'endTime']}
+                      rules={[{ required: true, message: 'Время не указано' }]}
+                    >
+                      <TimePicker
+                        disabledTime={disabledTime}
+                        hideDisabledOptions={true}
+                        variant="filled"
+                        placeholder="Начало"
+                        minuteStep={5}
+                        format={format}
+                        needConfirm={false}
+                        locale={buddhistLocale}
+                      />
+                    </Form.Item>
+                  </Flex>
+                  <Form.Item<TasksMutation['tasks']>
                     {...restField}
                     label="Заголовок"
                     name={[name, 'title']}
@@ -198,7 +198,7 @@ const TaskForm: React.FC<Props> = ({
                   >
                     <Input placeholder="Введите заголовок" />
                   </Form.Item>
-                  <Form.Item<TaskMutation['tasks']>
+                  <Form.Item<TasksMutation['tasks']>
                     {...restField}
                     label="Описание"
                     name={[name, 'description']}
@@ -208,7 +208,7 @@ const TaskForm: React.FC<Props> = ({
                       placeholder="Напишите описание"
                     />
                   </Form.Item>
-                  <Form.Item<TaskMutation['tasks']>
+                  <Form.Item<TasksMutation['tasks']>
                     name={[name, 'label']}
                     label="Тип задачи"
                     style={{ border: 'none' }}

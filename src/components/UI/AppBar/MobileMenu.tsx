@@ -1,14 +1,15 @@
 import { Button, Drawer } from 'antd';
 import { MenuFoldOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
-import EmployeeMenu from '../../../features/users/employee/components/EmployeeMenu';
+import EmployeeMenu from '../../../features/users/components/EmployeeMenu';
 import { User } from '../../../types/types.user';
-import UserAvatar from './UserAvatar';
-import AdminMenu from '../../../features/users/admin/components/AdminMenu';
+import UserTitle from './UserTitle';
+import AdminMenu from '../../../features/users/components/AdminMenu';
 
 interface Props {
   user: User;
 }
+
 const MobileMenu: React.FC<Props> = ({ user }) => {
   const [open, setOpen] = useState(false);
   const isAdmin = user.role === 'admin';
@@ -31,7 +32,7 @@ const MobileMenu: React.FC<Props> = ({ user }) => {
         styles={{ body: { display: 'flex', flexDirection: 'column' } }}
       >
         <div style={{ marginBottom: '30px', paddingLeft: 20 }}>
-          <UserAvatar user={user} />
+          <UserTitle user={user} />
         </div>
 
         {isAdmin ? (

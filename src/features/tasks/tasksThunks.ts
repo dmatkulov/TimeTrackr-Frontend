@@ -1,11 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { BadRequestError, GlobalMessage } from '../../types/types.global';
 import {
-  TaskData,
   TaskDeleteArgs,
-  TaskDetails,
-  TaskMutation,
+  TaskEditArgs,
+  TaskInfo,
   TaskQueryParams,
+  Tasks,
+  TasksMutation,
 } from '../../types/types.task';
 import { isAxiosError } from 'axios';
 import axiosApi from '../../utils/axiosApi';
@@ -13,7 +14,7 @@ import { apiRoutes } from '../../utils/routes';
 
 export const createTask = createAsyncThunk<
   GlobalMessage,
-  TaskMutation,
+  TasksMutation,
   { rejectValue: BadRequestError }
 >('tasks/create', async (mutation, { rejectWithValue }) => {
   try {
@@ -36,7 +37,7 @@ export const createTask = createAsyncThunk<
   }
 });
 
-export const getTasks = createAsyncThunk<TaskData, TaskQueryParams | undefined>(
+export const getTasks = createAsyncThunk<Tasks, TaskQueryParams | undefined>(
   'tasks/get',
   async (params = {}) => {
     const query: TaskQueryParams = {};
@@ -46,7 +47,7 @@ export const getTasks = createAsyncThunk<TaskData, TaskQueryParams | undefined>(
         query.date = params.date;
       }
     }
-    const response = await axiosApi.get<TaskData>(apiRoutes.tasks, {
+    const response = await axiosApi.get<Tasks>(apiRoutes.tasks, {
       params: query,
     });
 
@@ -54,15 +55,41 @@ export const getTasks = createAsyncThunk<TaskData, TaskQueryParams | undefined>(
   },
 );
 
-export const getOneTask = createAsyncThunk<TaskDetails, TaskDeleteArgs>(
+export const getOneTask = createAsyncThunk<TaskInfo, TaskDeleteArgs>(
   'tasks/getOne',
   async (params) => {
-    const response = await axiosApi.get<TaskDetails>(
+    const response = await axiosApi.get<TaskInfo>(
       apiRoutes.getTask + '/' + params.id + '?taskId=' + params.taskId,
     );
     return response.data;
   },
 );
+
+export const editTask = createAsyncThunk<
+  GlobalMessage,
+  TaskEditArgs,
+  { rejectValue: BadRequestError }
+>('tasks/edit', async (mutation, { rejectWithValue }) => {
+  try {
+    const response = await axiosApi.patch<GlobalMessage>(
+      apiRoutes.editTask + mutation.id + '?taskId=' + mutation.taskId,
+      mutation.task,
+    );
+    return response.data;
+  } catch (e) {
+    if (
+      isAxiosError(e) &&
+      e.response?.status &&
+      e.response?.status === 400 &&
+      e.response?.data.message
+    ) {
+      console.log(e);
+      return rejectWithValue(e.response.data);
+    }
+
+    throw e;
+  }
+});
 
 export const deleteTask = createAsyncThunk<GlobalMessage, TaskDeleteArgs>(
   'tasks/deleteOne',

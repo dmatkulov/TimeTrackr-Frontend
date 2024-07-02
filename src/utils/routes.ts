@@ -35,4 +35,5 @@ export const apiRoutes = {
   createTask: 'tasks/new-task',
   deleteTask: 'tasks/delete',
   getTask: 'tasks/info',
+  editTask: 'tasks/edit/',
 };
