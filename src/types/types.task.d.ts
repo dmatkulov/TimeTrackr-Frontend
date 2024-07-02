@@ -32,9 +32,6 @@ export interface TaskData {
 }
 
 export interface TaskDetails {
-  _id: string;
-  executionDate: string;
-  userId: Author;
   task: Task;
 }
 
@@ -46,4 +43,10 @@ export interface TaskQueryParams {
 export interface TaskDeleteArgs {
   id: string;
   taskId: string;
+}
+
+export interface TaskEditArgs {
+  id: string;
+  taskId: string;
+  task: TaskMutation;
 }

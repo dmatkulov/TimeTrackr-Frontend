@@ -1,21 +1,21 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import TaskForm from './TaskForm';
-import { formattedDay } from '../../../utils/constants';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import TaskForm from './components/TaskForm';
+import { formattedDay } from '../../utils/constants';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   selectTasks,
   selectTasksCreating,
   selectTasksLoading,
-} from '../tasksSlice';
-import { createTask, getTasks } from '../tasksThunks';
-import { Tasks } from '../../../types/types.task';
-import Spinner from '../../../components/UI/Spin/Spin';
-import PageHeader from '../../users/components/PageHeader';
-import TasksList from './TasksList';
-import { Button, Space, Typography } from 'antd';
+} from './tasksSlice';
+import { createTask, deleteTask, getTasks } from './tasksThunks';
+import { Tasks } from '../../types/types.task';
+import Spinner from '../../components/UI/Spin/Spin';
+import PageHeader from '../users/components/PageHeader';
+import { Button, Col, Row, Space, Typography } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import TaskDescription from './taskModal/TaskDescription';
-import Statistics from './Statistics';
+import Statistics from './components/Statistics';
+import TaskItem from './components/TaskItem';
+import TaskModal from './EditTask/TaskModal';
 
 interface Props {
   date: string;
@@ -52,6 +52,13 @@ const TasksTable: React.FC<Props> = ({ date }) => {
     await doFetchAll();
   };
 
+  const handleDelete = async (taskId: string) => {
+    if (tasksData) {
+      await dispatch(deleteTask({ id: tasksData?._id, taskId }));
+      void doFetchAll();
+    }
+  };
+
   let totalTimeSpent;
   let amount;
 
@@ -62,10 +69,11 @@ const TasksTable: React.FC<Props> = ({ date }) => {
 
   return (
     <>
-      <TaskDescription />
+      <TaskModal />
       <PageHeader handleOpen={handleOpen} date={date} />
-      {fetching && <Spinner />}
-      {tasksData && tasksData.tasks.length > 0 ? (
+      {fetching ? (
+        <Spinner />
+      ) : tasksData && tasksData.tasks.length > 0 ? (
         <div
           style={{
             height: '100%',
@@ -74,7 +82,20 @@ const TasksTable: React.FC<Props> = ({ date }) => {
             flexDirection: 'column',
           }}
         >
-          <TasksList tasks={tasksData.tasks} fetchTasks={doFetchAll} />
+          <Row gutter={16}>
+            {tasksData?.tasks.map((task) => (
+              <Col
+                style={{ marginBottom: 16 }}
+                key={task._id}
+                xs={{ span: 24 }}
+                sm={{ span: 12 }}
+                lg={{ span: 8 }}
+                xl={{ span: 6 }}
+              >
+                <TaskItem task={task} onDelete={handleDelete} />
+              </Col>
+            ))}
+          </Row>
           <Statistics
             totalTimeSpent={totalTimeSpent || 0}
             amount={amount || 0}

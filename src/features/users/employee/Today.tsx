@@ -1,5 +1,5 @@
 import React from 'react';
-import TasksTable from '../../tasks/components/TasksTable';
+import TasksTable from '../../tasks/TasksTable';
 
 const Today: React.FC = () => {
   const date = new Date().toISOString();

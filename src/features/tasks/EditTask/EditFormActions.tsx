@@ -8,14 +8,15 @@ const btnStyle: CSSProperties = {
 };
 
 interface Props {
-  onClick: () => void;
+  onApprove: () => void;
+  onCancel: () => void;
 }
 
-const EditFormActions: React.FC<Props> = ({ onClick }) => {
+const EditFormActions: React.FC<Props> = ({ onApprove, onCancel }) => {
   return (
     <Space>
-      <Button icon={<CheckOutlined />} style={btnStyle} />
-      <Button icon={<CloseOutlined />} style={btnStyle} onClick={onClick} />
+      <Button icon={<CheckOutlined />} style={btnStyle} onClick={onApprove} />
+      <Button icon={<CloseOutlined />} style={btnStyle} onClick={onCancel} />
     </Space>
   );
 };

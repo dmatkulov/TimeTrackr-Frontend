@@ -5,6 +5,7 @@ import {
   Col,
   DatePicker,
   Drawer,
+  Flex,
   Form,
   FormProps,
   Input,
@@ -69,13 +70,15 @@ const TaskForm: React.FC<Props> = ({
     onClose();
   };
 
+  const time = dayjs().format('HH:mm');
+
   useEffect(() => {
     form.setFieldsValue({
       executionDate: dayjs(executionDate),
       tasks: [
         {
-          startTime: '',
-          endTime: '',
+          startTime: dayjs(time, 'HH:mm'),
+          endTime: dayjs('18:00', 'HH:mm'),
           title: '',
           description: '',
           label: labelOptions[0].value,
@@ -148,42 +151,45 @@ const TaskForm: React.FC<Props> = ({
                     )
                   }
                 >
-                  <Form.Item
-                    {...restField}
-                    style={{ marginTop: 5 }}
-                    label="Укажите время"
-                    name={[name, 'startTime']}
-                    rules={[{ required: true, message: 'Время не указано' }]}
-                  >
-                    <TimePicker
-                      disabledTime={disabledTime}
-                      hideDisabledOptions={true}
-                      variant="filled"
-                      placeholder="Начало"
-                      minuteStep={5}
-                      format={format}
-                      needConfirm={false}
-                      locale={buddhistLocale}
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    {...restField}
-                    style={{ marginTop: 5 }}
-                    label="Укажите время"
-                    name={[name, 'endTime']}
-                    rules={[{ required: true, message: 'Время не указано' }]}
-                  >
-                    <TimePicker
-                      disabledTime={disabledTime}
-                      hideDisabledOptions={true}
-                      variant="filled"
-                      placeholder="Начало"
-                      minuteStep={5}
-                      format={format}
-                      needConfirm={false}
-                      locale={buddhistLocale}
-                    />
-                  </Form.Item>
+                  <Flex style={{ width: '100%' }} gap={10}>
+                    <Form.Item
+                      {...restField}
+                      style={{ marginTop: 5, width: '100%' }}
+                      label="Начало"
+                      name={[name, 'startTime']}
+                      rules={[{ required: true, message: 'Время не указано' }]}
+                    >
+                      <TimePicker
+                        disabledTime={disabledTime}
+                        hideDisabledOptions={true}
+                        variant="filled"
+                        placeholder="Начало"
+                        minuteStep={5}
+                        format={format}
+                        needConfirm={false}
+                        locale={buddhistLocale}
+                        width="100%"
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      {...restField}
+                      style={{ marginTop: 5, width: '100%' }}
+                      label="Конец"
+                      name={[name, 'endTime']}
+                      rules={[{ required: true, message: 'Время не указано' }]}
+                    >
+                      <TimePicker
+                        disabledTime={disabledTime}
+                        hideDisabledOptions={true}
+                        variant="filled"
+                        placeholder="Начало"
+                        minuteStep={5}
+                        format={format}
+                        needConfirm={false}
+                        locale={buddhistLocale}
+                      />
+                    </Form.Item>
+                  </Flex>
                   <Form.Item<Tasks['tasks']>
                     {...restField}
                     label="Заголовок"

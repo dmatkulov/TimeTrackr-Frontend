@@ -4,6 +4,7 @@ import {
   TaskData,
   TaskDeleteArgs,
   TaskDetails,
+  TaskEditArgs,
   TaskQueryParams,
   Tasks,
 } from '../../types/types.task';
@@ -63,6 +64,32 @@ export const getOneTask = createAsyncThunk<TaskDetails, TaskDeleteArgs>(
     return response.data;
   },
 );
+
+export const editTask = createAsyncThunk<
+  GlobalMessage,
+  TaskEditArgs,
+  { rejectValue: BadRequestError }
+>('tasks/edit', async (mutation, { rejectWithValue }) => {
+  try {
+    const response = await axiosApi.patch<GlobalMessage>(
+      apiRoutes.editTask + mutation.id + '?taskId=' + mutation.taskId,
+      mutation.task,
+    );
+    return response.data;
+  } catch (e) {
+    if (
+      isAxiosError(e) &&
+      e.response?.status &&
+      e.response?.status === 400 &&
+      e.response?.data.message
+    ) {
+      console.log(e);
+      return rejectWithValue(e.response.data);
+    }
+
+    throw e;
+  }
+});
 
 export const deleteTask = createAsyncThunk<GlobalMessage, TaskDeleteArgs>(
   'tasks/deleteOne',

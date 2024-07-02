@@ -1,11 +1,10 @@
 import React, { CSSProperties, useEffect, useState } from 'react';
-import { Task, TaskMutation } from '../../../../types/types.task';
+import { TaskMutation } from '../../../types/types.task';
 import {
   Button,
   Col,
   Dropdown,
   Form,
-  FormProps,
   Input,
   MenuProps,
   Row,
@@ -13,17 +12,11 @@ import {
   TimePicker,
   Typography,
 } from 'antd';
-import {
-  buddhistLocale,
-  convertTime,
-  disabledTime,
-  format,
-  formattedTime,
-} from '../../../../utils/constants';
-import TaskTag from '../TaskTag';
+import { buddhistLocale, disabledTime, format } from '../../../utils/constants';
+import TaskTag from '../components/TaskTag';
 import { SwapOutlined } from '@ant-design/icons';
 import { gray } from '@ant-design/colors';
-import { labelOptions } from '../../../../utils/labelOptions';
+import { labelOptions } from '../../../utils/labelOptions';
 import dayjs, { Dayjs } from 'dayjs';
 import EditFormActions from './EditFormActions';
 
@@ -35,30 +28,30 @@ const subtitleStyle: CSSProperties = {
 };
 
 interface Props {
-  task: Task;
+  task: TaskMutation;
+  onSubmit: (task: TaskMutation) => void;
+  timeSpent: string;
 }
 
-const EditTaskForm: React.FC<Props> = ({ task }) => {
+const EditTaskForm: React.FC<Props> = ({ task, onSubmit, timeSpent }) => {
   const [form] = Form.useForm();
-  const [state, setState] = useState<Task>(task);
+  const [state, setState] = useState<TaskMutation>(task);
 
   useEffect(() => {
+    setState(task);
     form.setFieldsValue({
       ...task,
       startTime: dayjs(task.startTime, 'HH:mm'),
       endTime: dayjs(task.endTime, 'HH:mm'),
     });
+    setShowTime(false);
+    setShowDesc(false);
+    setShowTitle(false);
   }, [task, form]);
 
-  const handleSubmit: FormProps<TaskMutation>['onFinish'] = async (values) => {
-    const formattedTasks: TaskMutation = {
-      ...values,
-      startTime: formattedTime(values.startTime),
-      endTime: formattedTime(values.endTime),
-      label: state.label,
-    };
-
-    console.log(state, formattedTasks);
+  const handleSubmit = async () => {
+    onSubmit(state);
+    console.log(state);
   };
 
   const [showTitle, setShowTitle] = useState(false);
@@ -73,11 +66,43 @@ const EditTaskForm: React.FC<Props> = ({ task }) => {
     setShowTitle(!showTitle);
   };
 
+  const cancelTitle = () => {
+    setState((prevState) => ({
+      ...prevState,
+      title: task.title,
+    }));
+    form.setFieldsValue({
+      title: task.title,
+    });
+  };
+
   const toggleDesc = () => {
     setShowDesc(!showDesc);
   };
+
+  const cancelDesc = () => {
+    setState((prevState) => ({
+      ...prevState,
+      description: task.description,
+    }));
+    form.setFieldsValue({
+      description: task.description,
+    });
+  };
   const toggleTime = () => {
     setShowTime(!showTime);
+  };
+
+  const cancelTime = () => {
+    setState((prevState) => ({
+      ...prevState,
+      startTime: task.startTime,
+      endTime: task.endTime,
+    }));
+    form.setFieldsValue({
+      startTime: dayjs(task.startTime, 'HH:mm'),
+      endTime: dayjs(task.endTime, 'HH:mm'),
+    });
   };
 
   const defaultItem = {
@@ -127,7 +152,13 @@ const EditTaskForm: React.FC<Props> = ({ task }) => {
                 </Form.Item>
               </Col>
               <Col xs={4}>
-                <EditFormActions onClick={toggleTitle} />
+                <EditFormActions
+                  onApprove={toggleTitle}
+                  onCancel={() => {
+                    cancelTitle();
+                    toggleTitle();
+                  }}
+                />
               </Col>
             </Row>
           ) : (
@@ -163,7 +194,13 @@ const EditTaskForm: React.FC<Props> = ({ task }) => {
                 </Form.Item>
               </Col>
               <Col xs={4}>
-                <EditFormActions onClick={toggleDesc} />
+                <EditFormActions
+                  onApprove={toggleDesc}
+                  onCancel={() => {
+                    toggleDesc();
+                    cancelDesc();
+                  }}
+                />
               </Col>
             </Row>
           ) : (
@@ -248,14 +285,19 @@ const EditTaskForm: React.FC<Props> = ({ task }) => {
                 </Space>
               </Col>
               <Col xs={4}>
-                <EditFormActions onClick={toggleTime} />
+                <EditFormActions
+                  onApprove={toggleTime}
+                  onCancel={() => {
+                    toggleTime();
+                    cancelTime();
+                  }}
+                />
               </Col>
             </Row>
           ) : (
             <Col xs={24} className="taskField" onClick={toggleTime}>
               <Typography.Text style={{ fontSize: '14px' }}>
-                <b>{convertTime(task.timeSpent)}</b>, {state.startTime}–
-                {state.endTime}
+                {timeSpent}
               </Typography.Text>
             </Col>
           )}

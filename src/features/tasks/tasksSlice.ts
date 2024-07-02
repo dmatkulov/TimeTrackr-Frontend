@@ -1,13 +1,19 @@
-import { TaskData, TaskDetails } from '../../types/types.task';
+import { Task, TaskData } from '../../types/types.task';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { createTask, deleteTask, getOneTask, getTasks } from './tasksThunks';
+import {
+  createTask,
+  deleteTask,
+  editTask,
+  getOneTask,
+  getTasks,
+} from './tasksThunks';
 import { message } from 'antd';
 
 interface TasksState {
   taskData: TaskData | null;
   tasks: TaskData[];
-  taskDetails: TaskDetails | null;
+  task: Task | null;
   fetchLoading: boolean;
   fetchOneLoading: boolean;
   createLoading: boolean;
@@ -19,7 +25,7 @@ interface TasksState {
 const initialState: TasksState = {
   taskData: null,
   tasks: [],
-  taskDetails: null,
+  task: null,
   fetchLoading: false,
   fetchOneLoading: false,
   createLoading: false,
@@ -68,10 +74,23 @@ export const tasksSlice = createSlice({
       })
       .addCase(getOneTask.fulfilled, (state, { payload: data }) => {
         state.fetchOneLoading = false;
-        state.taskDetails = data;
+        console.log(data);
+        state.task = data.task;
       })
       .addCase(getOneTask.rejected, (state) => {
         state.fetchOneLoading = false;
+      });
+
+    builder
+      .addCase(editTask.pending, (state) => {
+        state.updateLoading = true;
+      })
+      .addCase(editTask.fulfilled, (state, { payload: data }) => {
+        state.updateLoading = false;
+        void message.success(data.message);
+      })
+      .addCase(editTask.rejected, (state) => {
+        state.updateLoading = false;
       });
 
     builder
@@ -92,7 +111,7 @@ export const tasksReducer = tasksSlice.reducer;
 
 export const { toggleModal } = tasksSlice.actions;
 export const selectTasks = (state: RootState) => state.tasks.taskData;
-export const selectTaskDetails = (state: RootState) => state.tasks.taskDetails;
+export const selectTaskDetails = (state: RootState) => state.tasks.task;
 export const selectTasksLoading = (state: RootState) =>
   state.tasks.fetchLoading;
 export const selectOneTaskLoading = (state: RootState) =>
