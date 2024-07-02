@@ -3,7 +3,7 @@ import { MenuFoldOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
 import EmployeeMenu from '../../../features/users/components/EmployeeMenu';
 import { User } from '../../../types/types.user';
-import UserAvatar from './UserAvatar';
+import UserTitle from './UserTitle';
 import AdminMenu from '../../../features/users/components/AdminMenu';
 
 interface Props {
@@ -32,7 +32,7 @@ const MobileMenu: React.FC<Props> = ({ user }) => {
         styles={{ body: { display: 'flex', flexDirection: 'column' } }}
       >
         <div style={{ marginBottom: '30px', paddingLeft: 20 }}>
-          <UserAvatar user={user} />
+          <UserTitle user={user} />
         </div>
 
         {isAdmin ? (

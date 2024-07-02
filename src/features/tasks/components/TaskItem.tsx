@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Card, Dropdown, Flex, MenuProps, Space } from 'antd';
 import { Task } from '../../../types/types.task';
 import {
@@ -9,14 +9,11 @@ import {
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import { useMediaQuery } from 'react-responsive';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import {
-  selectDeleteTaskLoading,
-  selectTasks,
-  toggleModal,
-} from '../tasksSlice';
+import { selectDeleteTaskLoading, selectTasks } from '../tasksSlice';
 import TaskTag from './TaskTag';
 import { convertTime } from '../../../utils/constants';
 import { getOneTask } from '../tasksThunks';
+import TaskModal from '../EditTask/TaskModal';
 
 interface Props {
   task: Task;
@@ -27,6 +24,7 @@ const TaskItem: React.FC<Props> = ({ task, onDelete }) => {
   const dispatch = useAppDispatch();
   const tasksData = useAppSelector(selectTasks);
   const deleting = useAppSelector(selectDeleteTaskLoading);
+  const [open, setOpen] = useState(false);
 
   const { md, lg } = useBreakpoint();
   const lgXl = useMediaQuery({
@@ -66,13 +64,14 @@ const TaskItem: React.FC<Props> = ({ task, onDelete }) => {
   const handToggleModal = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
     void doFetchOne(task._id);
-    dispatch(toggleModal(true));
+    setOpen(true);
   };
 
   const timeSpent = convertTime(task.timeSpent);
 
   return (
     <>
+      <TaskModal open={open} />
       <Card
         title={task.title}
         bordered={false}

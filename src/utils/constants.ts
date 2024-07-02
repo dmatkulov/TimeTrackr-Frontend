@@ -57,3 +57,5 @@ export const convertTime = (seconds: number): string => {
 export const formattedDay = (day: Date | string) => {
   return dayjs(day).format('YYYY-MM-DD');
 };
+
+export const currentDay = formattedDay(new Date().toISOString());

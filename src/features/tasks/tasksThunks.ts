@@ -1,12 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { BadRequestError, GlobalMessage } from '../../types/types.global';
 import {
-  TaskData,
   TaskDeleteArgs,
-  TaskDetails,
   TaskEditArgs,
+  TaskInfo,
   TaskQueryParams,
   Tasks,
+  TasksMutation,
 } from '../../types/types.task';
 import { isAxiosError } from 'axios';
 import axiosApi from '../../utils/axiosApi';
@@ -14,7 +14,7 @@ import { apiRoutes } from '../../utils/routes';
 
 export const createTask = createAsyncThunk<
   GlobalMessage,
-  Tasks,
+  TasksMutation,
   { rejectValue: BadRequestError }
 >('tasks/create', async (mutation, { rejectWithValue }) => {
   try {
@@ -37,7 +37,7 @@ export const createTask = createAsyncThunk<
   }
 });
 
-export const getTasks = createAsyncThunk<TaskData, TaskQueryParams | undefined>(
+export const getTasks = createAsyncThunk<Tasks, TaskQueryParams | undefined>(
   'tasks/get',
   async (params = {}) => {
     const query: TaskQueryParams = {};
@@ -47,7 +47,7 @@ export const getTasks = createAsyncThunk<TaskData, TaskQueryParams | undefined>(
         query.date = params.date;
       }
     }
-    const response = await axiosApi.get<TaskData>(apiRoutes.tasks, {
+    const response = await axiosApi.get<Tasks>(apiRoutes.tasks, {
       params: query,
     });
 
@@ -55,10 +55,10 @@ export const getTasks = createAsyncThunk<TaskData, TaskQueryParams | undefined>(
   },
 );
 
-export const getOneTask = createAsyncThunk<TaskDetails, TaskDeleteArgs>(
+export const getOneTask = createAsyncThunk<TaskInfo, TaskDeleteArgs>(
   'tasks/getOne',
   async (params) => {
-    const response = await axiosApi.get<TaskDetails>(
+    const response = await axiosApi.get<TaskInfo>(
       apiRoutes.getTask + '/' + params.id + '?taskId=' + params.taskId,
     );
     return response.data;

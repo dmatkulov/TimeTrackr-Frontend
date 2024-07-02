@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import TaskForm from './components/TaskForm';
-import { formattedDay } from '../../utils/constants';
+import { currentDay } from '../../utils/constants';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   selectTasks,
@@ -8,31 +8,28 @@ import {
   selectTasksLoading,
 } from './tasksSlice';
 import { createTask, deleteTask, getTasks } from './tasksThunks';
-import { Tasks } from '../../types/types.task';
+import { TasksMutation } from '../../types/types.task';
 import Spinner from '../../components/UI/Spin/Spin';
 import PageHeader from '../users/components/PageHeader';
 import { Button, Col, Row, Space, Typography } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import Statistics from './components/Statistics';
 import TaskItem from './components/TaskItem';
-import TaskModal from './EditTask/TaskModal';
 
 interface Props {
-  date: string;
+  date?: string;
 }
 
-const TasksTable: React.FC<Props> = ({ date }) => {
+const TasksTable: React.FC<Props> = ({ date = currentDay }) => {
   const dispatch = useAppDispatch();
   const tasksData = useAppSelector(selectTasks);
   const creating = useAppSelector(selectTasksCreating);
   const fetching = useAppSelector(selectTasksLoading);
 
-  const currentDay = formattedDay(date);
-
   const [open, setOpen] = useState(false);
 
   const doFetchAll = useCallback(async () => {
-    await dispatch(getTasks({ date: currentDay }));
+    await dispatch(getTasks({ date: date }));
   }, [dispatch]);
 
   useEffect(() => {
@@ -47,7 +44,7 @@ const TasksTable: React.FC<Props> = ({ date }) => {
     setOpen(true);
   };
 
-  const handleSubmit = async (mutation: Tasks) => {
+  const handleSubmit = async (mutation: TasksMutation) => {
     await dispatch(createTask(mutation));
     await doFetchAll();
   };
@@ -69,7 +66,6 @@ const TasksTable: React.FC<Props> = ({ date }) => {
 
   return (
     <>
-      <TaskModal />
       <PageHeader handleOpen={handleOpen} date={date} />
       {fetching ? (
         <Spinner />

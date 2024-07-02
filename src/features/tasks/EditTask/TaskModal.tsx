@@ -1,15 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import Spinner from '../../../components/UI/Spin/Spin';
-import {
-  Avatar,
-  Button,
-  Col,
-  Divider,
-  Modal,
-  Row,
-  Space,
-  Typography,
-} from 'antd';
+import { Button, Col, Divider, Modal, Row, Space, Typography } from 'antd';
 import { gray } from '@ant-design/colors';
 import {
   CalendarOutlined,
@@ -19,36 +10,35 @@ import {
   MoreOutlined,
   ShareAltOutlined,
 } from '@ant-design/icons';
-import { apiURL, formattedDay } from '../../../utils/constants';
+import { currentDay } from '../../../utils/constants';
 import dayjs from 'dayjs';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import {
-  selectModal,
-  selectOneTaskLoading,
-  selectTaskDetails,
-  selectTasks,
-  toggleModal,
-} from '../tasksSlice';
+import { selectOneTaskLoading, selectTask, toggleModal } from '../tasksSlice';
 import { TaskMutation } from '../../../types/types.task';
 import { editTask, getOneTask, getTasks } from '../tasksThunks';
 import { colStyle } from '../styles/taskModalStyles';
 import EditTaskForm from './EditTaskForm';
+import AvatarPic from '../../../components/UserAvatar/Avatar';
 
-const TaskModal: React.FC = () => {
+interface Props {
+  open: boolean;
+}
+
+const TaskModal: React.FC<Props> = ({ open }) => {
   const { sm } = useBreakpoint();
   const dispatch = useAppDispatch();
-  const tasksData = useAppSelector(selectTasks);
-  const currentDay = formattedDay(new Date().toISOString());
-  const taskItem = useAppSelector(selectTaskDetails);
-
-  const open = useAppSelector(selectModal);
+  const task = useAppSelector(selectTask);
   const loading = useAppSelector(selectOneTaskLoading);
-  const [showBtns, setShowBtns] = useState(false);
 
+  const date = dayjs(task?.executionDate).format('D MMMM, dddd');
+
+  const [toggleBtn, setToggleBtn] = useState(false);
+  const [toggleEdit, setToggleEdit] = useState(false);
   const handleClose = () => {
-    setShowBtns(false);
+    setToggleBtn(false);
     dispatch(toggleModal(false));
+    void doFetchAll();
   };
 
   const doFetchAll = useCallback(async () => {
@@ -56,27 +46,34 @@ const TaskModal: React.FC = () => {
   }, [dispatch]);
 
   const handleUpdate = async (state: TaskMutation) => {
-    if (tasksData && taskItem) {
+    if (task) {
       await dispatch(
-        editTask({ id: tasksData._id, taskId: taskItem._id, task: state }),
+        editTask({ id: task.globalId, taskId: task._id, task: state }),
       );
-      await dispatch(getOneTask({ id: tasksData._id, taskId: taskItem._id }));
+      await dispatch(getOneTask({ id: task.globalId, taskId: task._id }));
     }
-    void doFetchAll();
-    handleClose();
   };
 
-  const src = `${apiURL}/${tasksData?.userId.photo}`;
+  let form;
 
-  const avatar = tasksData?.userId.photo ? (
-    <Avatar src={src} alt={tasksData?.userId.firstname} size="small" />
-  ) : (
-    <Avatar style={{ backgroundColor: '#f56a00' }} size="small">
-      {tasksData?.userId.firstname.charAt(0)}
-    </Avatar>
-  );
+  if (task) {
+    const mutation = {
+      title: task.title,
+      description: task.description,
+      startTime: task.startTime,
+      endTime: task.endTime,
+      label: task.label,
+    } as TaskMutation;
 
-  const date = dayjs(tasksData?.executionDate).format('D MMMM, dddd');
+    form = (
+      <EditTaskForm
+        task={mutation}
+        onSubmit={handleUpdate}
+        timeSpent={task.timeSpent ? task.timeSpent : 0}
+        isEdit={toggleEdit}
+      />
+    );
+  }
 
   return (
     <>
@@ -86,18 +83,22 @@ const TaskModal: React.FC = () => {
             key="1"
             align="center"
             style={{
-              width: showBtns ? 'auto' : '32px',
-              transition: 'ease-in-out',
+              width: toggleBtn ? 'auto' : '32px',
             }}
           >
             <Button
-              onClick={() => setShowBtns(!showBtns)}
+              onClick={() => {
+                setToggleBtn(!toggleBtn);
+                if (toggleEdit) {
+                  setToggleEdit(false);
+                }
+              }}
               icon={<MoreOutlined />}
               style={{
                 boxShadow: 'none',
               }}
             />
-            {showBtns && (
+            {toggleBtn && (
               <>
                 <Button
                   icon={<CopyOutlined />}
@@ -117,7 +118,12 @@ const TaskModal: React.FC = () => {
                     boxShadow: 'none',
                   }}
                 />
-                <Button style={{ boxShadow: 'none' }} icon={<EditOutlined />}>
+                <Button
+                  style={{ boxShadow: 'none' }}
+                  icon={<EditOutlined />}
+                  disabled={toggleEdit}
+                  onClick={() => setToggleEdit(true)}
+                >
                   {sm && 'Редактировать'}
                 </Button>
               </>
@@ -131,8 +137,7 @@ const TaskModal: React.FC = () => {
         styles={{
           body: {
             margin: '20px 0',
-            borderTop: '1px solid #efefef',
-            padding: '30px 0',
+            padding: '10px 0',
           },
         }}
         forceRender={true}
@@ -140,14 +145,10 @@ const TaskModal: React.FC = () => {
         {loading ? (
           <Spinner />
         ) : (
-          taskItem && (
+          task && (
             <Row gutter={24}>
               <Col xs={{ span: 24 }} sm={{ span: 15 }}>
-                <EditTaskForm
-                  task={taskItem}
-                  onSubmit={handleUpdate}
-                  timeSpent={'asd'}
-                />
+                {form}
               </Col>
               <Col xs={{ span: 24 }} sm={{ span: 1 }}>
                 <Divider
@@ -163,9 +164,9 @@ const TaskModal: React.FC = () => {
                 <Row gutter={16}>
                   <Col span={24} style={colStyle}>
                     <Space>
-                      {avatar}
+                      <AvatarPic user={task.author} isCard />
                       <Typography.Text style={{ color: gray.primary }}>
-                        {`${tasksData?.userId.firstname} ${tasksData?.userId.lastname}`}
+                        {`${task.author.firstname} ${task.author.lastname}`}
                       </Typography.Text>
                     </Space>
                   </Col>

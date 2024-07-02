@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TaskMutation } from '../../../types/types.task';
 import {
   Button,
@@ -12,30 +12,48 @@ import {
   TimePicker,
   Typography,
 } from 'antd';
-import { buddhistLocale, disabledTime, format } from '../../../utils/constants';
+import {
+  buddhistLocale,
+  convertTime,
+  disabledTime,
+  format,
+} from '../../../utils/constants';
 import TaskTag from '../components/TaskTag';
 import { SwapOutlined } from '@ant-design/icons';
-import { gray } from '@ant-design/colors';
 import { labelOptions } from '../../../utils/labelOptions';
 import dayjs, { Dayjs } from 'dayjs';
 import EditFormActions from './EditFormActions';
-
-const subtitleStyle: CSSProperties = {
-  fontWeight: 'bolder',
-  paddingLeft: '8px',
-  color: gray[1],
-  marginBottom: '16px',
-};
+import { subtitleStyle } from '../styles/taskModalStyles';
 
 interface Props {
   task: TaskMutation;
   onSubmit: (task: TaskMutation) => void;
-  timeSpent: string;
+  timeSpent: number;
+  isEdit: boolean;
 }
 
-const EditTaskForm: React.FC<Props> = ({ task, onSubmit, timeSpent }) => {
+interface TaskEdit {
+  title: boolean;
+  description: boolean;
+  time: boolean;
+}
+
+const initialState: TaskEdit = {
+  title: false,
+  description: false,
+  time: false,
+};
+const EditTaskForm: React.FC<Props> = ({
+  task,
+  onSubmit,
+  timeSpent,
+  isEdit = false,
+}) => {
   const [form] = Form.useForm();
   const [state, setState] = useState<TaskMutation>(task);
+  const [edit, setEdit] = useState<boolean>(isEdit);
+
+  const [toggleForm, setToggleForm] = useState<TaskEdit>(initialState);
 
   useEffect(() => {
     setState(task);
@@ -44,82 +62,45 @@ const EditTaskForm: React.FC<Props> = ({ task, onSubmit, timeSpent }) => {
       startTime: dayjs(task.startTime, 'HH:mm'),
       endTime: dayjs(task.endTime, 'HH:mm'),
     });
-    setShowTime(false);
-    setShowDesc(false);
-    setShowTitle(false);
+    setToggleForm(initialState);
   }, [task, form]);
 
   const handleSubmit = async () => {
     onSubmit(state);
-    console.log(state);
   };
 
-  const [showTitle, setShowTitle] = useState(false);
-  const [showDesc, setShowDesc] = useState(false);
-  const [showTime, setShowTime] = useState(false);
+  const toggleField = (field: keyof TaskEdit) => {
+    setToggleForm((prevState) => ({
+      ...prevState,
+      [field]: !prevState[field],
+    }));
+  };
+
+  const cancelEditForm = (field: keyof TaskMutation | 'time') => {
+    if (field === 'time') {
+      setState((prevState) => ({
+        ...prevState,
+        startTime: task.startTime,
+        endTime: task.endTime,
+      }));
+      form.setFieldsValue({
+        startTime: dayjs(task.startTime, 'HH:mm'),
+        endTime: dayjs(task.endTime, 'HH:mm'),
+      });
+    } else {
+      setState((prevState) => ({
+        ...prevState,
+        [field]: task[field],
+      }));
+      form.setFieldsValue({
+        [field]: task[field],
+      });
+    }
+  };
 
   const handleLabelChange = (value: string) => {
     setState((prevState) => ({ ...prevState, label: value }));
   };
-
-  const toggleTitle = () => {
-    setShowTitle(!showTitle);
-  };
-
-  const cancelTitle = () => {
-    setState((prevState) => ({
-      ...prevState,
-      title: task.title,
-    }));
-    form.setFieldsValue({
-      title: task.title,
-    });
-  };
-
-  const toggleDesc = () => {
-    setShowDesc(!showDesc);
-  };
-
-  const cancelDesc = () => {
-    setState((prevState) => ({
-      ...prevState,
-      description: task.description,
-    }));
-    form.setFieldsValue({
-      description: task.description,
-    });
-  };
-  const toggleTime = () => {
-    setShowTime(!showTime);
-  };
-
-  const cancelTime = () => {
-    setState((prevState) => ({
-      ...prevState,
-      startTime: task.startTime,
-      endTime: task.endTime,
-    }));
-    form.setFieldsValue({
-      startTime: dayjs(task.startTime, 'HH:mm'),
-      endTime: dayjs(task.endTime, 'HH:mm'),
-    });
-  };
-
-  const defaultItem = {
-    key: 'Изменить тип задачи',
-    label: 'Изменить тип задачи',
-    style: { cursor: 'default' },
-    disabled: true,
-  };
-
-  const items: MenuProps['items'] = [
-    defaultItem,
-    ...labelOptions.map((label) => ({
-      key: label.value,
-      label: label.value,
-      onClick: () => handleLabelChange(label.value),
-    })),
-  ];
 
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -132,11 +113,30 @@ const EditTaskForm: React.FC<Props> = ({ task, onSubmit, timeSpent }) => {
     }));
   };
 
+  const handleTimeChange = (
+    _date: Dayjs,
+    dateString: string | string[],
+    name: string,
+  ) => {
+    if (typeof dateString === 'string') {
+      setState((prevState) => ({
+        ...prevState,
+        [name]: dateString,
+      }));
+    }
+  };
+
+  const items: MenuProps['items'] = labelOptions.map((label) => ({
+    key: label.value,
+    label: label.value,
+    onClick: () => handleLabelChange(label.value),
+  }));
+
   return (
     <Form form={form} layout="vertical" onFinish={handleSubmit}>
       <Row>
         <Col xs={24}>
-          {showTitle ? (
+          {toggleForm.title || edit ? (
             <Row gutter={20}>
               <Col xs={20}>
                 <Form.Item
@@ -153,10 +153,10 @@ const EditTaskForm: React.FC<Props> = ({ task, onSubmit, timeSpent }) => {
               </Col>
               <Col xs={4}>
                 <EditFormActions
-                  onApprove={toggleTitle}
+                  onApprove={() => toggleField('title')}
                   onCancel={() => {
-                    cancelTitle();
-                    toggleTitle();
+                    cancelEditForm('title');
+                    toggleField('title');
                   }}
                 />
               </Col>
@@ -166,7 +166,7 @@ const EditTaskForm: React.FC<Props> = ({ task, onSubmit, timeSpent }) => {
               className="taskField"
               level={4}
               style={{ marginTop: 0, marginBottom: '32px' }}
-              onClick={toggleTitle}
+              onClick={() => toggleField('title')}
             >
               {state.title}
             </Typography.Title>
@@ -180,7 +180,7 @@ const EditTaskForm: React.FC<Props> = ({ task, onSubmit, timeSpent }) => {
         </Col>
 
         <Col xs={24}>
-          {showDesc ? (
+          {toggleForm.description || edit ? (
             <Row gutter={20}>
               <Col xs={20}>
                 <Form.Item name="description">
@@ -195,16 +195,20 @@ const EditTaskForm: React.FC<Props> = ({ task, onSubmit, timeSpent }) => {
               </Col>
               <Col xs={4}>
                 <EditFormActions
-                  onApprove={toggleDesc}
+                  onApprove={() => toggleField('description')}
                   onCancel={() => {
-                    toggleDesc();
-                    cancelDesc();
+                    cancelEditForm('description');
+                    toggleField('description');
                   }}
                 />
               </Col>
             </Row>
           ) : (
-            <Col xs={24} className="taskField" onClick={toggleDesc}>
+            <Col
+              xs={24}
+              className="taskField"
+              onClick={() => toggleField('description')}
+            >
               <Typography.Text style={{ fontSize: '14px' }}>
                 {state.description ? state.description : 'Добавить описание'}
               </Typography.Text>
@@ -219,7 +223,7 @@ const EditTaskForm: React.FC<Props> = ({ task, onSubmit, timeSpent }) => {
         </Col>
 
         <Col xs={24}>
-          {showTime ? (
+          {toggleForm.time || edit ? (
             <Row gutter={20}>
               <Col xs={20}>
                 <Space align="center">
@@ -231,17 +235,9 @@ const EditTaskForm: React.FC<Props> = ({ task, onSubmit, timeSpent }) => {
                     <TimePicker
                       name="startTime"
                       value={dayjs(state.startTime, 'HH:mm')}
-                      onChange={(
-                        _date: Dayjs,
-                        dateString: string | string[],
-                      ) => {
-                        if (typeof dateString === 'string') {
-                          setState((prevState) => ({
-                            ...prevState,
-                            startTime: dateString,
-                          }));
-                        }
-                      }}
+                      onChange={(date: Dayjs, dateString: string | string[]) =>
+                        handleTimeChange(date, dateString, 'start')
+                      }
                       disabledTime={disabledTime}
                       hideDisabledOptions={true}
                       variant="filled"
@@ -261,17 +257,9 @@ const EditTaskForm: React.FC<Props> = ({ task, onSubmit, timeSpent }) => {
                     <TimePicker
                       name="endTime"
                       value={dayjs(state.endTime, 'HH:mm')}
-                      onChange={(
-                        _date: Dayjs,
-                        dateString: string | string[],
-                      ) => {
-                        if (typeof dateString === 'string') {
-                          setState((prevState) => ({
-                            ...prevState,
-                            endTime: dateString,
-                          }));
-                        }
-                      }}
+                      onChange={(date: Dayjs, dateString: string | string[]) =>
+                        handleTimeChange(date, dateString, 'endTime')
+                      }
                       disabledTime={disabledTime}
                       hideDisabledOptions={true}
                       variant="filled"
@@ -286,18 +274,22 @@ const EditTaskForm: React.FC<Props> = ({ task, onSubmit, timeSpent }) => {
               </Col>
               <Col xs={4}>
                 <EditFormActions
-                  onApprove={toggleTime}
+                  onApprove={() => toggleField('time')}
                   onCancel={() => {
-                    toggleTime();
-                    cancelTime();
+                    cancelEditForm('time');
+                    toggleField('time');
                   }}
                 />
               </Col>
             </Row>
           ) : (
-            <Col xs={24} className="taskField" onClick={toggleTime}>
+            <Col
+              xs={24}
+              className="taskField"
+              onClick={() => toggleField('time')}
+            >
               <Typography.Text style={{ fontSize: '14px' }}>
-                {timeSpent}
+                {convertTime(timeSpent)}
               </Typography.Text>
             </Col>
           )}
@@ -323,7 +315,15 @@ const EditTaskForm: React.FC<Props> = ({ task, onSubmit, timeSpent }) => {
           </Dropdown>
         </Col>
       </Row>
-      <Button htmlType="submit">отправить</Button>
+
+      <Row>
+        <Space style={{ padding: '8px' }}>
+          <Button htmlType="submit">Сохранить</Button>
+          <Button type="text" onClick={() => setEdit(false)}>
+            Отменить
+          </Button>
+        </Space>
+      </Row>
     </Form>
   );
 };

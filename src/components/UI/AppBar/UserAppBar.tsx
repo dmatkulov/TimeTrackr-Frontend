@@ -7,7 +7,7 @@ import { logOut } from '../../../features/users/UsersThunks';
 import { useNavigate } from 'react-router-dom';
 import AdminHeader from '../../../features/users/components/AdminHeader';
 import MobileMenu from './MobileMenu';
-import UserAvatar from './UserAvatar';
+import UserTitle from './UserTitle';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 
 const { Link } = Typography;
@@ -60,7 +60,7 @@ const UserAppBar: React.FC<Props> = ({ user }) => {
         ) : (
           <Dropdown menu={{ items }} placement="bottomRight" arrow>
             <div>
-              <UserAvatar user={user} />
+              <UserTitle user={user} />
             </div>
           </Dropdown>
         )}
