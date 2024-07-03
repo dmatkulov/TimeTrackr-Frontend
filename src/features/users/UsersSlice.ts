@@ -3,11 +3,12 @@ import { GlobalMessage } from '../../types/types.global';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import {
-  createUser,
   deleteUser,
   getOneUser,
   getUsers,
+  googleLogin,
   login,
+  register,
   updateUser,
 } from './UsersThunks';
 import { message } from 'antd';
@@ -64,17 +65,17 @@ export const usersSlice = createSlice({
       });
 
     builder
-      .addCase(createUser.pending, (state) => {
+      .addCase(register.pending, (state) => {
         state.registerLoading = true;
       })
-      .addCase(createUser.fulfilled, (state, { payload: data }) => {
+      .addCase(register.fulfilled, (state, { payload: data }) => {
         state.registerLoading = false;
 
         if (data.message) {
           void message.success(data.message);
         }
       })
-      .addCase(createUser.rejected, (state, { payload: error }) => {
+      .addCase(register.rejected, (state, { payload: error }) => {
         state.registerLoading = false;
 
         void message.error(error?.message);
@@ -102,6 +103,20 @@ export const usersSlice = createSlice({
         void message.success(data.message);
       })
       .addCase(login.rejected, (state, { payload: data }) => {
+        state.loginLoading = false;
+        void message.error(data?.message);
+      });
+
+    builder
+      .addCase(googleLogin.pending, (state) => {
+        state.loginLoading = true;
+      })
+      .addCase(googleLogin.fulfilled, (state, { payload: data }) => {
+        state.loginLoading = false;
+        state.user = data.user;
+        void message.success(data.message);
+      })
+      .addCase(googleLogin.rejected, (state, { payload: data }) => {
         state.loginLoading = false;
         void message.error(data?.message);
       });

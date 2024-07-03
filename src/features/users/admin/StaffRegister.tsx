@@ -3,7 +3,7 @@ import UserForm from '../components/UserForm';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { selectRegisterLoading } from '../UsersSlice';
 import { UserMutation } from '../../../types/types.user';
-import { createUser, getUsers } from '../UsersThunks';
+import { getUsers, register } from '../UsersThunks';
 
 interface Props {
   open: boolean;
@@ -15,7 +15,7 @@ const StaffRegister: React.FC<Props> = ({ open, onClose }) => {
   const dispatch = useAppDispatch();
 
   const handleFormSubmit = async (state: UserMutation) => {
-    await dispatch(createUser(state)).unwrap();
+    await dispatch(register(state)).unwrap();
     await dispatch(getUsers());
   };
 

@@ -38,11 +38,14 @@ const { Title, Text } = Typography;
 interface Props {
   employee: User;
 }
+
 const UserProfile: React.FC<Props> = ({ employee }) => {
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector(selectUser);
   const navigate = useNavigate();
   const deleteLoading = useAppSelector(selectDeleteUserLoading);
+
+  const isGoogleUser = employee.isGoogleUser;
 
   const [open, setOpen] = useState(false);
   const handleClose = () => {
@@ -55,14 +58,23 @@ const UserProfile: React.FC<Props> = ({ employee }) => {
 
   const { sm, lg } = useBreakpoint();
 
-  let photo = noPhoto;
-  if (employee.photo) {
+  let photo;
+
+  if (!isGoogleUser && employee.photo) {
     photo = apiURL + '/' + employee.photo;
+  } else if (!isGoogleUser && !employee.photo) {
+    photo = noPhoto;
+  } else if (isGoogleUser) {
+    photo = employee.photo;
   }
 
   const startDate = dayjs(employee.startDate).format('DD MMMM, YYYY');
 
-  const phone = formatPhoneNumber(employee.contactInfo.mobile);
+  let phone;
+
+  if (!isGoogleUser) {
+    phone = formatPhoneNumber(employee.contactInfo.mobile);
+  }
 
   const handleDelete = useCallback(
     async (id: string) => {
@@ -104,31 +116,33 @@ const UserProfile: React.FC<Props> = ({ employee }) => {
             </Space>
           </Flex>
           <Divider dashed />
-          <Flex
-            vertical
-            align="flex-start"
-            gap={12}
-            style={{ marginBottom: 30 }}
-          >
-            <Text style={{ fontWeight: 'bolder' }}>Контакты</Text>
-            <Flex align="center" gap={!lg ? 12 : 20} wrap={true}>
-              <Space>
-                <PhoneOutlined />
-                <Text>{phone}</Text>
-              </Space>
-              <Space>
-                <MailOutlined />
-                <Text>{employee.email}</Text>
-              </Space>
-              <Space>
-                <PhoneOutlined />
-                <Text>
-                  г. {employee.contactInfo.city}, ул.{' '}
-                  {employee.contactInfo.street}
-                </Text>
-              </Space>
+          {!isGoogleUser && employee.contactInfo && (
+            <Flex
+              vertical
+              align="flex-start"
+              gap={12}
+              style={{ marginBottom: 30 }}
+            >
+              <Text style={{ fontWeight: 'bolder' }}>Контакты</Text>
+              <Flex align="center" gap={!lg ? 12 : 20} wrap={true}>
+                <Space>
+                  <PhoneOutlined />
+                  <Text>{phone}</Text>
+                </Space>
+                <Space>
+                  <MailOutlined />
+                  <Text>{employee.email}</Text>
+                </Space>
+                <Space>
+                  <PhoneOutlined />
+                  <Text>
+                    г. {employee.contactInfo.city}, ул.{' '}
+                    {employee.contactInfo.street}
+                  </Text>
+                </Space>
+              </Flex>
             </Flex>
-          </Flex>
+          )}
           <Flex align="flex-start" gap={20} wrap={true}>
             <Button
               style={{ width: !sm ? '280px' : 'auto' }}

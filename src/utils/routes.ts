@@ -21,6 +21,7 @@ export const appRoutes = {
 
 export const apiRoutes = {
   users: 'staff',
+  google: 'staff/google',
   userInfo: 'staff/info/',
   newUser: 'staff/register-user',
   sessions: 'staff/sessions',

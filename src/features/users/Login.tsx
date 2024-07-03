@@ -1,11 +1,19 @@
 import React from 'react';
-import type { FormProps } from 'antd';
-import { Button, Col, Form, Input, Row, Typography } from 'antd';
+import {
+  Button,
+  Col,
+  Flex,
+  Form,
+  FormProps,
+  Input,
+  Row,
+  Typography,
+} from 'antd';
 import { LoginMutation } from '../../types/types.user';
 import { useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../utils/routes';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { login } from './UsersThunks';
+import { googleLogin, login } from './UsersThunks';
 import {
   selectLoginError,
   selectLoginLoading,
@@ -13,6 +21,7 @@ import {
 } from './UsersSlice';
 import { blue } from '@ant-design/colors';
 import Spinner from '../../components/UI/Spin/Spin';
+import { GoogleLogin } from '@react-oauth/google';
 
 const { Title, Paragraph } = Typography;
 
@@ -36,6 +45,11 @@ const App: React.FC = () => {
 
     navigate(appRoutes.auth);
     form.resetFields();
+  };
+
+  const googleLoginHandler = async (credential: string) => {
+    await dispatch(googleLogin(credential)).unwrap();
+    navigate('/');
   };
 
   return (
@@ -63,6 +77,21 @@ const App: React.FC = () => {
           </Paragraph>
         </Col>
       </Row>
+      <Row justify="center">
+        <Flex align="center" justify="center" style={{ marginBottom: '40px' }}>
+          <GoogleLogin
+            size="large"
+            onSuccess={(credentialResponse) => {
+              if (credentialResponse.credential) {
+                void googleLoginHandler(credentialResponse.credential);
+              }
+            }}
+            onError={() => {
+              console.log('Login failed');
+            }}
+          />
+        </Flex>
+      </Row>
       <Form
         form={form}
         layout="vertical"
@@ -70,7 +99,7 @@ const App: React.FC = () => {
         onFinish={onSubmit}
       >
         <Row justify="center">
-          <Col xs={{ span: 18 }} sm={{ span: 14 }} md={{ span: 6 }}>
+          <Col xs={{ span: 18 }} sm={{ span: 14 }} md={{ span: 4 }}>
             <Form.Item<LoginMutation>
               name="email"
               label="Почта"
@@ -91,7 +120,7 @@ const App: React.FC = () => {
           </Col>
         </Row>
         <Row justify="center">
-          <Col xs={{ span: 18 }} sm={{ span: 14 }} md={{ span: 6 }}>
+          <Col xs={{ span: 18 }} sm={{ span: 14 }} md={{ span: 4 }}>
             <Form.Item<LoginMutation>
               label="Пароль"
               name="password"
@@ -104,7 +133,7 @@ const App: React.FC = () => {
         </Row>
 
         <Row justify="center">
-          <Col xs={{ span: 18 }} sm={{ span: 14 }} md={{ span: 6 }}>
+          <Col xs={{ span: 18 }} sm={{ span: 14 }} md={{ span: 4 }}>
             <Form.Item>
               <Button
                 type="primary"

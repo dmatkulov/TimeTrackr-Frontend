@@ -11,6 +11,8 @@ export interface User {
   position: Position;
   role: string;
   startDate: string;
+  googleID?: string;
+  isGoogleUser: boolean;
 }
 
 export interface StaffData {
