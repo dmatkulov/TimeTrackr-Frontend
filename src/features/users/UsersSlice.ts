@@ -70,6 +70,7 @@ export const usersSlice = createSlice({
       })
       .addCase(register.fulfilled, (state, { payload: data }) => {
         state.registerLoading = false;
+        state.user = data.user;
 
         if (data.message) {
           void message.success(data.message);

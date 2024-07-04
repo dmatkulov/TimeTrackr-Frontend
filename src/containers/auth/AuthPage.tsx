@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { Col, Row, Segmented, Typography } from 'antd';
+import { Divider, Segmented, Space, Typography } from 'antd';
 import Login from '../../features/users/Login';
-import { blue } from '@ant-design/colors';
-import { authColStyles } from './auth.styles';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { useNavigate } from 'react-router-dom';
 import { googleLogin } from '../../features/users/UsersThunks';
@@ -10,6 +8,8 @@ import { appRoutes } from '../../utils/routes';
 import { GoogleLogin } from '@react-oauth/google';
 import { selectLogoutLoading } from '../../features/users/UsersSlice';
 import Spinner from '../../components/UI/Spin/Spin';
+import { AuthEnum } from '../../enum/auth.enum';
+import Register from '../../features/users/Register';
 
 const { Title } = Typography;
 const AuthPage: React.FC = () => {
@@ -17,69 +17,113 @@ const AuthPage: React.FC = () => {
   const navigate = useNavigate();
   const logoutLoading = useAppSelector(selectLogoutLoading);
 
-  const [value, setValue] = useState<string>('Логин');
+  const [value, setValue] = useState<string>(AuthEnum.Login);
 
   const googleLoginHandler = async (credential: string) => {
     await dispatch(googleLogin(credential)).unwrap();
-    navigate(appRoutes.auth);
+    navigate(appRoutes.redirect);
   };
   return (
     <>
-      {logoutLoading && <Spinner />}
-      <Row justify="center" style={{ marginTop: '80px', marginBottom: '40px' }}>
-        <Col {...authColStyles.span}>
-          <Row justify="center">
-            <Title
-              level={3}
-              style={{
-                marginBottom: '30px',
-                color: blue.primary,
-                textAlign: 'center',
-              }}
-            >
-              Вход
-            </Title>
-          </Row>
-        </Col>
-        <Col
-          xs={{ span: 24 }}
-          style={{ display: 'flex', justifyContent: 'center' }}
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginTop: '100px',
+          marginBottom: '40px',
+        }}
+      >
+        <div
+          style={{
+            width: '280px',
+            maxWidth: '360px',
+          }}
         >
-          <Col {...authColStyles.span}>
+          <Title
+            level={3}
+            style={{
+              marginBottom: '50px',
+              textAlign: 'center',
+            }}
+          >
+            {value === AuthEnum.Login
+              ? 'С возвращением'
+              : 'Создание учетной записи'}
+          </Title>
+          <div style={{ marginBottom: '50px' }}>
             <Segmented
-              options={['Логин', 'Регистрация']}
+              options={[AuthEnum.Login, AuthEnum.Register]}
               value={value}
               onChange={setValue}
               block
             />
-          </Col>
-        </Col>
-      </Row>
-      {value === 'Логин' ? <Login /> : ''}
-      <Row justify="center" style={{ marginTop: '20px' }}>
-        <Col span={24} style={authColStyles.display}>
-          <Col {...authColStyles.span}>
+          </div>
+
+          <div style={{ width: '100%' }}>
+            {value === AuthEnum.Login ? <Login /> : <Register />}
+          </div>
+
+          <Divider style={{ marginTop: 16 }} />
+
+          <Space
+            direction="vertical"
+            align="center"
+            style={{ width: '100%', margin: '10px 0' }}
+          >
+            {value === AuthEnum.Login ? (
+              <>
+                <Typography.Text>У вас нет учетной записи?</Typography.Text>
+                <Typography.Link onClick={() => setValue(AuthEnum.Register)}>
+                  Зарегистрироваться
+                </Typography.Link>
+              </>
+            ) : (
+              <>
+                <Typography.Text>
+                  У вас уже есть учетная запись?
+                </Typography.Text>
+                <Typography.Link onClick={() => setValue(AuthEnum.Login)}>
+                  Войти
+                </Typography.Link>
+              </>
+            )}
+          </Space>
+
+          <div>
             <div className="divider-wrapper">
-              <span className="divider">или</span>
+              <Typography.Text style={{ fontSize: '12px' }} className="divider">
+                или
+              </Typography.Text>
             </div>
-          </Col>
-        </Col>
-        <Col span={24} style={authColStyles.display}>
-          <Col {...authColStyles.span} style={authColStyles.display}>
-            <GoogleLogin
-              size="large"
-              onSuccess={(credentialResponse) => {
-                if (credentialResponse.credential) {
-                  void googleLoginHandler(credentialResponse.credential);
-                }
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
-              onError={() => {
-                console.log('Login failed');
-              }}
-            />
-          </Col>
-        </Col>
-      </Row>
+            >
+              <GoogleLogin
+                width={280}
+                theme="filled_black"
+                size="large"
+                text="signin"
+                onSuccess={(credentialResponse) => {
+                  if (credentialResponse.credential) {
+                    void googleLoginHandler(credentialResponse.credential);
+                  }
+                }}
+                onError={() => {
+                  console.log('Login failed');
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      {logoutLoading && <Spinner />}
     </>
   );
 };

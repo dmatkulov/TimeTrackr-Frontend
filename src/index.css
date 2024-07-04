@@ -59,6 +59,7 @@ input[type='number'] {
   content: '';
   border-bottom: 1px solid #c2c8d0;
   flex: 1 0 auto;
+  flex-grow: 1;
   height: 0.5em;
   margin: 0;
 }

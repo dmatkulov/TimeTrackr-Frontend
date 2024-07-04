@@ -25,7 +25,7 @@ const UserAppBar: React.FC<Props> = ({ user }) => {
 
   const logOutUser = async () => {
     await dispatch(logOut());
-    navigate(appRoutes.login);
+    navigate(appRoutes.auth);
   };
 
   const items: MenuProps['items'] = [

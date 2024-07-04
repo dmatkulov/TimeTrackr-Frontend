@@ -91,7 +91,6 @@ const UserForm: React.FC<Props> = ({
 
   const onFinish = async () => {
     try {
-      console.log(state);
       onSubmit({
         ...state,
         photo:

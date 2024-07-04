@@ -18,8 +18,12 @@ const Redirect: React.FC = () => {
       } else if (user.role === 'employee') {
         navigate(appRoutes.employee.today);
       }
+    } else {
+      navigate(appRoutes.notFound);
     }
   }, [user, navigate]);
+
+  console.log(user);
 
   useEffect(() => {
     const timeout = setTimeout(() => {

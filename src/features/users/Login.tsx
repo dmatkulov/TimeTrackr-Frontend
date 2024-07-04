@@ -1,12 +1,11 @@
-import React from 'react';
-import { Button, Col, Form, FormProps, Input, Row } from 'antd';
+import React, { useEffect, useRef } from 'react';
+import { Button, Form, FormProps, Input, InputRef } from 'antd';
 import { LoginMutation } from '../../types/types.user';
 import { useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../utils/routes';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { login } from './UsersThunks';
 import { selectLoginError, selectLoginLoading } from './UsersSlice';
-import { authColStyles } from '../../containers/auth/auth.styles';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -25,9 +24,16 @@ const App: React.FC = () => {
       return;
     }
 
-    navigate(appRoutes.auth);
+    navigate(appRoutes.redirect);
     form.resetFields();
   };
+
+  const emailInput = useRef<InputRef>(null);
+  useEffect(() => {
+    if (emailInput.current) {
+      emailInput.current.focus();
+    }
+  }, [emailInput]);
 
   return (
     <>
@@ -37,54 +43,51 @@ const App: React.FC = () => {
         initialValues={{ remember: true }}
         onFinish={onSubmit}
       >
-        <Row justify="center">
-          <Col {...authColStyles.span}>
-            <Form.Item<LoginMutation>
-              name="email"
-              label="Почта"
-              rules={[
-                {
-                  required: true,
-                  message: 'Введите адрес электронной почты',
-                },
-                {
-                  message: 'Неверный формат электронной почты',
-                  type: 'email',
-                },
-              ]}
-              style={{ marginBottom: '16px' }}
-            >
-              <Input autoComplete="current-email" />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row justify="center">
-          <Col {...authColStyles.span}>
-            <Form.Item<LoginMutation>
-              label="Пароль"
-              name="password"
-              rules={[{ required: true, message: 'Введите пароль' }]}
-              style={{ marginBottom: '24px' }}
-            >
-              <Input.Password autoComplete="current-password" />
-            </Form.Item>
-          </Col>
-        </Row>
+        <Form.Item<LoginMutation>
+          name="email"
+          rules={[
+            {
+              required: true,
+              message: 'Введите адрес электронной почты',
+            },
+            {
+              message: 'Неверный формат электронной почты',
+              type: 'email',
+            },
+          ]}
+          style={{ marginBottom: '16px', width: '100%' }}
+        >
+          <Input
+            ref={emailInput}
+            autoComplete="current-email"
+            size="large"
+            placeholder="Адрес электронной почты"
+          />
+        </Form.Item>
 
-        <Row justify="center">
-          <Col {...authColStyles.span}>
-            <Form.Item>
-              <Button
-                type="primary"
-                htmlType="submit"
-                style={{ width: '100%' }}
-                disabled={loginLoading}
-              >
-                Войти
-              </Button>
-            </Form.Item>
-          </Col>
-        </Row>
+        <Form.Item<LoginMutation>
+          name="password"
+          rules={[{ required: true, message: 'Введите пароль' }]}
+          style={{ marginBottom: '24px' }}
+        >
+          <Input.Password
+            autoComplete="current-password"
+            size="large"
+            placeholder="Пароль"
+          />
+        </Form.Item>
+
+        <Form.Item>
+          <Button
+            type="primary"
+            htmlType="submit"
+            size="large"
+            style={{ width: '100%', marginBottom: '16px' }}
+            disabled={loginLoading}
+          >
+            Войти
+          </Button>
+        </Form.Item>
       </Form>
     </>
   );

@@ -7,7 +7,7 @@ const GuestAppBar: React.FC = () => {
   const navigate = useNavigate();
   return (
     <>
-      <Button type="primary" onClick={() => navigate(appRoutes.login)}>
+      <Button type="primary" onClick={() => navigate(appRoutes.auth)}>
         Войти
       </Button>
     </>

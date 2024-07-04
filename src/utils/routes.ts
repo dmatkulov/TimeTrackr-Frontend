@@ -1,8 +1,7 @@
 export const appRoutes = {
   home: '/',
+  redirect: '/redirect',
   auth: '/auth',
-  register: '/admin/register',
-  login: '/login',
   admin: {
     profile: '/admin',
     staff: '/admin/all-staff',

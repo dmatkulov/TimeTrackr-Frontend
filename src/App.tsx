@@ -24,8 +24,8 @@ const App = () => {
       <AppLayout>
         <Routes>
           <Route path={appRoutes.home} element={<Home />} />
-          <Route path={appRoutes.login} element={<AuthPage />} />
-          <Route path={appRoutes.auth} element={<Redirect />} />
+          <Route path={appRoutes.auth} element={<AuthPage />} />
+          <Route path={appRoutes.redirect} element={<Redirect />} />
           <Route path={appRoutes.notFound} element={<Page404 />} />
           <Route
             path={appRoutes.admin.profile}

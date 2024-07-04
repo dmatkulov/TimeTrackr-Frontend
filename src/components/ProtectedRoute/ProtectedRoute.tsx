@@ -9,7 +9,7 @@ interface Props extends React.PropsWithChildren {}
 const ProtectedRoute: FC<Props> = ({ children }) => {
   const user = useAppSelector(selectUser);
   if (!user) {
-    return <Navigate to={appRoutes.login} />;
+    return <Navigate to={appRoutes.auth} />;
   }
   return children;
 };

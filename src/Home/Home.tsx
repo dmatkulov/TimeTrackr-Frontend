@@ -29,7 +29,7 @@ const Home: React.FC = () => {
             <Paragraph>
               Войдите, чтобы начать пользоваться приложением
             </Paragraph>
-            <Button type="primary" onClick={() => navigate(appRoutes.login)}>
+            <Button type="primary" onClick={() => navigate(appRoutes.auth)}>
               Войти
             </Button>
           </Space>

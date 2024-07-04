@@ -23,7 +23,7 @@ const EmployeeMenu: React.FC<Props> = ({ handleMobile }) => {
 
   const logOutUser = async () => {
     await dispatch(logOut());
-    navigate(appRoutes.login);
+    navigate(appRoutes.auth);
   };
 
   const handleNavigate = (path: string) => {

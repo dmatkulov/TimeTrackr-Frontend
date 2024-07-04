@@ -27,22 +27,17 @@ export const register = createAsyncThunk<
     formData.append('email', mutation.email);
     formData.append('firstname', mutation.firstname);
     formData.append('lastname', mutation.lastname);
-    formData.append('position', mutation.position);
     formData.append('contactInfo[mobile]', mutation.contactInfo.mobile);
     formData.append('contactInfo[city]', mutation.contactInfo.city);
-    formData.append('startDate', mutation.startDate);
     formData.append('contactInfo[street]', mutation.contactInfo.street);
 
     if (mutation.password) {
       formData.append('password', mutation.password);
     }
-    if (mutation.photo) {
-      formData.append('photo', mutation.photo);
-    }
 
     const response = await axiosApi.post<LoginResponse>(
       apiRoutes.newUser,
-      formData,
+      mutation,
     );
     return response.data;
   } catch (e) {

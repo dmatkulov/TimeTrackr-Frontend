@@ -8,7 +8,7 @@ interface Props extends React.PropsWithChildren {
 
 const Protected: React.FC<Props> = ({ isAllowed, children }) => {
   if (!isAllowed) {
-    return <Navigate to={appRoutes.login} />;
+    return <Navigate to={appRoutes.auth} />;
   }
 
   return children;
