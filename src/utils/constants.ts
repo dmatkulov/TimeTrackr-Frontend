@@ -1,5 +1,7 @@
 import ru from 'antd/es/date-picker/locale/ru_RU';
 import dayjs from 'dayjs';
+import { Author, User } from '../types/types.user';
+import noPhoto from '../assets/no-photo.png';
 
 export const apiURL = import.meta.env['VITE_API_URL'];
 export const GOOGLE_CLIENT_ID = import.meta.env[
@@ -62,3 +64,20 @@ export const formattedDay = (day: Date | string) => {
 };
 
 export const currentDay = formattedDay(new Date().toISOString());
+
+const isUrlWithoutExtension = (url: string): boolean => {
+  const regex = /\.(jpg|jpeg|png|gif|webp)$/i;
+  return regex.test(url);
+};
+
+export const getPhotoUrl = (employee: User | Author): string => {
+  if (employee.photo) {
+    if (!isUrlWithoutExtension(employee.photo)) {
+      return employee.photo;
+    } else {
+      return `${apiURL}/${employee.photo}`;
+    }
+  } else {
+    return noPhoto;
+  }
+};

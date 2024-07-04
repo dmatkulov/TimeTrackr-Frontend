@@ -6,7 +6,7 @@ export interface User {
   token: string;
   firstname: string;
   lastname: string;
-  contactInfo: contactInfo;
+  contactInfo: ContactInfo;
   photo: string;
   position: Position;
   role: string;
@@ -24,7 +24,7 @@ export interface StaffData {
   position: Position;
 }
 
-export interface contactInfo {
+export interface ContactInfo {
   mobile: string;
   city: string;
   street: string;
@@ -46,7 +46,7 @@ export interface UserMutation {
   email: string;
   firstname: string;
   lastname: string;
-  contactInfo: contactInfo;
+  contactInfo: ContactInfo;
   photo: File | null | string;
   position: string;
   startDate: string;

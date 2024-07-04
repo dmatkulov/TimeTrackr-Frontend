@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import UserProfile from '../components/UserProfile';
+import UserProfile from '../UserProfile';
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { selectEmployee, selectFetchOneLoading } from '../UsersSlice';

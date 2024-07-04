@@ -15,7 +15,7 @@ const Redirect: React.FC = () => {
     if (user) {
       if (user.role === 'admin') {
         navigate(appRoutes.admin.staff);
-      } else {
+      } else if (user.role === 'employee') {
         navigate(appRoutes.employee.today);
       }
     }

@@ -12,9 +12,8 @@ import {
   Tag,
   Typography,
 } from 'antd';
-import { User } from '../../../types/types.user';
-import noPhoto from '../../../assets/no-photo.png';
-import { apiURL } from '../../../utils/constants';
+import { User } from '../../types/types.user';
+import { getPhotoUrl } from '../../utils/constants';
 import {
   DeleteOutlined,
   EditOutlined,
@@ -22,14 +21,14 @@ import {
   PhoneOutlined,
   QuestionCircleOutlined,
 } from '@ant-design/icons';
-import { formatPhoneNumber } from '../../../utils/helpers';
-import { deleteUser } from '../UsersThunks';
+import { formatPhoneNumber } from '../../utils/helpers';
+import { deleteUser } from './UsersThunks';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { useNavigate } from 'react-router-dom';
-import { appRoutes } from '../../../utils/routes';
-import { selectDeleteUserLoading, selectUser } from '../UsersSlice';
-import UserUpdate from './UserUpdate';
+import { appRoutes } from '../../utils/routes';
+import { selectDeleteUserLoading, selectUser } from './UsersSlice';
+import UserUpdate from './components/UserUpdate';
 
 dayjs.locale('ru');
 
@@ -58,23 +57,16 @@ const UserProfile: React.FC<Props> = ({ employee }) => {
 
   const { sm, lg } = useBreakpoint();
 
-  let photo;
-
-  if (!isGoogleUser && employee.photo) {
-    photo = apiURL + '/' + employee.photo;
-  } else if (!isGoogleUser && !employee.photo) {
-    photo = noPhoto;
-  } else if (isGoogleUser) {
-    photo = employee.photo;
-  }
+  const photo = getPhotoUrl(employee);
 
   const startDate = dayjs(employee.startDate).format('DD MMMM, YYYY');
-
   let phone;
 
-  if (!isGoogleUser) {
+  if (employee.contactInfo) {
     phone = formatPhoneNumber(employee.contactInfo.mobile);
   }
+
+  console.log(employee);
 
   const handleDelete = useCallback(
     async (id: string) => {
@@ -100,7 +92,11 @@ const UserProfile: React.FC<Props> = ({ employee }) => {
             <img
               src={photo}
               alt={employee.lastname}
-              style={{ height: '100%', objectFit: 'cover' }}
+              style={{
+                height: '100%',
+                objectFit: 'cover',
+                borderRadius: '50%',
+              }}
             />
           </div>
         </Col>
@@ -109,14 +105,17 @@ const UserProfile: React.FC<Props> = ({ employee }) => {
             {employee.lastname} {employee.firstname}
           </Title>
           <Flex vertical align="flex-start" gap={12}>
-            <Tag color={employee.position.tag}>{employee.position.name}</Tag>
+            <Space>
+              <Text style={{ fontWeight: 'bolder' }}>Позиция: </Text>
+              <Tag color={employee.position.tag}>{employee.position.name}</Tag>
+            </Space>
             <Space>
               <Text style={{ fontWeight: 'bolder' }}>Начало работы: </Text>
               <Text>{startDate}</Text>
             </Space>
           </Flex>
           <Divider dashed />
-          {!isGoogleUser && employee.contactInfo && (
+          {employee.contactInfo && (
             <Flex
               vertical
               align="flex-start"
@@ -146,8 +145,6 @@ const UserProfile: React.FC<Props> = ({ employee }) => {
           <Flex align="flex-start" gap={20} wrap={true}>
             <Button
               style={{ width: !sm ? '280px' : 'auto' }}
-              size="middle"
-              shape="round"
               icon={<EditOutlined />}
               onClick={handleOpen}
             >
@@ -178,7 +175,12 @@ const UserProfile: React.FC<Props> = ({ employee }) => {
           </Flex>
         </Col>
       </Row>
-      <UserUpdate employee={employee} open={open} onClose={handleClose} />
+      <UserUpdate
+        employee={employee}
+        open={open}
+        onClose={handleClose}
+        isGoogleUser={isGoogleUser}
+      />
     </>
   );
 };

@@ -9,6 +9,7 @@ interface Props {
   onDelete: () => void;
   filename?: string;
 }
+
 const FileInput: React.FC<Props> = ({ onChange, name, onDelete, filename }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -32,8 +33,17 @@ const FileInput: React.FC<Props> = ({ onChange, name, onDelete, filename }) => {
           {filename ? 'Заменить фото' : 'Загрузить фото'}
         </Button>
         {filename && (
-          <Space size="middle">
-            <Typography.Text style={{ color: red.primary }}>
+          <Space size="middle" style={{ textOverflow: 'ellipsis' }}>
+            <Typography.Text
+              style={{
+                display: 'block',
+                color: red.primary,
+                maxWidth: '100px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}
+            >
               {filename || ''}
             </Typography.Text>
             <Button danger icon={<DeleteOutlined />} onClick={onDelete} />

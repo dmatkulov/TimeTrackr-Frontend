@@ -150,9 +150,11 @@ export const updateUser = createAsyncThunk<
     formData.append('firstname', mutation.firstname);
     formData.append('lastname', mutation.lastname);
     formData.append('position', mutation.position);
-    formData.append('contactInfo[mobile]', mutation.contactInfo.mobile);
-    formData.append('contactInfo[city]', mutation.contactInfo.city);
-    formData.append('contactInfo[street]', mutation.contactInfo.street);
+    if (mutation.contactInfo) {
+      formData.append('contactInfo[mobile]', mutation.contactInfo.mobile);
+      formData.append('contactInfo[city]', mutation.contactInfo.city);
+      formData.append('contactInfo[street]', mutation.contactInfo.street);
+    }
     formData.append('startDate', mutation.startDate);
 
     if (mutation.photo) {
@@ -173,6 +175,7 @@ export const updateUser = createAsyncThunk<
       return rejectWithValue(e.response.data);
     }
 
+    console.log(e);
     throw e;
   }
 });

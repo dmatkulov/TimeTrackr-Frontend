@@ -6,8 +6,14 @@ import { UserMutation } from '../../../types/types.user';
 interface Props {
   state: UserMutation;
   onPhoneChange: (value: string) => void;
+  isGoogleUser?: boolean;
 }
-const ContactsPhoneInput: React.FC<Props> = ({ state, onPhoneChange }) => {
+
+const ContactsPhoneInput: React.FC<Props> = ({
+  state,
+  onPhoneChange,
+  isGoogleUser = false,
+}) => {
   return (
     <>
       <Col xs={{ span: 24 }} md={{ span: 8 }}>
@@ -15,7 +21,7 @@ const ContactsPhoneInput: React.FC<Props> = ({ state, onPhoneChange }) => {
           label="Телефон"
           name={['contactInfo', 'mobile']}
           rules={[
-            { required: true, message: 'Укажите номер телефона' },
+            { required: !isGoogleUser, message: 'Укажите номер телефона' },
             {
               len: 12,
               message: 'Введите номер полностью',
@@ -29,7 +35,7 @@ const ContactsPhoneInput: React.FC<Props> = ({ state, onPhoneChange }) => {
             containerStyle={{ width: '100%', height: '32px' }}
             disableDropdown
             countryCodeEditable={false}
-            value={state.contactInfo.mobile}
+            value={state.contactInfo?.mobile}
             onChange={onPhoneChange}
             inputClass="ant-input css-dev-only-do-not-override-1r287do ant-input-outlined"
             inputStyle={{

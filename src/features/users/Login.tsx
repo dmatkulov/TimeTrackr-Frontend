@@ -49,7 +49,7 @@ const App: React.FC = () => {
 
   const googleLoginHandler = async (credential: string) => {
     await dispatch(googleLogin(credential)).unwrap();
-    navigate('/');
+    navigate(appRoutes.auth);
   };
 
   return (

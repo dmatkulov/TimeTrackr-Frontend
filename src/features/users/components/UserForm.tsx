@@ -15,7 +15,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 
-import { UserMutation } from '../../../types/types.user';
+import { ContactInfo, UserMutation } from '../../../types/types.user';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
 import { fetchPositions } from '../../positions/positionsThunks';
 import { selectPositions } from '../../positions/positionsSlice';
@@ -29,16 +29,18 @@ dayjs.extend(buddhistEra);
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
+const contactsState: ContactInfo = {
+  mobile: '',
+  city: '',
+  street: '',
+};
+
 const initialState: UserMutation = {
   email: '',
   firstname: '',
   lastname: '',
   position: '',
-  contactInfo: {
-    mobile: '',
-    city: '',
-    street: '',
-  },
+  contactInfo: contactsState,
   password: '',
   startDate: formattedDay(new Date()),
   photo: null,
@@ -52,6 +54,7 @@ interface Props {
   onClose: () => void;
   isEdit?: boolean;
   loading?: boolean;
+  isGoogleUser?: boolean;
 }
 
 const UserForm: React.FC<Props> = ({
@@ -62,6 +65,7 @@ const UserForm: React.FC<Props> = ({
   onClose,
   isEdit = false,
   loading = false,
+  isGoogleUser = false,
 }) => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
@@ -87,6 +91,7 @@ const UserForm: React.FC<Props> = ({
 
   const onFinish = async () => {
     try {
+      console.log(state);
       onSubmit({
         ...state,
         photo:
@@ -116,7 +121,7 @@ const UserForm: React.FC<Props> = ({
     onClose();
   };
 
-  const contactInfo = Object.keys(state.contactInfo);
+  const contactInfo = Object.keys(contactsState);
   const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
@@ -240,6 +245,7 @@ const UserForm: React.FC<Props> = ({
               ]}
             >
               <Input
+                disabled={isGoogleUser}
                 placeholder="Электронная почта"
                 name="email"
                 id={isEdit ? 'emailUpd' : 'email'}
@@ -277,17 +283,21 @@ const UserForm: React.FC<Props> = ({
           </Col>
         </Row>
         <Row gutter={16}>
-          <ContactsPhoneInput state={state} onPhoneChange={handlePhoneChange} />
+          <ContactsPhoneInput
+            state={state}
+            onPhoneChange={handlePhoneChange}
+            isGoogleUser={isGoogleUser}
+          />
           <Col xs={{ span: 24 }} md={{ span: 8 }}>
             <Form.Item
               label="Город"
               name={['contactInfo', 'city']}
-              rules={[{ required: true, message: 'Укажите город' }]}
+              rules={[{ required: !isGoogleUser, message: 'Укажите город' }]}
             >
               <Input
                 name="city"
                 id={isEdit ? 'cityUpd' : 'city'}
-                value={state.contactInfo.city}
+                value={state.contactInfo?.city}
                 onChange={inputChangeHandler}
                 placeholder="Город проживания"
               />
@@ -297,13 +307,13 @@ const UserForm: React.FC<Props> = ({
             <Form.Item
               label="Улица"
               name={['contactInfo', 'street']}
-              rules={[{ required: true, message: 'Укажите улицу' }]}
+              rules={[{ required: !isGoogleUser, message: 'Укажите улицу' }]}
             >
               <Input
                 name="street"
                 id={isEdit ? 'streetUpd' : 'street'}
                 onChange={inputChangeHandler}
-                value={state.contactInfo.street}
+                value={state.contactInfo?.street}
                 placeholder="Улица"
               />
             </Form.Item>

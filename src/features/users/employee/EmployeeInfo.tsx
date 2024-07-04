@@ -1,5 +1,5 @@
 import React from 'react';
-import UserProfile from '../components/UserProfile';
+import UserProfile from '../UserProfile';
 import { useAppSelector } from '../../../app/hooks';
 import { selectUser } from '../UsersSlice';
 

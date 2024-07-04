@@ -12,9 +12,15 @@ interface Props {
   open: boolean;
   onClose: () => void;
   employee: User;
+  isGoogleUser?: boolean;
 }
 
-const UserUpdate: React.FC<Props> = ({ open, onClose, employee }) => {
+const UserUpdate: React.FC<Props> = ({
+  open,
+  onClose,
+  employee,
+  isGoogleUser = false,
+}) => {
   const dispatch = useAppDispatch();
   const updating = useAppSelector(selectUserUpdateLoading);
 
@@ -40,6 +46,7 @@ const UserUpdate: React.FC<Props> = ({ open, onClose, employee }) => {
     };
     form = (
       <UserForm
+        isGoogleUser={isGoogleUser}
         onSubmit={handleSubmit}
         existingUser={mutation}
         open={open}
