@@ -4,7 +4,7 @@ import { appRoutes } from './utils/routes';
 import Home from './Home/Home';
 import Login from './features/users/Login';
 import Page404 from './components/UI/404/Page404';
-import AuthPage from './components/UI/AuthPage/AuthPage';
+import Redirect from './components/UI/Redirect/Redirect';
 import Protected from './components/ProtectedRoute/Protected';
 import { useAppSelector } from './app/hooks';
 import { selectUser } from './features/users/UsersSlice';
@@ -25,7 +25,7 @@ const App = () => {
         <Routes>
           <Route path={appRoutes.home} element={<Home />} />
           <Route path={appRoutes.login} element={<Login />} />
-          <Route path={appRoutes.auth} element={<AuthPage />} />
+          <Route path={appRoutes.auth} element={<Redirect />} />
           <Route path={appRoutes.notFound} element={<Page404 />} />
           <Route
             path={appRoutes.admin.profile}

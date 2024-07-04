@@ -2,10 +2,10 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   LoginMutation,
   LoginResponse,
-  UserMutation,
   StaffData,
   UpdateUserArg,
   User,
+  UserMutation,
   UserQueryParams,
   UserQueryValues,
 } from '../../types/types.user';
@@ -16,7 +16,7 @@ import { isAxiosError } from 'axios';
 import { RootState } from '../../app/store';
 import { unsetUser } from './UsersSlice';
 
-export const createUser = createAsyncThunk<
+export const register = createAsyncThunk<
   LoginResponse,
   UserMutation,
   { rejectValue: BadRequestError }
@@ -51,6 +51,23 @@ export const createUser = createAsyncThunk<
       e.response?.status === 400 &&
       e.response?.data.message
     ) {
+      return rejectWithValue(e.response.data);
+    }
+
+    throw e;
+  }
+});
+
+export const googleLogin = createAsyncThunk<
+  LoginResponse,
+  string,
+  { rejectValue: GlobalMessage }
+>('users/googleLogin', async (credential, { rejectWithValue }) => {
+  try {
+    const response = await axiosApi.post(apiRoutes.google, { credential });
+    return response.data;
+  } catch (e) {
+    if (isAxiosError(e) && e.response && e.response.status === 422) {
       return rejectWithValue(e.response.data);
     }
 

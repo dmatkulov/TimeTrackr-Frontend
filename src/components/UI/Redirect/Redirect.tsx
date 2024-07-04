@@ -5,7 +5,7 @@ import { selectUser } from '../../../features/users/UsersSlice';
 import { appRoutes } from '../../../utils/routes';
 import Spinner from '../Spin/Spin';
 
-const AuthPage: React.FC = () => {
+const Redirect: React.FC = () => {
   const navigate = useNavigate();
   const user = useAppSelector(selectUser);
 
@@ -32,4 +32,4 @@ const AuthPage: React.FC = () => {
   return loading && <Spinner />;
 };
 
-export default AuthPage;
+export default Redirect;
