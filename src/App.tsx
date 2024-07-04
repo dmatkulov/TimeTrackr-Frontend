@@ -2,7 +2,6 @@ import AppLayout from './components/Layout/AppLayout';
 import { Route, Routes } from 'react-router-dom';
 import { appRoutes } from './utils/routes';
 import Home from './Home/Home';
-import Login from './features/users/Login';
 import Page404 from './components/UI/404/Page404';
 import Redirect from './components/UI/Redirect/Redirect';
 import Protected from './components/ProtectedRoute/Protected';
@@ -16,6 +15,7 @@ import UserPanel from './features/users/UserPanel';
 import UserInfoPage from './features/users/employee/EmployeeInfo';
 import CalendarPage from './features/users/employee/CalendarPage';
 import Today from './features/users/employee/Today';
+import AuthPage from './containers/auth/AuthPage';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -24,7 +24,7 @@ const App = () => {
       <AppLayout>
         <Routes>
           <Route path={appRoutes.home} element={<Home />} />
-          <Route path={appRoutes.login} element={<Login />} />
+          <Route path={appRoutes.login} element={<AuthPage />} />
           <Route path={appRoutes.auth} element={<Redirect />} />
           <Route path={appRoutes.notFound} element={<Page404 />} />
           <Route

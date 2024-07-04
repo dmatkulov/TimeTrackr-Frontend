@@ -66,8 +66,6 @@ const UserProfile: React.FC<Props> = ({ employee }) => {
     phone = formatPhoneNumber(employee.contactInfo.mobile);
   }
 
-  console.log(employee);
-
   const handleDelete = useCallback(
     async (id: string) => {
       await dispatch(deleteUser(id)).unwrap();

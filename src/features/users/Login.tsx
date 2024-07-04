@@ -1,36 +1,18 @@
 import React from 'react';
-import {
-  Button,
-  Col,
-  Flex,
-  Form,
-  FormProps,
-  Input,
-  Row,
-  Typography,
-} from 'antd';
+import { Button, Col, Form, FormProps, Input, Row } from 'antd';
 import { LoginMutation } from '../../types/types.user';
 import { useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../utils/routes';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { googleLogin, login } from './UsersThunks';
-import {
-  selectLoginError,
-  selectLoginLoading,
-  selectLogoutLoading,
-} from './UsersSlice';
-import { blue } from '@ant-design/colors';
-import Spinner from '../../components/UI/Spin/Spin';
-import { GoogleLogin } from '@react-oauth/google';
-
-const { Title, Paragraph } = Typography;
+import { login } from './UsersThunks';
+import { selectLoginError, selectLoginLoading } from './UsersSlice';
+import { authColStyles } from '../../containers/auth/auth.styles';
 
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const loginError = useAppSelector(selectLoginError);
   const loginLoading = useAppSelector(selectLoginLoading);
-  const logoutLoading = useAppSelector(selectLogoutLoading);
 
   const [form] = Form.useForm();
 
@@ -47,51 +29,8 @@ const App: React.FC = () => {
     form.resetFields();
   };
 
-  const googleLoginHandler = async (credential: string) => {
-    await dispatch(googleLogin(credential)).unwrap();
-    navigate(appRoutes.auth);
-  };
-
   return (
     <>
-      {logoutLoading && <Spinner />}
-      <Row justify="center" style={{ marginTop: '80px' }}>
-        <Col xs={{ span: 18 }} sm={{ span: 8 }}>
-          <Title
-            level={3}
-            style={{
-              color: blue.primary,
-              textAlign: 'center',
-            }}
-          >
-            Вход
-          </Title>
-          <Paragraph
-            style={{
-              color: blue.primary,
-              textAlign: 'center',
-              marginBottom: '50px',
-            }}
-          >
-            Введите адрес электронной почты и пароль
-          </Paragraph>
-        </Col>
-      </Row>
-      <Row justify="center">
-        <Flex align="center" justify="center" style={{ marginBottom: '40px' }}>
-          <GoogleLogin
-            size="large"
-            onSuccess={(credentialResponse) => {
-              if (credentialResponse.credential) {
-                void googleLoginHandler(credentialResponse.credential);
-              }
-            }}
-            onError={() => {
-              console.log('Login failed');
-            }}
-          />
-        </Flex>
-      </Row>
       <Form
         form={form}
         layout="vertical"
@@ -99,7 +38,7 @@ const App: React.FC = () => {
         onFinish={onSubmit}
       >
         <Row justify="center">
-          <Col xs={{ span: 18 }} sm={{ span: 14 }} md={{ span: 4 }}>
+          <Col {...authColStyles.span}>
             <Form.Item<LoginMutation>
               name="email"
               label="Почта"
@@ -120,7 +59,7 @@ const App: React.FC = () => {
           </Col>
         </Row>
         <Row justify="center">
-          <Col xs={{ span: 18 }} sm={{ span: 14 }} md={{ span: 4 }}>
+          <Col {...authColStyles.span}>
             <Form.Item<LoginMutation>
               label="Пароль"
               name="password"
@@ -133,7 +72,7 @@ const App: React.FC = () => {
         </Row>
 
         <Row justify="center">
-          <Col xs={{ span: 18 }} sm={{ span: 14 }} md={{ span: 4 }}>
+          <Col {...authColStyles.span}>
             <Form.Item>
               <Button
                 type="primary"
