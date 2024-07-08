@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Divider, Segmented, Space, Typography } from 'antd';
 import Login from '../Login/Login';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hooks';
@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { googleLogin } from '../../store/users/UsersThunks';
 import { appRoutes } from '../../services/routes.service';
 import { GoogleLogin } from '@react-oauth/google';
-import { selectLogoutLoading } from '../../store/users/UsersSlice';
+import { selectLogoutLoading, unsetError } from '../../store/users/UsersSlice';
 import Spinner from '../../components/UI/Spin/Spin';
 import { AuthEnum } from '../../enum/auth.enum';
 import Register from '../Register/Register';
@@ -18,6 +18,10 @@ const AuthPage: React.FC = () => {
   const logoutLoading = useAppSelector(selectLogoutLoading);
 
   const [value, setValue] = useState<string>(AuthEnum.Login);
+
+  useEffect(() => {
+    dispatch(unsetError());
+  }, [value, dispatch]);
 
   const googleLoginHandler = async (credential: string) => {
     await dispatch(googleLogin(credential)).unwrap();

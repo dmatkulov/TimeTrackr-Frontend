@@ -1,5 +1,5 @@
 import { StaffData, User } from '../../types/types.user';
-import { GlobalMessage } from '../../types/types.global';
+import { GlobalMessage, ValidationError } from '../../types/types.global';
 import { createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 import {
@@ -18,6 +18,7 @@ interface UsersState {
   staffAll: StaffData[];
   staff: User | null;
   registerLoading: boolean;
+  registerError: ValidationError | null;
   loginLoading: boolean;
   loginError: GlobalMessage | null;
   logOutLoading: boolean;
@@ -32,6 +33,7 @@ const initialState: UsersState = {
   staffAll: [],
   staff: null,
   registerLoading: false,
+  registerError: null,
   loginLoading: false,
   loginError: null,
   logOutLoading: false,
@@ -47,6 +49,9 @@ export const usersSlice = createSlice({
   reducers: {
     unsetUser: (state) => {
       state.user = null;
+    },
+    unsetError: (state) => {
+      state.registerError = null;
     },
   },
   extraReducers: (builder) => {
@@ -79,7 +84,10 @@ export const usersSlice = createSlice({
       .addCase(register.rejected, (state, { payload: error }) => {
         state.registerLoading = false;
 
-        void message.error(error?.message);
+        if (error) {
+          state.registerError = error;
+        }
+        console.log('state.registerError ', state.registerError);
       });
 
     builder
@@ -156,7 +164,7 @@ export const usersSlice = createSlice({
 });
 
 export const usersReducer = usersSlice.reducer;
-export const { unsetUser } = usersSlice.actions;
+export const { unsetUser, unsetError } = usersSlice.actions;
 
 export const selectUser = (state: RootState) => state.users.user;
 export const selectStaff = (state: RootState) => state.users.staffAll;
@@ -176,3 +184,6 @@ export const selectUserUpdateLoading = (state: RootState) =>
   state.users.updateLoading;
 export const selectDeleteUserLoading = (state: RootState) =>
   state.users.deleteLoading;
+
+export const selectRegisterError = (state: RootState) =>
+  state.users.registerError;

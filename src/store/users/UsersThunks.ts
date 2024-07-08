@@ -9,7 +9,7 @@ import {
   UserQueryParams,
   UserQueryValues,
 } from '../../types/types.user';
-import { BadRequestError, GlobalMessage } from '../../types/types.global';
+import { GlobalMessage, ValidationError } from '../../types/types.global';
 import { axiosService } from '../../services/axios.service';
 import { apiRoutes } from '../../services/routes.service';
 import { isAxiosError } from 'axios';
@@ -19,7 +19,7 @@ import { unsetUser } from './UsersSlice';
 export const register = createAsyncThunk<
   LoginResponse,
   UserMutation,
-  { rejectValue: BadRequestError }
+  { rejectValue: ValidationError }
 >('users/addUser', async (mutation, { rejectWithValue }) => {
   try {
     const formData = new FormData();
@@ -43,12 +43,11 @@ export const register = createAsyncThunk<
   } catch (e) {
     if (
       isAxiosError(e) &&
-      e.response?.status === 400 &&
+      e.response?.status === 422 &&
       e.response?.data.message
     ) {
       return rejectWithValue(e.response.data);
     }
-
     throw e;
   }
 });

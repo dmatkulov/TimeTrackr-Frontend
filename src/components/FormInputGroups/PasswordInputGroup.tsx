@@ -8,14 +8,28 @@ interface Props {
 }
 
 const PasswordInput: React.FC<Props> = ({ state, onChange }) => {
+  const passwordRegExp = new RegExp(
+    '^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])[A-Za-z0-9@$!%*#?&^_-]{8,}$',
+  );
   return (
     <>
       <Form.Item
         name="password"
         label="Пароль"
         rules={[
-          { required: true, message: 'Введите пароль' },
-          { min: 8, message: 'Длина пароля не менее 8 символов' },
+          {
+            required: true,
+            message: 'Укажите пароль',
+          },
+          {
+            message: 'Используйте не менее 8 символов',
+            min: 8,
+          },
+          {
+            message:
+              'Пароль должен содержать цифры, буквы верхнего и нижнего регистров латинского алфавита',
+            pattern: passwordRegExp,
+          },
         ]}
         hasFeedback
       >

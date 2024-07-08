@@ -6,6 +6,7 @@ import { selectPositions } from '../../store/positions/positionsSlice';
 import { fetchPositions } from '../../store/positions/positionsThunks';
 import PasswordInput from '../FormInputGroups/PasswordInputGroup';
 import { formattedDay } from '../../services/formattedTime.service';
+import { selectRegisterError } from '../../store/users/UsersSlice';
 
 const contactsState: ContactInfo = {
   mobile: '',
@@ -33,6 +34,7 @@ const RegisterForm = ({ onSubmit, loading }: Props) => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const positions = useAppSelector(selectPositions);
+  const errors = useAppSelector(selectRegisterError);
 
   const [state, setState] = useState<UserMutation>(initialState);
 
@@ -55,6 +57,17 @@ const RegisterForm = ({ onSubmit, loading }: Props) => {
       return { ...prevState, [name]: value };
     });
   };
+
+  useEffect(() => {
+    if (errors) {
+      form.setFields(
+        errors.message.map((error) => ({
+          name: error.property,
+          errors: [error.message],
+        })),
+      );
+    }
+  }, [errors, form]);
 
   return (
     <>

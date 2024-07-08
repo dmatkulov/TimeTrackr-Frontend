@@ -36,6 +36,7 @@ const Staff: React.FC = () => {
 
   const { sm, lg } = useBreakpoint();
 
+  console.log(staff);
   const items: MenuProps['items'] = [
     {
       label: 'Статистика',
@@ -118,11 +119,11 @@ const Staff: React.FC = () => {
       key: 'position',
       dataIndex: 'position',
       responsive: ['lg'],
-      render: (_, { position }) => (
-        <Tag bordered={false} color={position.tag}>
-          {position.name}
-        </Tag>
-      ),
+      // render: (_, { position }) => (
+      //   <Tag bordered={false} color={position?.tag}>
+      //     {position.name}
+      //   </Tag>
+      // ),
     },
     {
       title: 'Почта',

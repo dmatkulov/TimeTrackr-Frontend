@@ -9,13 +9,10 @@ export interface BadRequestError {
 }
 
 export interface ValidationError {
-  errors: {
-    [key: string]: {
-      name: string;
-      message: string;
-    };
-  };
-  message: string;
-  name: string;
-  _message: string;
+  message: {
+    property: string;
+    message: string;
+  }[];
+  error: string;
+  statusCode: number;
 }
