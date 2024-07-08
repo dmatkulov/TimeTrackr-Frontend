@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout, theme } from 'antd';
-import { selectUser } from '../../../features/users/UsersSlice';
-import { useAppSelector } from '../../../app/hooks';
+import { selectUser } from '../../../store/users/UsersSlice';
+import { useAppSelector } from '../../../store/hooks/hooks';
 import GuestAppBar from './GuestAppBar';
 import UserAppBar from './UserAppBar';
 import Logo from './Logo';

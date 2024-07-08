@@ -1,10 +1,10 @@
 import { Button, Drawer } from 'antd';
 import { MenuFoldOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
-import EmployeeMenu from '../../../features/users/components/EmployeeMenu';
+import EmployeeMenu from '../../UserMenu/EmployeeMenu';
 import { User } from '../../../types/types.user';
 import UserTitle from './UserTitle';
-import AdminMenu from '../../../features/users/components/AdminMenu';
+import AdminMenu from '../../UserMenu/AdminMenu';
 
 interface Props {
   user: User;

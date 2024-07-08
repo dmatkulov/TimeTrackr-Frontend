@@ -3,7 +3,7 @@ import { Flex, Typography } from 'antd';
 import { User } from '../../../types/types.user';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import { green } from '@ant-design/colors';
-import AvatarPic from '../../UserAvatar/Avatar';
+import AvatarPic from '../UserAvatar/Avatar';
 
 const { Text } = Typography;
 

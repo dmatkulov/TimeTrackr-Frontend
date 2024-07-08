@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { Divider, Segmented, Space, Typography } from 'antd';
-import Login from '../../features/users/Login';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import Login from '../Login/Login';
+import { useAppDispatch, useAppSelector } from '../../store/hooks/hooks';
 import { useNavigate } from 'react-router-dom';
-import { googleLogin } from '../../features/users/UsersThunks';
-import { appRoutes } from '../../utils/routes';
+import { googleLogin } from '../../store/users/UsersThunks';
+import { appRoutes } from '../../services/routes.service';
 import { GoogleLogin } from '@react-oauth/google';
-import { selectLogoutLoading } from '../../features/users/UsersSlice';
+import { selectLogoutLoading } from '../../store/users/UsersSlice';
 import Spinner from '../../components/UI/Spin/Spin';
 import { AuthEnum } from '../../enum/auth.enum';
-import Register from '../../features/users/Register';
+import Register from '../Register/Register';
 
 const { Title } = Typography;
 const AuthPage: React.FC = () => {

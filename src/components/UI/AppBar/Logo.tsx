@@ -1,5 +1,5 @@
 import React from 'react';
-import { appRoutes } from '../../../utils/routes';
+import { appRoutes } from '../../../services/routes.service';
 import { blue } from '@ant-design/colors';
 import { Typography } from 'antd';
 
