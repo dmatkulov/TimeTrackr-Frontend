@@ -118,8 +118,6 @@ const Positions: React.FC = () => {
           {sm && (
             <Space size="middle">
               <Button
-                size="small"
-                shape="round"
                 icon={<EditOutlined />}
                 onClick={() => fetchOne(position._id)}
                 style={{
@@ -139,7 +137,6 @@ const Positions: React.FC = () => {
                 onConfirm={() => handleDelete(position._id)}
               >
                 <Button
-                  size="small"
                   type="text"
                   danger
                   icon={<DeleteOutlined />}

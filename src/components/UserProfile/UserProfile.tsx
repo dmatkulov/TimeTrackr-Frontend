@@ -18,6 +18,7 @@ import {
   EditOutlined,
   MailOutlined,
   PhoneOutlined,
+  PushpinOutlined,
   QuestionCircleOutlined,
 } from '@ant-design/icons';
 import { formatPhoneNumber } from '../../services/formatPhoneNumber.service';
@@ -63,9 +64,12 @@ const UserProfile: React.FC<Props> = ({ employee }) => {
   const photo = getPhotoUrl(employee);
 
   const startDate = dayjs(employee.startDate).format('DD MMMM, YYYY');
-  let phone;
 
-  if (employee.contactInfo) {
+  const city = employee.contactInfo.city || null;
+  const street = employee.contactInfo.street || null;
+
+  let phone;
+  if (employee.contactInfo.mobile) {
     phone = formatPhoneNumber(employee.contactInfo.mobile);
   }
 
@@ -116,33 +120,35 @@ const UserProfile: React.FC<Props> = ({ employee }) => {
             </Space>
           </Flex>
           <Divider dashed />
-          {employee.contactInfo && (
-            <Flex
-              vertical
-              align="flex-start"
-              gap={12}
-              style={{ marginBottom: 30 }}
-            >
-              <Text style={{ fontWeight: 'bolder' }}>Контакты</Text>
-              <Flex align="center" gap={!lg ? 12 : 20} wrap={true}>
+          <Flex
+            vertical
+            align="flex-start"
+            gap={12}
+            style={{ marginBottom: 30 }}
+          >
+            <Text style={{ fontWeight: 'bolder' }}>Контакты</Text>
+            <Flex align="center" gap={!lg ? 12 : 20} wrap={true}>
+              <Space>
+                <MailOutlined />
+                <Text>{employee.email}</Text>
+              </Space>
+              {phone && (
                 <Space>
                   <PhoneOutlined />
                   <Text>{phone}</Text>
                 </Space>
+              )}
+              {(street || city) && (
                 <Space>
-                  <MailOutlined />
-                  <Text>{employee.email}</Text>
-                </Space>
-                <Space>
-                  <PhoneOutlined />
+                  <PushpinOutlined />
                   <Text>
-                    г. {employee.contactInfo.city}, ул.{' '}
-                    {employee.contactInfo.street}
+                    {city && `г. ${city}, `}
+                    {street && `ул. ${street}`}
                   </Text>
                 </Space>
-              </Flex>
+              )}
             </Flex>
-          )}
+          </Flex>
           <Flex align="flex-start" gap={20} wrap={true}>
             <Button
               style={{ width: !sm ? '280px' : 'auto' }}
@@ -164,9 +170,8 @@ const UserProfile: React.FC<Props> = ({ employee }) => {
                 >
                   <Button
                     style={{ width: !sm ? '280px' : 'auto' }}
-                    shape="round"
-                    size="middle"
                     danger
+                    type="text"
                     icon={<DeleteOutlined />}
                   >
                     Удалить сотрудника

@@ -22,7 +22,6 @@ import { selectPositions } from '../../store/positions/positionsSlice';
 import ContactsPhoneInput from '../FormInputGroups/ContactsPhoneInput';
 import FileInput from '../FormInputGroups/FileInput';
 import PasswordInput from '../FormInputGroups/PasswordInputGroup';
-import { selectUser } from '../../store/users/UsersSlice';
 import {
   buddhistLocale,
   formattedDay,
@@ -73,7 +72,6 @@ const StaffForm: React.FC<Props> = ({
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const positions = useAppSelector(selectPositions);
-  const user = useAppSelector(selectUser);
 
   const [state, setState] = useState<UserMutation>(existingUser);
 
@@ -265,7 +263,6 @@ const StaffForm: React.FC<Props> = ({
             >
               <Select
                 value={state.position}
-                disabled={user?.role === 'employee'}
                 id={isEdit ? 'positionUpd' : 'position'}
                 onChange={(value) =>
                   setState((prevState) => ({
@@ -285,17 +282,9 @@ const StaffForm: React.FC<Props> = ({
           </Col>
         </Row>
         <Row gutter={16}>
-          <ContactsPhoneInput
-            state={state}
-            onPhoneChange={handlePhoneChange}
-            isGoogleUser={isGoogleUser}
-          />
+          <ContactsPhoneInput state={state} onPhoneChange={handlePhoneChange} />
           <Col xs={{ span: 24 }} md={{ span: 8 }}>
-            <Form.Item
-              label="Город"
-              name={['contactInfo', 'city']}
-              rules={[{ required: !isGoogleUser, message: 'Укажите город' }]}
-            >
+            <Form.Item label="Город" name={['contactInfo', 'city']}>
               <Input
                 name="city"
                 id={isEdit ? 'cityUpd' : 'city'}
@@ -306,11 +295,7 @@ const StaffForm: React.FC<Props> = ({
             </Form.Item>
           </Col>
           <Col xs={{ span: 24 }} md={{ span: 8 }}>
-            <Form.Item
-              label="Улица"
-              name={['contactInfo', 'street']}
-              rules={[{ required: !isGoogleUser, message: 'Укажите улицу' }]}
-            >
+            <Form.Item label="Улица" name={['contactInfo', 'street']}>
               <Input
                 name="street"
                 id={isEdit ? 'streetUpd' : 'street'}

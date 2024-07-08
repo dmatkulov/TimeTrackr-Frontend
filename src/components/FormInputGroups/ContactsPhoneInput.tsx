@@ -6,14 +6,9 @@ import { UserMutation } from '../../types/types.user';
 interface Props {
   state: UserMutation;
   onPhoneChange: (value: string) => void;
-  isGoogleUser?: boolean;
 }
 
-const ContactsPhoneInput: React.FC<Props> = ({
-  state,
-  onPhoneChange,
-  isGoogleUser = false,
-}) => {
+const ContactsPhoneInput: React.FC<Props> = ({ state, onPhoneChange }) => {
   return (
     <>
       <Col xs={{ span: 24 }} md={{ span: 8 }}>
@@ -21,10 +16,13 @@ const ContactsPhoneInput: React.FC<Props> = ({
           label="Телефон"
           name={['contactInfo', 'mobile']}
           rules={[
-            { required: !isGoogleUser, message: 'Укажите номер телефона' },
             {
-              len: 12,
-              message: 'Введите номер полностью',
+              validator: (_, value) => {
+                if (value && value.length > 3 && value.length !== 12) {
+                  return Promise.reject('Введите номер полностью');
+                }
+                return Promise.resolve();
+              },
             },
           ]}
         >
