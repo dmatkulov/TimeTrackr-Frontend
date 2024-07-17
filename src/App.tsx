@@ -1,21 +1,21 @@
 import AppLayout from './components/Layout/AppLayout';
 import { Route, Routes } from 'react-router-dom';
-import { appRoutes } from './utils/routes';
-import Home from './Home/Home';
-import Login from './features/users/Login';
+import { appRoutes } from './services/routes.service';
+import Home from './containers/Home/Home';
 import Page404 from './components/UI/404/Page404';
-import Redirect from './components/UI/Redirect/Redirect';
+import Redirect from './containers/Redirect/Redirect';
 import Protected from './components/ProtectedRoute/Protected';
-import { useAppSelector } from './app/hooks';
-import { selectUser } from './features/users/UsersSlice';
-import StaffTable from './features/users/admin/StaffTable';
-import StaffInfo from './features/users/admin/StaffInfo';
-import StaffContainer from './features/users/admin/StaffContainer';
-import PositionsTable from './features/positions/PositionsTable';
-import UserPanel from './features/users/UserPanel';
-import UserInfoPage from './features/users/employee/EmployeeInfo';
-import CalendarPage from './features/users/employee/CalendarPage';
-import Today from './features/users/employee/Today';
+import { useAppSelector } from './store/hooks/hooks';
+import { selectUser } from './store/users/UsersSlice';
+import Staff from './containers/Staff/Staff';
+import StaffInfo from './containers/StaffInfo/StaffInfo';
+import StaffContainer from './containers/StaffContainer/StaffContainer';
+import Positions from './containers/Positions/Positions';
+import UserPanel from './containers/UserPanel/UserPanel';
+import UserInfoPage from './containers/UserProfileContainer/UserProfileContainer';
+import CalendarPage from './containers/Calendar/CalendarPage';
+import Dashboard from './containers/Dashboard/Dashboard';
+import AuthPage from './containers/auth/AuthPage';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -24,8 +24,8 @@ const App = () => {
       <AppLayout>
         <Routes>
           <Route path={appRoutes.home} element={<Home />} />
-          <Route path={appRoutes.login} element={<Login />} />
-          <Route path={appRoutes.auth} element={<Redirect />} />
+          <Route path={appRoutes.auth} element={<AuthPage />} />
+          <Route path={appRoutes.redirect} element={<Redirect />} />
           <Route path={appRoutes.notFound} element={<Page404 />} />
           <Route
             path={appRoutes.admin.profile}
@@ -36,16 +36,13 @@ const App = () => {
             }
           >
             <Route path={appRoutes.admin.staff} element={<StaffContainer />}>
-              <Route path={appRoutes.admin.staff} element={<StaffTable />} />
+              <Route path={appRoutes.admin.staff} element={<Staff />} />
               <Route
                 path={`${appRoutes.admin.staffInfo}/:id`}
                 element={<StaffInfo />}
               />
             </Route>
-            <Route
-              path={appRoutes.admin.positions}
-              element={<PositionsTable />}
-            />
+            <Route path={appRoutes.admin.positions} element={<Positions />} />
           </Route>
           <Route
             path={appRoutes.employee.profile}
@@ -59,7 +56,10 @@ const App = () => {
               path={appRoutes.employee.profileInfo}
               element={<UserInfoPage />}
             />
-            <Route path={appRoutes.employee.today} element={<Today />} />
+            <Route
+              path={appRoutes.employee.dashboard}
+              element={<Dashboard />}
+            />
             <Route
               path={appRoutes.employee.calendar}
               element={<CalendarPage />}

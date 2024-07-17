@@ -1,13 +1,13 @@
 import React from 'react';
 import { Button } from 'antd';
-import { appRoutes } from '../../../utils/routes';
+import { appRoutes } from '../../../services/routes.service';
 import { useNavigate } from 'react-router-dom';
 
 const GuestAppBar: React.FC = () => {
   const navigate = useNavigate();
   return (
     <>
-      <Button type="primary" onClick={() => navigate(appRoutes.login)}>
+      <Button type="primary" onClick={() => navigate(appRoutes.auth)}>
         Войти
       </Button>
     </>

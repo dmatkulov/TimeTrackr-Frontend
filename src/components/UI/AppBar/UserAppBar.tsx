@@ -1,11 +1,11 @@
 import React from 'react';
 import { Dropdown, Flex, MenuProps, Typography } from 'antd';
 import { User } from '../../../types/types.user';
-import { appRoutes } from '../../../utils/routes';
-import { useAppDispatch } from '../../../app/hooks';
-import { logOut } from '../../../features/users/UsersThunks';
+import { appRoutes } from '../../../services/routes.service';
+import { useAppDispatch } from '../../../store/hooks/hooks';
+import { logOut } from '../../../store/users/UsersThunks';
 import { useNavigate } from 'react-router-dom';
-import AdminHeader from '../../../features/users/components/AdminHeader';
+import AdminHeader from '../../UserHeader/AdminHeader';
 import MobileMenu from './MobileMenu';
 import UserTitle from './UserTitle';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
@@ -25,14 +25,16 @@ const UserAppBar: React.FC<Props> = ({ user }) => {
 
   const logOutUser = async () => {
     await dispatch(logOut());
-    navigate(appRoutes.login);
+    navigate(appRoutes.auth);
   };
 
   const items: MenuProps['items'] = [
     {
       key: '1',
       label: (
-        <Link href={isAdmin ? appRoutes.admin.staff : appRoutes.employee.today}>
+        <Link
+          href={isAdmin ? appRoutes.admin.staff : appRoutes.employee.dashboard}
+        >
           {isAdmin ? 'Панель управления' : 'Мой кабинет'}
         </Link>
       ),
