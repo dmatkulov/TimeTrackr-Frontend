@@ -17,7 +17,7 @@ interface Props {
   handleMobile?: () => void;
 }
 
-const EmployeeMenu: React.FC<Props> = ({ handleMobile }) => {
+const UserMenu: React.FC<Props> = ({ handleMobile }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -39,21 +39,30 @@ const EmployeeMenu: React.FC<Props> = ({ handleMobile }) => {
   const items: MenuItem[] = [
     {
       key: appRoutes.employee.dashboard,
-      label: 'Сегодня',
+      label: 'Дашбоард',
       icon: <TrophyOutlined />,
       onClick: () => handleNavigate(appRoutes.employee.dashboard),
     },
     {
-      key: appRoutes.employee.calendar,
-      label: 'Календарь',
+      key: 'teams',
+      label: 'Команды',
+      icon: <CalendarOutlined />,
+      onClick: () => handleNavigate(appRoutes.employee.calendar),
+    },
+    {
+      key: 'projects',
+      label: 'Проекты',
       icon: <CalendarOutlined />,
       onClick: () => handleNavigate(appRoutes.employee.calendar),
     },
     {
       key: appRoutes.employee.profileInfo,
-      label: 'Мой профиль',
+      label: 'Профиль',
       icon: <UserOutlined />,
       onClick: () => handleNavigate(appRoutes.employee.profileInfo),
+      style: {
+        marginTop: 'auto',
+      },
     },
     {
       key: 'logout',
@@ -61,9 +70,6 @@ const EmployeeMenu: React.FC<Props> = ({ handleMobile }) => {
       icon: <LogoutOutlined />,
       onClick: logOutUser,
       danger: true,
-      style: {
-        marginTop: 'auto',
-      },
     },
   ];
 
@@ -82,4 +88,4 @@ const EmployeeMenu: React.FC<Props> = ({ handleMobile }) => {
   );
 };
 
-export default EmployeeMenu;
+export default UserMenu;

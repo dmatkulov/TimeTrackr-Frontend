@@ -2,93 +2,91 @@ import React, { useState } from 'react';
 import { Button, Layout, Tooltip } from 'antd';
 import { Outlet } from 'react-router-dom';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
-import EmployeeMenu from '../../components/UserMenu/EmployeeMenu';
+import UserMenu from '../../components/UserMenu/UserMenu';
 import Sider from 'antd/es/layout/Sider';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
-import { useAppSelector } from '../../store/hooks/hooks';
-import { selectUser } from '../../store/users/UsersSlice';
-import AdminMenu from '../../components/UserMenu/AdminMenu';
+import AppBar from '../../components/UI/AppBar/AppBar';
 
 const { Content } = Layout;
 
 interface Props extends React.PropsWithChildren {}
 
 const UserPanel: React.FC<Props> = () => {
-  const user = useAppSelector(selectUser);
   const { md } = useBreakpoint();
   const [collapsed, setCollapsed] = useState(true);
 
-  const isAdmin = user?.role === 'admin';
-
   return (
     <>
-      <Layout hasSider style={{ minHeight: '100vh' }}>
-        {md && (
-          <Sider
-            collapsible
-            width="250px"
-            trigger={null}
-            collapsed={collapsed}
+      <Layout style={{ minHeight: '100vh', background: 'white' }}>
+        <div style={{ height: '65px', width: '100%', marginBottom: '20px' }}>
+          <AppBar />
+        </div>
+        <Layout style={{ background: 'white' }}>
+          {md && (
+            <Sider
+              collapsible
+              width="250px"
+              trigger={null}
+              collapsed={collapsed}
+              style={{
+                paddingTop: '30px',
+                paddingLeft: '10px',
+                paddingRight: '10px',
+                background: '#fff',
+                float: 'right',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  height: '100%',
+                  paddingBottom: '20px',
+                }}
+              >
+                <UserMenu />
+                <Tooltip placement="right" title={collapsed && 'Показать меню'}>
+                  <Button
+                    type="text"
+                    color="#eee"
+                    icon={
+                      collapsed ? (
+                        <MenuUnfoldOutlined />
+                      ) : (
+                        <MenuFoldOutlined style={{ display: 'inline' }} />
+                      )
+                    }
+                    onClick={() => setCollapsed(!collapsed)}
+                    style={{
+                      textAlign: 'left',
+                      padding: '0 24px',
+                      marginInline: '4px',
+                    }}
+                  >
+                    {!collapsed && 'Скрыть меню'}
+                  </Button>
+                </Tooltip>
+              </div>
+            </Sider>
+          )}
+          <Layout
             style={{
-              marginTop: '65px',
-              paddingTop: '40px',
-              paddingLeft: '10px',
-              paddingRight: '10px',
-              background: '#fff',
-              float: 'right',
+              marginLeft: !md ? '0' : '20px',
+              overflow: 'auto',
+              borderRadius: '20px',
             }}
           >
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                height: '100%',
-                paddingBottom: '20px',
-              }}
-            >
-              {isAdmin ? <AdminMenu /> : <EmployeeMenu />}
-              <Tooltip placement="right" title={collapsed && 'Показать меню'}>
-                <Button
-                  type="text"
-                  color="#eee"
-                  icon={
-                    collapsed ? (
-                      <MenuUnfoldOutlined />
-                    ) : (
-                      <MenuFoldOutlined style={{ display: 'inline' }} />
-                    )
-                  }
-                  onClick={() => setCollapsed(!collapsed)}
-                  style={{
-                    textAlign: 'left',
-                    padding: '0 24px',
-                    marginInline: '4px',
-                  }}
-                >
-                  {!collapsed && 'Скрыть меню'}
-                </Button>
-              </Tooltip>
-            </div>
-          </Sider>
-        )}
-        <Layout
-          style={{
-            marginLeft: !md ? '0' : '20px',
-            marginTop: '65px',
-            height: '95vh',
-            overflow: 'auto',
-          }}
-        >
-          <Content style={{ margin: '0' }}>
-            <div
-              style={{
-                padding: '30px',
-                height: '100%',
-              }}
-            >
-              <Outlet />
-            </div>
-          </Content>
+            <Content style={{ margin: '0' }}>
+              <div
+                style={{
+                  padding: '30px',
+                  height: '100%',
+                }}
+              >
+                <Outlet />
+              </div>
+            </Content>
+          </Layout>
         </Layout>
       </Layout>
     </>

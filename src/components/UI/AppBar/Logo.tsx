@@ -1,26 +1,39 @@
 import React from 'react';
 import { appRoutes } from '../../../services/routes.service';
-import { blue } from '@ant-design/colors';
-import { Typography } from 'antd';
+import { Flex, Typography } from 'antd';
+import logo from '../../../assets/logo/TT-logo.svg';
 
-const { Link } = Typography;
+interface Props {
+  isVisible?: boolean;
+}
 
-const Logo: React.FC = () => {
+const Logo: React.FC<Props> = ({ isVisible = true }) => {
   return (
-    <div>
-      <Link
-        href={appRoutes.home}
+    <Flex align="center" justify="flex-start">
+      <div
         style={{
-          color: blue.primary,
-          margin: 0,
-          fontSize: '20px',
-          fontWeight: '600',
-          marginRight: '80px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '0 4px',
+          marginInline: '4px',
         }}
       >
-        Time Trackr
-      </Link>
-    </div>
+        <img src={logo} alt="Time Tracker" />
+      </div>
+      {isVisible && (
+        <Typography.Link
+          href={appRoutes.home}
+          style={{
+            color: '#172C3F',
+            fontSize: '20px',
+            fontWeight: '600',
+          }}
+        >
+          Time Trackr
+        </Typography.Link>
+      )}
+    </Flex>
   );
 };
 

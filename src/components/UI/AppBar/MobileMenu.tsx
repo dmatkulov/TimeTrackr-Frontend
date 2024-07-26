@@ -1,7 +1,7 @@
 import { Button, Drawer } from 'antd';
 import { MenuFoldOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
-import EmployeeMenu from '../../UserMenu/EmployeeMenu';
+import UserMenu from '../../UserMenu/UserMenu';
 import { User } from '../../../types/types.user';
 import UserTitle from './UserTitle';
 import AdminMenu from '../../UserMenu/AdminMenu';
@@ -38,7 +38,7 @@ const MobileMenu: React.FC<Props> = ({ user }) => {
         {isAdmin ? (
           <AdminMenu handleMobile={handleClose} />
         ) : (
-          <EmployeeMenu handleMobile={handleClose} />
+          <UserMenu handleMobile={handleClose} />
         )}
       </Drawer>
     </>

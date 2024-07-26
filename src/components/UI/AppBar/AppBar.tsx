@@ -2,10 +2,8 @@ import React from 'react';
 import { Layout, theme } from 'antd';
 import { selectUser } from '../../../store/users/UsersSlice';
 import { useAppSelector } from '../../../store/hooks/hooks';
-import GuestAppBar from './GuestAppBar';
 import UserAppBar from './UserAppBar';
 import Logo from './Logo';
-import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 
 const { Header } = Layout;
 
@@ -15,8 +13,6 @@ const AppBar: React.FC = () => {
   } = theme.useToken();
 
   const user = useAppSelector(selectUser);
-
-  const { md } = useBreakpoint();
 
   return (
     <>
@@ -28,7 +24,6 @@ const AppBar: React.FC = () => {
           right: 0,
           padding: '0 20px',
           background: colorBgContainer,
-          borderBottom: '1px solid #ececec',
           display: 'flex',
           flexDirection: 'row',
           alignItems: 'center',
@@ -36,10 +31,8 @@ const AppBar: React.FC = () => {
           justifyContent: 'space-between',
         }}
       >
-        {!user && <Logo />}
-        {user?.role === 'admin' && md && <Logo />}
-        {user?.role === 'employee' && <Logo />}
-        {user ? <UserAppBar user={user} /> : <GuestAppBar />}
+        <Logo />
+        {user && <UserAppBar user={user} />}
       </Header>
     </>
   );
