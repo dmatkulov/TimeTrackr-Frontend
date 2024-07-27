@@ -5,7 +5,7 @@ import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import UserMenu from '../../components/UserMenu/UserMenu';
 import Sider from 'antd/es/layout/Sider';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
-import AppBar from '../../components/UI/AppBar/AppBar';
+import AppHeader from '../../components/Header/AppHeader';
 
 const { Content } = Layout;
 
@@ -18,8 +18,15 @@ const UserPanel: React.FC<Props> = () => {
   return (
     <>
       <Layout style={{ minHeight: '100vh', background: 'white' }}>
-        <div style={{ height: '65px', width: '100%', marginBottom: '20px' }}>
-          <AppBar />
+        <div
+          style={{
+            height: '65px',
+            width: '100%',
+            margin: '10px 0 20px 0',
+            position: 'relative',
+          }}
+        >
+          <AppHeader />
         </div>
         <Layout style={{ background: 'white' }}>
           {md && (
@@ -71,7 +78,6 @@ const UserPanel: React.FC<Props> = () => {
           )}
           <Layout
             style={{
-              marginLeft: !md ? '0' : '20px',
               overflow: 'auto',
               borderRadius: '20px',
             }}

@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../services/routes.service';
 import { useAppSelector } from '../../store/hooks/hooks';
 import { selectUser } from '../../store/users/UsersSlice';
-import AppBar from '../../components/UI/AppBar/AppBar';
+import AppHeader from '../../components/Header/AppHeader';
 
 const { Title, Paragraph } = Typography;
 
@@ -20,7 +20,7 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <AppBar />
+      <AppHeader />
       <Flex vertical align="center" justify="center">
         <Paragraph style={{ marginTop: '120px' }}>Добро пожаловать в</Paragraph>
         <Title style={titleStyle} level={1}>

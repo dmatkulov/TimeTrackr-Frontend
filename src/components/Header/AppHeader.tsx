@@ -1,18 +1,14 @@
 import React from 'react';
 import { Layout, theme } from 'antd';
-import { selectUser } from '../../../store/users/UsersSlice';
-import { useAppSelector } from '../../../store/hooks/hooks';
-import UserAppBar from './UserAppBar';
-import Logo from './Logo';
+import Logo from '../UI/AppBar/Logo';
+import UserHeader from './UserHeader/UserHeader';
 
 const { Header } = Layout;
 
-const AppBar: React.FC = () => {
+const AppHeader: React.FC = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-
-  const user = useAppSelector(selectUser);
 
   return (
     <>
@@ -22,7 +18,7 @@ const AppBar: React.FC = () => {
           top: 0,
           left: 0,
           right: 0,
-          padding: '0 20px',
+          padding: '10px 20px',
           background: colorBgContainer,
           display: 'flex',
           flexDirection: 'row',
@@ -32,10 +28,10 @@ const AppBar: React.FC = () => {
         }}
       >
         <Logo />
-        {user && <UserAppBar user={user} />}
+        <UserHeader />
       </Header>
     </>
   );
 };
 
-export default AppBar;
+export default AppHeader;
