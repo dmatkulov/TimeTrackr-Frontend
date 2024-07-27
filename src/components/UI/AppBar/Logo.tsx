@@ -19,18 +19,19 @@ const Logo: React.FC<Props> = ({ isVisible = true }) => {
           marginInline: '4px',
         }}
       >
-        <img src={logo} alt="Time Tracker" />
+        <img src={logo} alt="Time Tracker" style={{ width: '30px' }} />
       </div>
       {isVisible && (
         <Typography.Link
           href={appRoutes.home}
           style={{
             color: '#172C3F',
-            fontSize: '20px',
-            fontWeight: '600',
+            fontSize: '26px',
+            fontWeight: '900',
+            marginTop: '11px',
           }}
         >
-          Time Trackr
+          TimeCeptr
         </Typography.Link>
       )}
     </Flex>

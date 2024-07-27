@@ -14,17 +14,18 @@ const AppHeader: React.FC = () => {
     <>
       <Header
         style={{
-          position: 'fixed',
+          position: 'sticky',
           top: 0,
-          left: 0,
-          right: 0,
-          padding: '10px 20px',
-          background: colorBgContainer,
+          zIndex: 1000,
+          width: '100%',
           display: 'flex',
-          flexDirection: 'row',
           alignItems: 'center',
-          zIndex: 10,
+          padding: '20px 20px',
+          height: '80px',
+          background: colorBgContainer,
+          flexDirection: 'row',
           justifyContent: 'space-between',
+          borderBottom: '1px solid rgba(5, 5, 5, 0.06)',
         }}
       >
         <Logo />

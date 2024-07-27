@@ -18,17 +18,14 @@ const UserPanel: React.FC<Props> = () => {
   return (
     <>
       <Layout style={{ minHeight: '100vh', background: 'white' }}>
-        <div
+        <AppHeader />
+        <Layout
           style={{
-            height: '65px',
-            width: '100%',
-            margin: '10px 0 20px 0',
-            position: 'relative',
+            background: 'white',
+            height: 'calc(100vh - 80px)',
+            minHeight: 'calc(100vh - 80px)',
           }}
         >
-          <AppHeader />
-        </div>
-        <Layout style={{ background: 'white' }}>
           {md && (
             <Sider
               collapsible
@@ -41,6 +38,7 @@ const UserPanel: React.FC<Props> = () => {
                 paddingRight: '10px',
                 background: '#fff',
                 float: 'right',
+                borderRight: '1px solid rgba(5, 5, 5, 0.06)',
               }}
             >
               <div
@@ -78,8 +76,9 @@ const UserPanel: React.FC<Props> = () => {
           )}
           <Layout
             style={{
+              marginLeft: '0',
               overflow: 'auto',
-              borderRadius: '20px',
+              // borderRadius: '20px',
             }}
           >
             <Content style={{ margin: '0' }}>
