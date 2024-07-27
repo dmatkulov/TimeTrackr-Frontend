@@ -31,7 +31,7 @@ const Logo: React.FC<Props> = ({ isVisible = true }) => {
             marginTop: '11px',
           }}
         >
-          TimeCeptr
+          Time Trackr
         </Typography.Link>
       )}
     </Flex>
