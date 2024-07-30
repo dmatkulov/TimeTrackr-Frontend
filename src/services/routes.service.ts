@@ -14,6 +14,9 @@ export const appRoutes = {
     profileInfo: '/profile/info',
     dashboard: '/profile/dashboard',
     calendar: '/profile/calendar',
+    notes: '/profile/notes',
+    teams: '/profile/teams',
+    projects: '/profile/projects',
   },
   notFound: '*',
 };

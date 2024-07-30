@@ -43,6 +43,7 @@ const UserHeader: React.FC = () => {
   return (
     user && (
       <>
+        teams projects
         <Flex align="center" justify="space-between" vertical={false}>
           {!md ? (
             <MobileMenu user={user} />

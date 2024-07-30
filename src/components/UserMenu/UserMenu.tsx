@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Menu, MenuProps } from 'antd';
 import {
   CalendarFilled,
@@ -8,6 +8,8 @@ import {
   FileFilled,
   FileOutlined,
   LogoutOutlined,
+  RocketTwoTone,
+  StarTwoTone,
 } from '@ant-design/icons';
 import { useAppDispatch } from '../../store/hooks/hooks';
 import { useNavigate } from 'react-router-dom';
@@ -30,11 +32,8 @@ const UserMenu: React.FC<Props> = ({ handleMobile }) => {
     navigate(appRoutes.auth);
   };
 
-  const [icon, setIcon] = useState<string>('');
-
-  const handleNavigate = (path: string, key: string) => {
+  const handleNavigate = (path: string) => {
     navigate(path);
-    setIcon(key);
 
     if (handleMobile) {
       handleMobile();
@@ -45,37 +44,37 @@ const UserMenu: React.FC<Props> = ({ handleMobile }) => {
 
   const items: MenuItem[] = [
     {
-      key: 'dashboard',
+      key: appRoutes.employee.dashboard,
       label: 'Дашбоард',
       icon:
-        icon === 'dashboard' ? (
+        activeKey === appRoutes.employee.dashboard ? (
           <DashboardFilled style={{ fontSize: '18px' }} />
         ) : (
           <DashboardOutlined style={{ fontSize: '18px' }} />
         ),
-      onClick: () => handleNavigate(appRoutes.employee.dashboard, 'dashboard'),
+      onClick: () => handleNavigate(appRoutes.employee.dashboard),
     },
     {
-      key: 'notes',
+      key: appRoutes.employee.notes,
       label: 'Мои заметки',
       icon:
-        icon === 'notes' ? (
+        activeKey === appRoutes.employee.notes ? (
           <FileFilled style={{ fontSize: '18px' }} />
         ) : (
           <FileOutlined style={{ fontSize: '18px' }} />
         ),
-      onClick: () => handleNavigate(appRoutes.employee.calendar, 'notes'),
+      onClick: () => handleNavigate(appRoutes.employee.notes),
     },
     {
-      key: 'calendar',
+      key: appRoutes.employee.calendar,
       label: 'Календарь',
       icon:
-        icon === 'calendar' ? (
+        activeKey === appRoutes.employee.calendar ? (
           <CalendarFilled style={{ fontSize: '18px' }} />
         ) : (
           <CalendarOutlined style={{ fontSize: '18px' }} />
         ),
-      onClick: () => handleNavigate(appRoutes.employee.calendar, 'calendar'),
+      onClick: () => handleNavigate(appRoutes.employee.calendar),
       style: {
         marginBottom: '20px',
       },
@@ -84,19 +83,19 @@ const UserMenu: React.FC<Props> = ({ handleMobile }) => {
       type: 'divider',
     },
     {
-      key: 'teams',
+      key: appRoutes.employee.teams,
       label: 'Команды',
-      icon: <CalendarOutlined />,
-      onClick: () => handleNavigate(appRoutes.employee.calendar, 'teams'),
+      icon: <RocketTwoTone style={{ fontSize: '18px' }} />,
+      onClick: () => handleNavigate(appRoutes.employee.teams),
       style: {
         marginTop: '20px',
       },
     },
     {
-      key: 'projects',
+      key: appRoutes.employee.projects,
       label: 'Проекты',
-      icon: <CalendarOutlined />,
-      onClick: () => handleNavigate(appRoutes.employee.calendar, 'projects'),
+      icon: <StarTwoTone style={{ fontSize: '18px' }} />,
+      onClick: () => handleNavigate(appRoutes.employee.projects),
     },
     {
       key: 'logout',
