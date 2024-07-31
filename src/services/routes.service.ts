@@ -11,7 +11,7 @@ export const appRoutes = {
   },
   employee: {
     profile: '/profile',
-    profileInfo: '/profile/info',
+    account: '/profile/info',
     dashboard: '/profile/dashboard',
     calendar: '/profile/calendar',
     notes: '/profile/notes',

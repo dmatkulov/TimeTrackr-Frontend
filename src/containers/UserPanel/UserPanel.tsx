@@ -33,6 +33,7 @@ const UserPanel: React.FC<Props> = () => {
               trigger={null}
               collapsed={collapsed}
               style={{
+                overflowY: 'auto',
                 paddingTop: '30px',
                 paddingLeft: '10px',
                 paddingRight: '10px',
@@ -66,6 +67,8 @@ const UserPanel: React.FC<Props> = () => {
                       textAlign: 'left',
                       padding: '0 24px',
                       marginInline: '4px',
+                      height: '40px',
+                      marginBottom: '20px',
                     }}
                   >
                     {!collapsed && 'Скрыть меню'}
@@ -78,7 +81,6 @@ const UserPanel: React.FC<Props> = () => {
             style={{
               marginLeft: '0',
               overflow: 'auto',
-              // borderRadius: '20px',
             }}
           >
             <Content style={{ margin: '0' }}>

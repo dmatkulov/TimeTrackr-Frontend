@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, MenuProps } from 'antd';
+import { Button, Flex, Menu, MenuProps } from 'antd';
 import {
   CalendarFilled,
   CalendarOutlined,
@@ -8,7 +8,9 @@ import {
   FileFilled,
   FileOutlined,
   LogoutOutlined,
+  PlusCircleOutlined,
   RocketTwoTone,
+  StarFilled,
   StarTwoTone,
 } from '@ant-design/icons';
 import { useAppDispatch } from '../../store/hooks/hooks';
@@ -75,27 +77,81 @@ const UserMenu: React.FC<Props> = ({ handleMobile }) => {
           <CalendarOutlined style={{ fontSize: '18px' }} />
         ),
       onClick: () => handleNavigate(appRoutes.employee.calendar),
-      style: {
-        marginBottom: '20px',
-      },
-    },
-    {
-      type: 'divider',
     },
     {
       key: appRoutes.employee.teams,
       label: 'Команды',
-      icon: <RocketTwoTone style={{ fontSize: '18px' }} />,
-      onClick: () => handleNavigate(appRoutes.employee.teams),
+      icon: (
+        <RocketTwoTone style={{ fontSize: '18px' }} twoToneColor="#3947ce" />
+      ),
+      children: [
+        {
+          key: '7',
+          label: (
+            <Flex justify="space-between" align="center">
+              team1 <Button type="text" icon={<StarFilled />} />
+            </Flex>
+          ),
+          style: {
+            paddingRight: '5px',
+          },
+        },
+        { key: '8', label: 'team2' },
+        {
+          key: 'all',
+          label: 'Все команды',
+          onClick: () => handleNavigate(appRoutes.employee.teams),
+        },
+        {
+          key: 'add',
+          label: (
+            <Button
+              onClick={() => alert('clicked')}
+              type="primary"
+              icon={<PlusCircleOutlined />}
+            >
+              Добавить
+            </Button>
+          ),
+          style: { background: 'none', cursor: 'default' },
+          className: 'menuItemBtn',
+        },
+      ],
       style: {
         marginTop: '20px',
+        border: '1px solid rgba(5, 5, 5, 0.06)',
       },
     },
     {
       key: appRoutes.employee.projects,
       label: 'Проекты',
-      icon: <StarTwoTone style={{ fontSize: '18px' }} />,
+      icon: <StarTwoTone style={{ fontSize: '18px' }} twoToneColor="#3947ce" />,
       onClick: () => handleNavigate(appRoutes.employee.projects),
+      children: [
+        { key: '5', label: 'Option 5' },
+        { key: '6', label: 'Option 6' },
+      ],
+    },
+    {
+      type: 'divider',
+      style: {
+        marginTop: 'auto',
+        marginBottom: '10px',
+      },
+    },
+
+    {
+      key: 'profile',
+      label: 'Профиль',
+      icon: <LogoutOutlined />,
+      onClick: () => handleNavigate(appRoutes.employee.account),
+    },
+    {
+      type: 'divider',
+      style: {
+        marginTop: '10px',
+        marginBottom: '30px',
+      },
     },
     {
       key: 'logout',
@@ -103,9 +159,6 @@ const UserMenu: React.FC<Props> = ({ handleMobile }) => {
       icon: <LogoutOutlined />,
       onClick: logOutUser,
       danger: true,
-      style: {
-        marginTop: 'auto',
-      },
     },
   ];
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Flex, Space, Typography } from 'antd';
+import { Button, Flex, Layout, Space, Typography } from 'antd';
 import { blue } from '@ant-design/colors';
 import { useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../services/routes.service';
@@ -20,7 +20,9 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <AppHeader />
+      <Layout>
+        <AppHeader />
+      </Layout>
       <Flex vertical align="center" justify="center">
         <Paragraph style={{ marginTop: '120px' }}>Добро пожаловать в</Paragraph>
         <Title style={titleStyle} level={1}>

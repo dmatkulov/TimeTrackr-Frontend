@@ -2,3 +2,11 @@
   background: #3947ce11;
   color: #3947ce;
 }
+
+.menuItemBtn:hover {
+  background: none;
+}
+
+.menuItemBtn {
+  cursor: default;
+}

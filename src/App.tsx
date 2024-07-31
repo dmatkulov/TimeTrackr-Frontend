@@ -16,6 +16,9 @@ import UserInfoPage from './containers/UserProfileContainer/UserProfileContainer
 import CalendarPage from './containers/Calendar/CalendarPage';
 import Dashboard from './containers/Dashboard/Dashboard';
 import AuthPage from './containers/auth/AuthPage';
+import Notes from './containers/Notes/Notes';
+import Teams from './containers/Teams/Teams';
+import Projects from './containers/Projects/Projects';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -53,13 +56,16 @@ const App = () => {
             }
           >
             <Route
-              path={appRoutes.employee.profileInfo}
+              path={appRoutes.employee.account}
               element={<UserInfoPage />}
             />
             <Route
               path={appRoutes.employee.dashboard}
               element={<Dashboard />}
             />
+            <Route path={appRoutes.employee.notes} element={<Notes />} />
+            <Route path={appRoutes.employee.teams} element={<Teams />} />
+            <Route path={appRoutes.employee.projects} element={<Projects />} />
             <Route
               path={appRoutes.employee.calendar}
               element={<CalendarPage />}

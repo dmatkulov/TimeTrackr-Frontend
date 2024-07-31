@@ -26,7 +26,7 @@ const UserHeader: React.FC = () => {
   const items: MenuProps['items'] = [
     {
       key: '1',
-      label: <Link href={appRoutes.employee.profileInfo}>Профиль</Link>,
+      label: <Link href={appRoutes.employee.account}>Профиль</Link>,
     },
     {
       key: '2',
