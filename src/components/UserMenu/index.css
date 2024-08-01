@@ -1,6 +1,7 @@
 .ant-menu-light .ant-menu-item-selected {
   background: #3947ce11;
   color: #3947ce;
+  font-weight: bolder;
 }
 
 .menuItemBtn:hover {
@@ -10,3 +11,12 @@
 .menuItemBtn {
   cursor: default;
 }
+
+.ant-menu-submenu-title {
+  padding-right: 10px !important;
+}
+
+/*.ant-menu-item .ant-menu-item-selected {*/
+/*  padding-right: 12px;*/
+/*  padding-left: 12px;*/
+/*}*/

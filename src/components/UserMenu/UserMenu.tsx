@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties, useState } from 'react';
 import { Button, Flex, Menu, MenuProps } from 'antd';
 import {
   CalendarFilled,
@@ -8,10 +8,13 @@ import {
   FileFilled,
   FileOutlined,
   LogoutOutlined,
+  MinusOutlined,
   PlusCircleOutlined,
+  PlusOutlined,
   RocketTwoTone,
   StarFilled,
   StarTwoTone,
+  UserOutlined,
 } from '@ant-design/icons';
 import { useAppDispatch } from '../../store/hooks/hooks';
 import { useNavigate } from 'react-router-dom';
@@ -23,9 +26,10 @@ type MenuItem = Required<MenuProps>['items'][number];
 
 interface Props {
   handleMobile?: () => void;
+  collapsed?: boolean;
 }
 
-const UserMenu: React.FC<Props> = ({ handleMobile }) => {
+const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
@@ -43,6 +47,12 @@ const UserMenu: React.FC<Props> = ({ handleMobile }) => {
   };
 
   const activeKey = location.pathname;
+
+  const itemStyle: CSSProperties = {
+    display: collapsed ? 'flex' : 'list-item',
+    width: collapsed ? '50px' : 'auto',
+    border: '1px solid rgba(5, 5, 5, 0.06)',
+  };
 
   const items: MenuItem[] = [
     {
@@ -84,9 +94,13 @@ const UserMenu: React.FC<Props> = ({ handleMobile }) => {
       icon: (
         <RocketTwoTone style={{ fontSize: '18px' }} twoToneColor="#3947ce" />
       ),
+      style: {
+        ...itemStyle,
+        marginTop: '30px',
+      },
       children: [
         {
-          key: '7',
+          key: 'team1',
           label: (
             <Flex justify="space-between" align="center">
               team1 <Button type="text" icon={<StarFilled />} />
@@ -96,14 +110,14 @@ const UserMenu: React.FC<Props> = ({ handleMobile }) => {
             paddingRight: '5px',
           },
         },
-        { key: '8', label: 'team2' },
+        { key: 'team2', label: 'team2' },
         {
-          key: 'all',
+          key: 'allTeams',
           label: 'Все команды',
           onClick: () => handleNavigate(appRoutes.employee.teams),
         },
         {
-          key: 'add',
+          key: 'addTeam',
           label: (
             <Button
               onClick={() => alert('clicked')}
@@ -117,40 +131,57 @@ const UserMenu: React.FC<Props> = ({ handleMobile }) => {
           className: 'menuItemBtn',
         },
       ],
-      style: {
-        marginTop: '20px',
-        border: '1px solid rgba(5, 5, 5, 0.06)',
-      },
     },
     {
       key: appRoutes.employee.projects,
       label: 'Проекты',
       icon: <StarTwoTone style={{ fontSize: '18px' }} twoToneColor="#3947ce" />,
       onClick: () => handleNavigate(appRoutes.employee.projects),
+      style: {
+        ...itemStyle,
+        marginTop: '10px',
+      },
       children: [
-        { key: '5', label: 'Option 5' },
-        { key: '6', label: 'Option 6' },
+        {
+          key: 'project1',
+          label: (
+            <Flex justify="space-between" align="center">
+              project1 <Button type="text" icon={<StarFilled />} />
+            </Flex>
+          ),
+          style: {
+            paddingRight: '5px',
+          },
+        },
+        { key: 'project2', label: 'project2' },
+        {
+          key: 'allProjects',
+          label: 'Все проекты',
+          onClick: () => handleNavigate(appRoutes.employee.teams),
+        },
+        {
+          key: 'addProject',
+          label: (
+            <Button
+              onClick={() => alert('clicked')}
+              type="primary"
+              icon={<PlusCircleOutlined />}
+            >
+              Добавить
+            </Button>
+          ),
+          style: { background: 'none', cursor: 'default' },
+          className: 'menuItemBtn',
+        },
       ],
     },
     {
-      type: 'divider',
-      style: {
-        marginTop: 'auto',
-        marginBottom: '10px',
-      },
-    },
-
-    {
       key: 'profile',
       label: 'Профиль',
-      icon: <LogoutOutlined />,
+      icon: <UserOutlined />,
       onClick: () => handleNavigate(appRoutes.employee.account),
-    },
-    {
-      type: 'divider',
       style: {
-        marginTop: '10px',
-        marginBottom: '30px',
+        marginTop: 'auto',
       },
     },
     {
@@ -162,13 +193,39 @@ const UserMenu: React.FC<Props> = ({ handleMobile }) => {
     },
   ];
 
+  const [openKeys, setOpenKeys] = useState<string[]>([]);
+
+  const handleOpenChange = (keys: string[]) => {
+    setOpenKeys(keys);
+  };
+
   return (
     <Menu
       defaultSelectedKeys={[activeKey]}
       mode="inline"
+      openKeys={openKeys}
+      onOpenChange={handleOpenChange}
       items={items}
+      expandIcon={({ isOpen }) => (
+        <Flex
+          align="center"
+          justify="center"
+          style={{
+            width: '28px',
+            height: '28px',
+            background: '#FFF8E8',
+            borderRadius: '8px',
+            marginLeft: 'auto',
+          }}
+        >
+          {isOpen ? <MinusOutlined /> : <PlusOutlined />}
+        </Flex>
+      )}
       style={{
+        height: '100%',
         display: 'flex',
+        paddingTop: '30px',
+        paddingBottom: '30px',
         flexDirection: 'column',
         border: 'none',
         flexGrow: 1,

@@ -2,12 +2,11 @@ import React from 'react';
 import { appRoutes } from '../../../services/routes.service';
 import { Flex, Typography } from 'antd';
 import logo from '../../../assets/logo/TT-logo.svg';
+import logoIcon from '../../../assets/logo/TT-logo-icon.svg';
+import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 
-interface Props {
-  isVisible?: boolean;
-}
-
-const Logo: React.FC<Props> = ({ isVisible = true }) => {
+const Logo: React.FC = () => {
+  const { sm } = useBreakpoint();
   return (
     <Flex align="center" justify="flex-start">
       <div
@@ -19,16 +18,20 @@ const Logo: React.FC<Props> = ({ isVisible = true }) => {
           marginInline: '4px',
         }}
       >
-        <img src={logo} alt="Time Tracker" style={{ width: '30px' }} />
+        {sm ? (
+          <img src={logo} alt="Time Tracker" style={{ height: '30px' }} />
+        ) : (
+          <img src={logoIcon} alt="Time Tracker" style={{ height: '32px' }} />
+        )}
       </div>
-      {isVisible && (
+      {sm && (
         <Typography.Link
           href={appRoutes.home}
           style={{
             color: '#172C3F',
-            fontSize: '26px',
+            fontSize: '20px',
             fontWeight: '900',
-            marginTop: '11px',
+            textWrap: 'nowrap',
           }}
         >
           Time Trackr

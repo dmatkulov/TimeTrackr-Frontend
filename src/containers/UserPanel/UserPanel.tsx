@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Button, Layout, Tooltip } from 'antd';
+import { Layout } from 'antd';
 import { Outlet } from 'react-router-dom';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import UserMenu from '../../components/UserMenu/UserMenu';
 import Sider from 'antd/es/layout/Sider';
-import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import AppHeader from '../../components/Header/AppHeader';
+import UserHeader from '../../components/Header/UserHeader/UserHeader';
 
 const { Content } = Layout;
 
@@ -13,12 +13,14 @@ interface Props extends React.PropsWithChildren {}
 
 const UserPanel: React.FC<Props> = () => {
   const { md } = useBreakpoint();
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
     <>
       <Layout style={{ minHeight: '100vh', background: 'white' }}>
-        <AppHeader />
+        <AppHeader toggleMenu={() => setCollapsed(!collapsed)}>
+          <UserHeader />
+        </AppHeader>
         <Layout
           style={{
             background: 'white',
@@ -34,9 +36,8 @@ const UserPanel: React.FC<Props> = () => {
               collapsed={collapsed}
               style={{
                 overflowY: 'auto',
-                paddingTop: '30px',
-                paddingLeft: '10px',
-                paddingRight: '10px',
+                paddingLeft: collapsed ? '15.5px' : '10px',
+                paddingRight: collapsed ? '15.5px' : '10px',
                 background: '#fff',
                 float: 'right',
                 borderRight: '1px solid rgba(5, 5, 5, 0.06)',
@@ -47,33 +48,9 @@ const UserPanel: React.FC<Props> = () => {
                   display: 'flex',
                   flexDirection: 'column',
                   height: '100%',
-                  paddingBottom: '20px',
                 }}
               >
-                <UserMenu />
-                <Tooltip placement="right" title={collapsed && 'Показать меню'}>
-                  <Button
-                    type="text"
-                    color="#eee"
-                    icon={
-                      collapsed ? (
-                        <MenuUnfoldOutlined />
-                      ) : (
-                        <MenuFoldOutlined style={{ display: 'inline' }} />
-                      )
-                    }
-                    onClick={() => setCollapsed(!collapsed)}
-                    style={{
-                      textAlign: 'left',
-                      padding: '0 24px',
-                      marginInline: '4px',
-                      height: '40px',
-                      marginBottom: '20px',
-                    }}
-                  >
-                    {!collapsed && 'Скрыть меню'}
-                  </Button>
-                </Tooltip>
+                <UserMenu collapsed={collapsed} />
               </div>
             </Sider>
           )}

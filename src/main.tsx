@@ -20,6 +20,16 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         token: {
           colorPrimary: '#3947ce',
           colorBgContainer: '#fff',
+          colorText: '#172c3f',
+        },
+        components: {
+          Menu: {
+            collapsedWidth: 1000,
+            subMenuItemBg: '#fff',
+            itemActiveBg: '#FFF8E8',
+            itemSelectedBg: '#FFF8E8',
+            itemHoverBg: '#FFF8E8',
+          },
         },
       }}
     >

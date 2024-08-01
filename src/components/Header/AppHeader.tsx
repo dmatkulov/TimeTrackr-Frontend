@@ -1,14 +1,21 @@
 import React from 'react';
-import { Layout, theme } from 'antd';
+import { Button, Layout, Space, theme } from 'antd';
 import Logo from '../UI/AppBar/Logo';
-import UserHeader from './UserHeader/UserHeader';
+import { AppstoreOutlined } from '@ant-design/icons';
+import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 
 const { Header } = Layout;
 
-const AppHeader: React.FC = () => {
+interface AppHeaderProps extends React.PropsWithChildren {
+  toggleMenu?: () => void;
+}
+
+const AppHeader: React.FC<AppHeaderProps> = ({ toggleMenu, children }) => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+
+  const { md } = useBreakpoint();
 
   return (
     <>
@@ -28,8 +35,15 @@ const AppHeader: React.FC = () => {
           borderBottom: '1px solid rgba(5, 5, 5, 0.06)',
         }}
       >
-        <Logo />
-        <UserHeader />
+        <Space
+          align="center"
+          size="middle"
+          style={{ paddingLeft: !md ? '0' : '6px' }}
+        >
+          {md && <Button icon={<AppstoreOutlined />} onClick={toggleMenu} />}
+          <Logo />
+        </Space>
+        {children}
       </Header>
     </>
   );

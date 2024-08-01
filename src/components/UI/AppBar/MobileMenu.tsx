@@ -1,9 +1,9 @@
 import { Button, Drawer } from 'antd';
-import { MenuFoldOutlined } from '@ant-design/icons';
+import { AppstoreOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
 import UserMenu from '../../UserMenu/UserMenu';
 import { User } from '../../../types/types.user';
-import UserTitle from './UserTitle';
+import UserTitle from '../UserTitle/UserTitle';
 import AdminMenu from '../../UserMenu/AdminMenu';
 
 interface Props {
@@ -23,7 +23,7 @@ const MobileMenu: React.FC<Props> = ({ user }) => {
 
   return (
     <>
-      <Button icon={<MenuFoldOutlined />} onClick={handleOpen} />
+      <Button icon={<AppstoreOutlined />} onClick={handleOpen} />
 
       <Drawer
         title="Time Trackr"
