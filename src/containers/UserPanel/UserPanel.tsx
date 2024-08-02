@@ -4,8 +4,8 @@ import { Outlet } from 'react-router-dom';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import UserMenu from '../../components/UserMenu/UserMenu';
 import Sider from 'antd/es/layout/Sider';
-import AppHeader from '../../components/Header/AppHeader';
 import UserHeader from '../../components/Header/UserHeader/UserHeader';
+import AppHeader from '../../components/Header/AppHeader';
 
 const { Content } = Layout;
 
@@ -18,8 +18,8 @@ const UserPanel: React.FC<Props> = () => {
   return (
     <>
       <Layout style={{ minHeight: '100vh', background: 'white' }}>
-        <AppHeader toggleMenu={() => setCollapsed(!collapsed)}>
-          <UserHeader />
+        <AppHeader>
+          <UserHeader toggleMenu={() => setCollapsed(!collapsed)} />
         </AppHeader>
         <Layout
           style={{
