@@ -11,7 +11,7 @@ interface Props {
 }
 
 const UserTitle: React.FC<Props> = ({ user }) => {
-  const { md } = useBreakpoint();
+  const { md, lg } = useBreakpoint();
 
   return (
     <Flex align="center" justify={!md ? 'flex-start' : 'flex-end'} gap={10}>
@@ -23,12 +23,18 @@ const UserTitle: React.FC<Props> = ({ user }) => {
           alignItems: !md ? 'flex-start' : 'flex-end',
         }}
       >
-        <Text style={{ fontWeight: 'bold' }}>
-          {user.firstname + ' ' + user.lastname}
-        </Text>
-        <Text style={{ fontSize: '12px', color: 'gray' }}>
-          {user.position.name}
-        </Text>
+        {md && !lg ? (
+          <></>
+        ) : (
+          <>
+            <Text style={{ fontWeight: 'bold' }}>
+              {user.firstname + ' ' + user.lastname}
+            </Text>
+            <Text style={{ fontSize: '12px', color: 'gray' }}>
+              {user.position.name}
+            </Text>
+          </>
+        )}
       </div>
       {<AvatarPic user={user} />}
     </Flex>

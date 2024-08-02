@@ -52,6 +52,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
     display: collapsed ? 'flex' : 'list-item',
     width: collapsed ? '50px' : 'auto',
     border: '1px solid rgba(5, 5, 5, 0.06)',
+    borderRadius: '12px',
   };
 
   const items: MenuItem[] = [
@@ -92,7 +93,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
       key: appRoutes.employee.teams,
       label: 'Команды',
       icon: (
-        <RocketTwoTone style={{ fontSize: '18px' }} twoToneColor="#3947ce" />
+        <RocketTwoTone style={{ fontSize: '18px' }} twoToneColor="#FABB18" />
       ),
       style: {
         ...itemStyle,
@@ -135,7 +136,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
     {
       key: appRoutes.employee.projects,
       label: 'Проекты',
-      icon: <StarTwoTone style={{ fontSize: '18px' }} twoToneColor="#3947ce" />,
+      icon: <StarTwoTone style={{ fontSize: '18px' }} twoToneColor="#FABB18" />,
       onClick: () => handleNavigate(appRoutes.employee.projects),
       style: {
         ...itemStyle,
@@ -216,6 +217,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
             background: '#FFF8E8',
             borderRadius: '8px',
             marginLeft: 'auto',
+            color: '#3947ce',
           }}
         >
           {isOpen ? <MinusOutlined /> : <PlusOutlined />}

@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import UserMenu from '../../UserMenu/UserMenu';
 import { User } from '../../../types/types.user';
 import UserTitle from '../UserTitle/UserTitle';
-import AdminMenu from '../../UserMenu/AdminMenu';
 
 interface Props {
   user: User;
@@ -12,7 +11,8 @@ interface Props {
 
 const MobileMenu: React.FC<Props> = ({ user }) => {
   const [open, setOpen] = useState(false);
-  const isAdmin = user.role === 'admin';
+
+  // const isAdmin = user.role === 'admin';
   const handleOpen = () => {
     setOpen(true);
   };
@@ -34,12 +34,7 @@ const MobileMenu: React.FC<Props> = ({ user }) => {
         <div style={{ marginBottom: '30px', paddingLeft: 20 }}>
           <UserTitle user={user} />
         </div>
-
-        {isAdmin ? (
-          <AdminMenu handleMobile={handleClose} />
-        ) : (
-          <UserMenu handleMobile={handleClose} />
-        )}
+        <UserMenu handleMobile={handleClose} />
       </Drawer>
     </>
   );
