@@ -7,7 +7,8 @@ import { useAppDispatch } from '../../../store/hooks/hooks';
 import { logOut } from '../../../store/users/UsersThunks';
 import { appRoutes } from '../../../services/routes.service';
 import { useNavigate } from 'react-router-dom';
-import { BellFilled } from '@ant-design/icons';
+import { BellFilled, LogoutOutlined, UserOutlined } from '@ant-design/icons';
+import './index.css';
 
 const { Text } = Typography;
 
@@ -26,13 +27,13 @@ const UserTitle: React.FC<Props> = ({ user }) => {
   };
 
   const listStyle: CSSProperties = {
-    width: '260px',
     padding: '10px',
+    border: '1px solid rgba(5, 5, 5, 0.03)',
   };
 
   const iconStyle: CSSProperties = {
     background: '#F5F5F5',
-    padding: '10px',
+    padding: '5px',
     width: '20px',
     height: '20px',
     borderRadius: '50%',
@@ -55,23 +56,13 @@ const UserTitle: React.FC<Props> = ({ user }) => {
           <Badge count={5} style={{ backgroundColor: '#52c41a' }} />
         </Flex>
       ),
-      style: listStyle,
-    },
-    {
-      key: 'dashboard',
-      label: (
-        <Flex align="center" justify="space-between">
-          <Space>
-            <div style={iconStyle}>
-              <BellFilled />
-            </div>
-            <Text style={{ flexGrow: 1 }}>Дашбоард</Text>
-          </Space>
-          <Badge count={5} style={{ backgroundColor: '#52c41a' }} />
-        </Flex>
-      ),
-      onClick: () => navigate(appRoutes.employee.dashboard),
-      style: listStyle,
+      style: {
+        ...listStyle,
+        gridColumnStart: 1,
+        gridColumnEnd: 3,
+        gridRowStart: 1,
+        gridRowEnd: 3,
+      },
     },
     {
       key: 'profile',
@@ -79,18 +70,14 @@ const UserTitle: React.FC<Props> = ({ user }) => {
         <Flex align="center" justify="space-between">
           <Space>
             <div style={iconStyle}>
-              <BellFilled />
+              <UserOutlined />
             </div>
-            <Text style={{ flexGrow: 1 }}>Профиль</Text>
+            Профиль
           </Space>
-          <Badge count={5} style={{ backgroundColor: '#52c41a' }} />
         </Flex>
       ),
       onClick: () => navigate(appRoutes.employee.account),
       style: listStyle,
-    },
-    {
-      type: 'divider',
     },
     {
       key: 'exit',
@@ -98,21 +85,28 @@ const UserTitle: React.FC<Props> = ({ user }) => {
       label: (
         <Flex align="center" justify="space-between">
           <Space>
-            <div style={iconStyle}>
-              <BellFilled />
+            <div style={{ ...iconStyle, background: 'none' }}>
+              <LogoutOutlined />
             </div>
-            <Text style={{ flexGrow: 1 }}>Выйти</Text>
+            Выйти
           </Space>
-          <Badge count={5} style={{ backgroundColor: '#52c41a' }} />
         </Flex>
       ),
       onClick: logOutUser,
-      style: listStyle,
+      style: {
+        ...listStyle,
+        borderColor: '#fff2f2',
+      },
     },
   ];
 
   return (
-    <Flex align="center" justify={!md ? 'flex-start' : 'flex-end'} gap={10}>
+    <Flex
+      className="user-title"
+      align="center"
+      justify={!md ? 'flex-start' : 'flex-end'}
+      gap={10}
+    >
       <div
         style={{
           display: !lg ? 'block' : 'flex',
@@ -134,7 +128,13 @@ const UserTitle: React.FC<Props> = ({ user }) => {
           </>
         )}
       </div>
-      <Dropdown menu={{ items }} placement="bottomRight" arrow>
+      <Dropdown
+        overlayStyle={{ top: '80px' }}
+        overlayClassName="styled-dropdown"
+        menu={{ items }}
+        placement="bottomRight"
+        arrow
+      >
         <div>
           <AvatarPic user={user} />
         </div>

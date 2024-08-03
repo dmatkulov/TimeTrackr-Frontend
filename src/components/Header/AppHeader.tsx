@@ -26,6 +26,7 @@ const AppHeader: React.FC<Props> = ({ children }) => {
           flexDirection: 'row',
           justifyContent: 'space-between',
           borderBottom: '1px solid rgba(5, 5, 5, 0.06)',
+          gap: '40px',
         }}
       >
         {children}

@@ -7,6 +7,7 @@ import {
   DashboardOutlined,
   FileFilled,
   FileOutlined,
+  GlobalOutlined,
   LogoutOutlined,
   MinusOutlined,
   PlusCircleOutlined,
@@ -17,7 +18,7 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import { useAppDispatch } from '../../store/hooks/hooks';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { logOut } from '../../store/users/UsersThunks';
 import { appRoutes } from '../../services/routes.service';
 import './index.css';
@@ -32,6 +33,7 @@ interface Props {
 const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const logOutUser = async () => {
     await dispatch(logOut());
@@ -186,6 +188,12 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
       },
     },
     {
+      key: 'home',
+      label: 'Посетить сайт',
+      icon: <GlobalOutlined />,
+      onClick: () => handleNavigate(appRoutes.home),
+    },
+    {
       key: 'logout',
       label: 'Выйти',
       icon: <LogoutOutlined />,
@@ -200,6 +208,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
     setOpenKeys(keys);
   };
 
+  console.log(activeKey);
   return (
     <Menu
       defaultSelectedKeys={[activeKey]}

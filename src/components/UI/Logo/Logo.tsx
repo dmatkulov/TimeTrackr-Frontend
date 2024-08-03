@@ -1,10 +1,13 @@
 import React from 'react';
-import { appRoutes } from '../../../services/routes.service';
 import { Flex, Typography } from 'antd';
 import logo from '../../../assets/logo/TT-logo.svg';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 
-const Logo: React.FC = () => {
+interface Props {
+  link?: string;
+}
+
+const Logo: React.FC<Props> = ({ link }) => {
   const { md } = useBreakpoint();
   return (
     <Flex align="center" justify="flex-start">
@@ -26,7 +29,7 @@ const Logo: React.FC = () => {
         </div>
       )}
       <Typography.Link
-        href={appRoutes.home}
+        href={link}
         style={{
           color: '#172C3F',
           fontSize: '18px',
