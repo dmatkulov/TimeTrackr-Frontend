@@ -11,7 +11,7 @@ import {
   QuestionCircleOutlined,
 } from '@ant-design/icons';
 import { formatPhoneNumber } from '../../services/formatPhoneNumber.service';
-import { deleteUser } from '../../store/users/UsersThunks';
+import { deleteUser, getOneUser } from '../../store/users/UsersThunks';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hooks';
 import { useNavigate } from 'react-router-dom';
@@ -43,7 +43,8 @@ const UserProfile: React.FC<Props> = ({ user }) => {
     setOpen(false);
   };
 
-  const handleOpen = () => {
+  const handleOpen = async () => {
+    await dispatch(getOneUser(user._id));
     setOpen(true);
   };
 
@@ -64,7 +65,7 @@ const UserProfile: React.FC<Props> = ({ user }) => {
     [dispatch],
   );
 
-  console.log(user);
+  console.log('current user', user);
 
   return (
     <>
@@ -123,6 +124,7 @@ const UserProfile: React.FC<Props> = ({ user }) => {
             borderRadius: 20,
             background: '#fff',
             padding: '20px 30px',
+            flexBasis: !sm ? 'auto' : '360px',
           }}
         >
           <Title style={{ margin: '0 0 15px 0' }} level={3}>
@@ -173,7 +175,7 @@ const UserProfile: React.FC<Props> = ({ user }) => {
           </Button>
         </Popconfirm>
       )}
-      <UserUpdate employee={user} open={open} onClose={handleClose} />
+      <UserUpdate user={user} open={open} onClose={handleClose} />
     </>
   );
 };

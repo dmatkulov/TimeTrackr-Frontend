@@ -22,11 +22,11 @@ export const appRoutes = {
 };
 
 export const apiRoutes = {
-  users: 'auth',
+  users: 'staff',
   google: appRoutes.auth + '/google',
   sessions: appRoutes.auth + '/sessions',
-  userInfo: 'auth/info/',
-  newUser: 'auth/register-user',
+  userInfo: 'staff/info/',
+  newUser: 'staff/register-user',
   positions: 'positions',
   newPosition: 'positions/new-position',
   positionById: 'positions/info/',

@@ -10,34 +10,34 @@ import { appRoutes } from '../../services/routes.service';
 interface Props {
   open: boolean;
   onClose: () => void;
-  employee: User;
+  user: User;
   isGoogleUser?: boolean;
 }
 
 const UserUpdate: React.FC<Props> = ({
   open,
   onClose,
-  employee,
+  user,
   isGoogleUser = false,
 }) => {
   const dispatch = useAppDispatch();
   const updating = useAppSelector(selectUserUpdateLoading);
 
-  if (!employee) {
+  if (!user) {
     return <Navigate to={appRoutes.notFound} />;
   }
 
   const handleSubmit = async (state: UserMutation) => {
-    if (employee) {
-      await dispatch(updateUser({ id: employee._id, mutation: state }));
+    if (user) {
+      await dispatch(updateUser({ id: user._id, mutation: state }));
     }
   };
 
   let form;
-  if (employee) {
+  if (user) {
     const mutation: UserMutation = {
-      ...employee,
-      position: employee.position._id,
+      ...user,
+      position: user.position._id,
       photo: null,
     };
     form = (
@@ -48,7 +48,7 @@ const UserUpdate: React.FC<Props> = ({
         open={open}
         onClose={onClose}
         loading={updating}
-        existingImage={employee.photo}
+        existingImage={user.photo}
         isEdit
       />
     );

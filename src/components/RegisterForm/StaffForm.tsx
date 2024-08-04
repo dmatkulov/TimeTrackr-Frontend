@@ -56,6 +56,7 @@ const StaffForm: React.FC<Props> = ({
   useEffect(() => {
     if (existingUser) {
       setState(existingUser);
+      form.setFieldsValue(existingUser);
     }
   }, [existingUser, form]);
 
@@ -63,6 +64,7 @@ const StaffForm: React.FC<Props> = ({
     dispatch(fetchPositions());
   }, [dispatch]);
 
+  console.log('state', state);
   const onFinish = async () => {
     try {
       onSubmit({
@@ -244,7 +246,7 @@ const StaffForm: React.FC<Props> = ({
           <Col xs={{ span: 24 }} md={{ span: 12 }}>
             <Form.Item
               label="Телефон"
-              name={['contactInfo', 'mobile']}
+              name="phoneNumber"
               rules={[
                 {
                   validator: (_, value) => {

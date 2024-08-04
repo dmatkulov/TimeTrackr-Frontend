@@ -97,7 +97,11 @@ export const usersSlice = createSlice({
       })
       .addCase(getOneUser.fulfilled, (state, { payload: data }) => {
         state.fetchOneLoading = false;
-        state.staff = data;
+        if (state.user?.role === Roles.Admin) {
+          state.staff = data;
+        } else if (state.user?.role === Roles.User) {
+          state.user = data;
+        }
       })
       .addCase(getOneUser.rejected, (state) => {
         state.fetchOneLoading = false;
