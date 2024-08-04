@@ -208,7 +208,6 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
     setOpenKeys(keys);
   };
 
-  console.log(activeKey);
   return (
     <Menu
       defaultSelectedKeys={[activeKey]}

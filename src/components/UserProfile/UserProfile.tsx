@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
 import { Button, Flex, Popconfirm, Space, Tag, Typography } from 'antd';
-import { User } from '../../types/types.user';
+import { User, UserMutation } from '../../types/types.user';
 import {
   CameraFilled,
   DeleteOutlined,
@@ -11,18 +11,23 @@ import {
   QuestionCircleOutlined,
 } from '@ant-design/icons';
 import { formatPhoneNumber } from '../../services/formatPhoneNumber.service';
-import { deleteUser, getOneUser } from '../../store/users/UsersThunks';
+import {
+  deleteUser,
+  getOneUser,
+  updateUser,
+} from '../../store/users/UsersThunks';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hooks';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../services/routes.service';
 import {
   selectDeleteUserLoading,
   selectUser,
+  selectUserUpdateLoading,
 } from '../../store/users/UsersSlice';
-import UserUpdate from '../../containers/UserUpdate/UserUpdate';
 import { getPhotoUrl } from '../../services/photoURL.service';
 import { Roles } from '../../enum/roles.enum';
+import UserForm from '../RegisterForm/UserForm';
 
 dayjs.locale('ru');
 
@@ -37,8 +42,15 @@ const UserProfile: React.FC<Props> = ({ user }) => {
   const currentUser = useAppSelector(selectUser);
   const navigate = useNavigate();
   const deleteLoading = useAppSelector(selectDeleteUserLoading);
+  const updating = useAppSelector(selectUserUpdateLoading);
+
+  const { sm, lg } = useBreakpoint();
+  const photo = getPhotoUrl(user);
+  let phone;
+  let form;
 
   const [open, setOpen] = useState(false);
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -48,14 +60,11 @@ const UserProfile: React.FC<Props> = ({ user }) => {
     setOpen(true);
   };
 
-  const { sm, lg } = useBreakpoint();
-
-  const photo = getPhotoUrl(user);
-
-  let phone;
-  if (user.phoneNumber) {
-    phone = formatPhoneNumber(user.phoneNumber);
-  }
+  const handleSubmit = async (state: UserMutation) => {
+    if (user) {
+      await dispatch(updateUser({ id: user._id, mutation: state }));
+    }
+  };
 
   const handleDelete = useCallback(
     async (id: string) => {
@@ -65,7 +74,31 @@ const UserProfile: React.FC<Props> = ({ user }) => {
     [dispatch],
   );
 
-  console.log('current user', user);
+  if (!user) {
+    return <Navigate to={appRoutes.notFound} />;
+  } else if (user) {
+    const mutation: UserMutation = {
+      ...user,
+      position: user.position._id,
+      phoneNumber: user.phoneNumber,
+      photo: null,
+    };
+    form = (
+      <UserForm
+        onSubmit={handleSubmit}
+        existingUser={mutation}
+        open={open}
+        onClose={handleClose}
+        loading={updating}
+        existingImage={user.photo}
+        isEdit
+      />
+    );
+  }
+
+  if (user.phoneNumber) {
+    phone = formatPhoneNumber(user.phoneNumber);
+  }
 
   return (
     <>
@@ -124,7 +157,7 @@ const UserProfile: React.FC<Props> = ({ user }) => {
             borderRadius: 20,
             background: '#fff',
             padding: '20px 30px',
-            flexBasis: !sm ? 'auto' : '360px',
+            flexBasis: !sm ? 'auto' : '400px',
           }}
         >
           <Title style={{ margin: '0 0 15px 0' }} level={3}>
@@ -175,7 +208,8 @@ const UserProfile: React.FC<Props> = ({ user }) => {
           </Button>
         </Popconfirm>
       )}
-      <UserUpdate user={user} open={open} onClose={handleClose} />
+
+      {form}
     </>
   );
 };

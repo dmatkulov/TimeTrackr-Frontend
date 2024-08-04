@@ -133,7 +133,7 @@ export const login = createAsyncThunk<
 export const updateUser = createAsyncThunk<
   LoginResponse,
   UpdateUserArg,
-  { rejectValue: GlobalMessage }
+  { rejectValue: ValidationError }
 >('users/updateOne', async ({ id, mutation }, { rejectWithValue }) => {
   try {
     const formData = new FormData();
@@ -156,13 +156,11 @@ export const updateUser = createAsyncThunk<
   } catch (e) {
     if (
       isAxiosError(e) &&
-      e.response?.status === 400 &&
+      e.response?.status === 422 &&
       e.response?.data.message
     ) {
       return rejectWithValue(e.response.data);
     }
-
-    console.log(e);
     throw e;
   }
 });

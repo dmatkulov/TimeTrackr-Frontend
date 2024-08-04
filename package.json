@@ -17,6 +17,7 @@
     "@react-oauth/google": "^0.12.1",
     "@reduxjs/toolkit": "^2.2.3",
     "antd": "^5.17.2",
+    "antd-mask-input": "^2.0.7",
     "antd-style": "^3.6.2",
     "axios": "^1.6.8",
     "dayjs": "^1.11.11",

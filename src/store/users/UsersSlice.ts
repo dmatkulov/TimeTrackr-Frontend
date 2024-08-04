@@ -26,6 +26,7 @@ interface UsersState {
   fetchAllLoading: boolean;
   fetchOneLoading: boolean;
   updateLoading: boolean;
+  updateError: ValidationError | null;
   deleteLoading: boolean;
 }
 
@@ -41,6 +42,7 @@ const initialState: UsersState = {
   fetchAllLoading: false,
   fetchOneLoading: false,
   updateLoading: false,
+  updateError: null,
   deleteLoading: false,
 };
 
@@ -53,6 +55,9 @@ export const usersSlice = createSlice({
     },
     unsetError: (state) => {
       state.registerError = null;
+    },
+    unsetUpdateError: (state) => {
+      state.updateError = null;
     },
   },
   extraReducers: (builder) => {
@@ -88,7 +93,6 @@ export const usersSlice = createSlice({
         if (error) {
           state.registerError = error;
         }
-        console.log('state.registerError ', state.registerError);
       });
 
     builder
@@ -147,11 +151,15 @@ export const usersSlice = createSlice({
         } else if (state.user?.role === Roles.User) {
           state.user = data.user;
         }
+
+        state.updateError = null;
         void message.success(data.message);
       })
       .addCase(updateUser.rejected, (state, { payload: error }) => {
         state.updateLoading = false;
-        void message.error(error?.message);
+        if (error) {
+          state.updateError = error;
+        }
       });
 
     builder
@@ -169,7 +177,7 @@ export const usersSlice = createSlice({
 });
 
 export const usersReducer = usersSlice.reducer;
-export const { unsetUser, unsetError } = usersSlice.actions;
+export const { unsetUser, unsetError, unsetUpdateError } = usersSlice.actions;
 
 export const selectUser = (state: RootState) => state.users.user;
 export const selectStaff = (state: RootState) => state.users.staffAll;
@@ -192,3 +200,5 @@ export const selectDeleteUserLoading = (state: RootState) =>
 
 export const selectRegisterError = (state: RootState) =>
   state.users.registerError;
+
+export const selectUpdateError = (state: RootState) => state.users.updateError;
