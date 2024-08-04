@@ -27,9 +27,7 @@ export const register = createAsyncThunk<
     formData.append('email', mutation.email);
     formData.append('firstname', mutation.firstname);
     formData.append('lastname', mutation.lastname);
-    formData.append('contactInfo[mobile]', mutation.contactInfo.mobile);
-    formData.append('contactInfo[city]', mutation.contactInfo.city);
-    formData.append('contactInfo[street]', mutation.contactInfo.street);
+    formData.append('phoneNumber', mutation.phoneNumber);
 
     if (mutation.password) {
       formData.append('password', mutation.password);
@@ -144,12 +142,7 @@ export const updateUser = createAsyncThunk<
     formData.append('firstname', mutation.firstname);
     formData.append('lastname', mutation.lastname);
     formData.append('position', mutation.position);
-    if (mutation.contactInfo) {
-      formData.append('contactInfo[mobile]', mutation.contactInfo.mobile);
-      formData.append('contactInfo[city]', mutation.contactInfo.city);
-      formData.append('contactInfo[street]', mutation.contactInfo.street);
-    }
-    formData.append('startDate', mutation.startDate);
+    formData.append('phoneNumber', mutation.phoneNumber);
 
     if (mutation.photo) {
       formData.append('photo', mutation.photo);

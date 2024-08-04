@@ -1,50 +1,28 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import {
-  Button,
-  Col,
-  DatePicker,
-  Divider,
-  Drawer,
-  Form,
-  Input,
-  Row,
-  Select,
-} from 'antd';
+import { Button, Col, Drawer, Form, Input, Row, Select } from 'antd';
 import buddhistEra from 'dayjs/plugin/buddhistEra';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 
-import { ContactInfo, UserMutation } from '../../types/types.user';
+import { UserMutation } from '../../types/types.user';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hooks';
 import { fetchPositions } from '../../store/positions/positionsThunks';
 import { selectPositions } from '../../store/positions/positionsSlice';
-import ContactsPhoneInput from '../FormInputGroups/ContactsPhoneInput';
 import FileInput from '../FormInputGroups/FileInput';
-import PasswordInput from '../FormInputGroups/PasswordInputGroup';
-import {
-  buddhistLocale,
-  formattedDay,
-} from '../../services/formattedTime.service';
+import PhoneInput from 'react-phone-input-2';
 
 dayjs.extend(buddhistEra);
 dayjs.extend(utc);
 dayjs.extend(timezone);
-
-const contactsState: ContactInfo = {
-  mobile: '',
-  city: '',
-  street: '',
-};
 
 const initialState: UserMutation = {
   email: '',
   firstname: '',
   lastname: '',
   position: '',
-  contactInfo: contactsState,
+  phoneNumber: '',
   password: '',
-  startDate: formattedDay(new Date()),
   photo: null,
 };
 
@@ -78,11 +56,6 @@ const StaffForm: React.FC<Props> = ({
   useEffect(() => {
     if (existingUser) {
       setState(existingUser);
-
-      form.setFieldsValue({
-        ...existingUser,
-        startDate: dayjs(existingUser.startDate),
-      });
     }
   }, [existingUser, form]);
 
@@ -107,10 +80,7 @@ const StaffForm: React.FC<Props> = ({
     setState((prevState) => {
       return {
         ...prevState,
-        contactInfo: {
-          ...prevState.contactInfo,
-          mobile: value,
-        },
+        phoneNumber: value,
       };
     });
   };
@@ -121,24 +91,12 @@ const StaffForm: React.FC<Props> = ({
     onClose();
   };
 
-  const contactInfo = Object.keys(contactsState);
   const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
     setState((prevState) => {
       return { ...prevState, [name]: value };
     });
-
-    if (contactInfo.includes(name)) {
-      setState((prevState) => ({
-        ...prevState,
-        [name]: value,
-        contactInfo: {
-          ...prevState.contactInfo,
-          [name]: value,
-        },
-      }));
-    }
   };
 
   const deletePhoto = () => {
@@ -200,6 +158,7 @@ const StaffForm: React.FC<Props> = ({
               />
             </Form.Item>
           </Col>
+
           <Col xs={{ span: 24 }} md={{ span: 12 }}>
             <Form.Item
               label="Фамилия"
@@ -282,70 +241,43 @@ const StaffForm: React.FC<Props> = ({
           </Col>
         </Row>
         <Row gutter={16}>
-          <ContactsPhoneInput state={state} onPhoneChange={handlePhoneChange} />
-          <Col xs={{ span: 24 }} md={{ span: 8 }}>
-            <Form.Item label="Город" name={['contactInfo', 'city']}>
-              <Input
-                name="city"
-                id={isEdit ? 'cityUpd' : 'city'}
-                value={state.contactInfo?.city}
-                onChange={inputChangeHandler}
-                placeholder="Город проживания"
-              />
-            </Form.Item>
-          </Col>
-          <Col xs={{ span: 24 }} md={{ span: 8 }}>
-            <Form.Item label="Улица" name={['contactInfo', 'street']}>
-              <Input
-                name="street"
-                id={isEdit ? 'streetUpd' : 'street'}
-                onChange={inputChangeHandler}
-                value={state.contactInfo?.street}
-                placeholder="Улица"
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row gutter={16}>
-          <Col xs={{ span: 24 }} md={{ span: 8 }}>
+          <Col xs={{ span: 24 }} md={{ span: 12 }}>
             <Form.Item
-              label="Дата начала работы"
-              name="startDate"
+              label="Телефон"
+              name={['contactInfo', 'mobile']}
               rules={[
                 {
-                  type: 'object' as const,
-                  required: true,
-                  message: 'Введите дату',
+                  validator: (_, value) => {
+                    if (value && value.length > 3 && value.length !== 12) {
+                      return Promise.reject('Введите номер полностью');
+                    }
+                    return Promise.resolve();
+                  },
                 },
               ]}
             >
-              <DatePicker
-                allowClear={false}
-                name="startDate"
-                id={isEdit ? 'startDateUpd' : 'startDate'}
-                style={{ width: '100%' }}
-                value={state.startDate}
-                onChange={(_date, dateString) => {
-                  if (typeof dateString === 'string') {
-                    setState((prevState) => {
-                      return {
-                        ...prevState,
-                        startDate: new Date(dateString).toISOString(),
-                      };
-                    });
-                  }
+              <PhoneInput
+                country="kg"
+                masks={{ kg: '(...) ..-..-..' }}
+                onlyCountries={['kg']}
+                containerStyle={{ width: '100%', height: '32px' }}
+                disableDropdown
+                countryCodeEditable={false}
+                value={state.phoneNumber}
+                onChange={handlePhoneChange}
+                // inputClass="ant-input css-dev-only-do-not-override-1r287do ant-input-outlined"
+                inputStyle={{
+                  width: '100%',
+                  height: '100%',
                 }}
-                locale={buddhistLocale}
+                inputProps={{
+                  name: 'phoneNumber',
+                  required: true,
+                }}
               />
             </Form.Item>
           </Col>
-          {!isEdit && (
-            <PasswordInput state={state} onChange={inputChangeHandler} />
-          )}
-        </Row>
-        <Divider style={{ marginTop: 16 }} />
-        <Row gutter={16} style={{ justifyContent: 'flex-end' }}>
-          <Col xs={{ span: 24 }} md={{ span: 8 }}>
+          <Col xs={{ span: 24 }} md={{ span: 12 }}>
             <Button
               htmlType="submit"
               type="primary"
@@ -356,6 +288,7 @@ const StaffForm: React.FC<Props> = ({
             </Button>
           </Col>
         </Row>
+        <Row gutter={16} style={{ justifyContent: 'flex-end' }}></Row>
       </Form>
     </Drawer>
   );

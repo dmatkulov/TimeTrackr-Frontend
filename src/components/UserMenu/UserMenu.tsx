@@ -59,40 +59,40 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
 
   const items: MenuItem[] = [
     {
-      key: appRoutes.employee.dashboard,
+      key: appRoutes.user.dashboard,
       label: 'Дашбоард',
       icon:
-        activeKey === appRoutes.employee.dashboard ? (
+        activeKey === appRoutes.user.dashboard ? (
           <DashboardFilled style={{ fontSize: '18px' }} />
         ) : (
           <DashboardOutlined style={{ fontSize: '18px' }} />
         ),
-      onClick: () => handleNavigate(appRoutes.employee.dashboard),
+      onClick: () => handleNavigate(appRoutes.user.dashboard),
     },
     {
-      key: appRoutes.employee.notes,
+      key: appRoutes.user.notes,
       label: 'Мои заметки',
       icon:
-        activeKey === appRoutes.employee.notes ? (
+        activeKey === appRoutes.user.notes ? (
           <FileFilled style={{ fontSize: '18px' }} />
         ) : (
           <FileOutlined style={{ fontSize: '18px' }} />
         ),
-      onClick: () => handleNavigate(appRoutes.employee.notes),
+      onClick: () => handleNavigate(appRoutes.user.notes),
     },
     {
-      key: appRoutes.employee.calendar,
+      key: appRoutes.user.calendar,
       label: 'Календарь',
       icon:
-        activeKey === appRoutes.employee.calendar ? (
+        activeKey === appRoutes.user.calendar ? (
           <CalendarFilled style={{ fontSize: '18px' }} />
         ) : (
           <CalendarOutlined style={{ fontSize: '18px' }} />
         ),
-      onClick: () => handleNavigate(appRoutes.employee.calendar),
+      onClick: () => handleNavigate(appRoutes.user.calendar),
     },
     {
-      key: appRoutes.employee.teams,
+      key: appRoutes.user.teams,
       label: 'Команды',
       icon: (
         <RocketTwoTone style={{ fontSize: '18px' }} twoToneColor="#FABB18" />
@@ -117,7 +117,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
         {
           key: 'allTeams',
           label: 'Все команды',
-          onClick: () => handleNavigate(appRoutes.employee.teams),
+          onClick: () => handleNavigate(appRoutes.user.teams),
         },
         {
           key: 'addTeam',
@@ -136,10 +136,10 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
       ],
     },
     {
-      key: appRoutes.employee.projects,
+      key: appRoutes.user.projects,
       label: 'Проекты',
       icon: <StarTwoTone style={{ fontSize: '18px' }} twoToneColor="#FABB18" />,
-      onClick: () => handleNavigate(appRoutes.employee.projects),
+      onClick: () => handleNavigate(appRoutes.user.projects),
       style: {
         ...itemStyle,
         marginTop: '10px',
@@ -160,7 +160,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
         {
           key: 'allProjects',
           label: 'Все проекты',
-          onClick: () => handleNavigate(appRoutes.employee.teams),
+          onClick: () => handleNavigate(appRoutes.user.teams),
         },
         {
           key: 'addProject',
@@ -182,7 +182,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
       key: 'profile',
       label: 'Профиль',
       icon: <UserOutlined />,
-      onClick: () => handleNavigate(appRoutes.employee.account),
+      onClick: () => handleNavigate(appRoutes.user.account),
       style: {
         marginTop: 'auto',
       },

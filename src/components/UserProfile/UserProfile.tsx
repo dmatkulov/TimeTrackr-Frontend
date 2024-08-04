@@ -1,24 +1,13 @@
 import React, { useCallback, useState } from 'react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
-import {
-  Button,
-  Col,
-  Divider,
-  Flex,
-  Popconfirm,
-  Row,
-  Space,
-  Tag,
-  Typography,
-} from 'antd';
+import { Button, Flex, Popconfirm, Space, Tag, Typography } from 'antd';
 import { User } from '../../types/types.user';
 import {
+  CameraFilled,
   DeleteOutlined,
-  EditOutlined,
   MailOutlined,
   PhoneOutlined,
-  PushpinOutlined,
   QuestionCircleOutlined,
 } from '@ant-design/icons';
 import { formatPhoneNumber } from '../../services/formatPhoneNumber.service';
@@ -33,22 +22,21 @@ import {
 } from '../../store/users/UsersSlice';
 import UserUpdate from '../../containers/UserUpdate/UserUpdate';
 import { getPhotoUrl } from '../../services/photoURL.service';
+import { Roles } from '../../enum/roles.enum';
 
 dayjs.locale('ru');
 
 const { Title, Text } = Typography;
 
 interface Props {
-  employee: User;
+  user: User;
 }
 
-const UserProfile: React.FC<Props> = ({ employee }) => {
+const UserProfile: React.FC<Props> = ({ user }) => {
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector(selectUser);
   const navigate = useNavigate();
   const deleteLoading = useAppSelector(selectDeleteUserLoading);
-
-  const isGoogleUser = employee.isGoogleUser;
 
   const [open, setOpen] = useState(false);
   const handleClose = () => {
@@ -61,16 +49,11 @@ const UserProfile: React.FC<Props> = ({ employee }) => {
 
   const { sm, lg } = useBreakpoint();
 
-  const photo = getPhotoUrl(employee);
-
-  const startDate = dayjs(employee.startDate).format('DD MMMM, YYYY');
-
-  const city = employee.contactInfo.city || null;
-  const street = employee.contactInfo.street || null;
+  const photo = getPhotoUrl(user);
 
   let phone;
-  if (employee.contactInfo.mobile) {
-    phone = formatPhoneNumber(employee.contactInfo.mobile);
+  if (user.phoneNumber) {
+    phone = formatPhoneNumber(user.phoneNumber);
   }
 
   const handleDelete = useCallback(
@@ -81,56 +64,82 @@ const UserProfile: React.FC<Props> = ({ employee }) => {
     [dispatch],
   );
 
+  console.log(user);
+
   return (
     <>
-      <Row gutter={44} style={{ paddingTop: 20 }}>
-        <Col>
+      <div
+        style={{
+          display: 'flex',
+          gap: '20px',
+          justifyContent: 'center',
+          flexDirection: !sm ? 'column' : 'row',
+          alignItems: 'stretch',
+          marginTop: '30px',
+        }}
+      >
+        <div
+          style={{
+            borderRadius: 20,
+            background: '#fff',
+            padding: '20px',
+          }}
+        >
           <div
             style={{
-              width: '100%',
-              height: '200px',
-              overflow: 'hidden',
-              borderRadius: 12,
-              marginBottom: 30,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              height: '100%',
+              gap: 10,
             }}
           >
-            <img
-              src={photo}
-              alt={employee.lastname}
+            <div
               style={{
-                height: '100%',
-                objectFit: 'cover',
-                borderRadius: '50%',
+                width: '150px',
+                height: '150px',
+                overflow: 'hidden',
               }}
-            />
+            >
+              <img
+                src={photo}
+                alt={user.lastname}
+                style={{
+                  height: '100%',
+                  width: '100%',
+                  objectFit: 'cover',
+                  borderRadius: '50%',
+                }}
+              />
+            </div>
+            <Button type="primary" icon={<CameraFilled />}>
+              Новое фото
+            </Button>
           </div>
-        </Col>
-        <Col>
-          <Title style={{ margin: '0 0 25px 0' }} level={3}>
-            {employee.lastname} {employee.firstname}
+        </div>
+        <div
+          style={{
+            borderRadius: 20,
+            background: '#fff',
+            padding: '20px 30px',
+          }}
+        >
+          <Title style={{ margin: '0 0 15px 0' }} level={3}>
+            {user.lastname} {user.firstname}
           </Title>
-          <Flex vertical align="flex-start" gap={12}>
-            <Space>
-              <Text style={{ fontWeight: 'bolder' }}>Позиция: </Text>
-              <Tag color={employee.position.tag}>{employee.position.name}</Tag>
-            </Space>
-            <Space>
-              <Text style={{ fontWeight: 'bolder' }}>Начало работы: </Text>
-              <Text>{startDate}</Text>
-            </Space>
-          </Flex>
-          <Divider dashed />
+          <Tag color={user.position.tag}>{user.position.name}</Tag>
           <Flex
             vertical
             align="flex-start"
             gap={12}
-            style={{ marginBottom: 30 }}
+            style={{ margin: '30px 0' }}
           >
             <Text style={{ fontWeight: 'bolder' }}>Контакты</Text>
             <Flex align="center" gap={!lg ? 12 : 20} wrap={true}>
               <Space>
                 <MailOutlined />
-                <Text>{employee.email}</Text>
+                <Text>{user.email}</Text>
               </Space>
               {phone && (
                 <Space>
@@ -138,55 +147,33 @@ const UserProfile: React.FC<Props> = ({ employee }) => {
                   <Text>{phone}</Text>
                 </Space>
               )}
-              {(street || city) && (
-                <Space>
-                  <PushpinOutlined />
-                  <Text>
-                    {city && `г. ${city}, `}
-                    {street && `ул. ${street}`}
-                  </Text>
-                </Space>
-              )}
             </Flex>
           </Flex>
-          <Flex align="flex-start" gap={20} wrap={true}>
-            <Button
-              style={{ width: !sm ? '280px' : 'auto' }}
-              icon={<EditOutlined />}
-              onClick={handleOpen}
-            >
-              Редактировать
-            </Button>
-            {currentUser?.role === 'admin' &&
-              currentUser?._id !== employee._id && (
-                <Popconfirm
-                  title="Удаление сотрудника"
-                  description="Вы уверены, что хотите удалить сотрудника?"
-                  icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-                  okText="Удалить"
-                  cancelText="Отменить"
-                  disabled={deleteLoading}
-                  onConfirm={() => handleDelete(employee._id)}
-                >
-                  <Button
-                    style={{ width: !sm ? '280px' : 'auto' }}
-                    danger
-                    type="text"
-                    icon={<DeleteOutlined />}
-                  >
-                    Удалить сотрудника
-                  </Button>
-                </Popconfirm>
-              )}
-          </Flex>
-        </Col>
-      </Row>
-      <UserUpdate
-        employee={employee}
-        open={open}
-        onClose={handleClose}
-        isGoogleUser={isGoogleUser}
-      />
+          <Button onClick={handleOpen}>Редактировать</Button>
+        </div>
+      </div>
+
+      {currentUser?.role === Roles.Admin && currentUser?._id !== user._id && (
+        <Popconfirm
+          title="Удаление сотрудника"
+          description="Вы уверены, что хотите удалить сотрудника?"
+          icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+          okText="Удалить"
+          cancelText="Отменить"
+          disabled={deleteLoading}
+          onConfirm={() => handleDelete(user._id)}
+        >
+          <Button
+            style={{ width: !sm ? '280px' : 'auto' }}
+            danger
+            type="text"
+            icon={<DeleteOutlined />}
+          >
+            Удалить сотрудника
+          </Button>
+        </Popconfirm>
+      )}
+      <UserUpdate employee={user} open={open} onClose={handleClose} />
     </>
   );
 };

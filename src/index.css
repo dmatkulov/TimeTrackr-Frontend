@@ -37,7 +37,7 @@ input[type='number'] {
 
 .ant-btn {
   box-shadow: none;
-  border-radius: 4px;
+  /*border-radius: 4px;*/
 }
 
 .divider-wrapper {

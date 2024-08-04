@@ -81,8 +81,6 @@ const UserHeader: React.FC<Props> = ({ toggleMenu }) => {
 
   const timeBtn = (
     <Button
-      shape="round"
-      size="large"
       icon={<CaretRightOutlined />}
       type="primary"
       style={{ marginRight: 'auto' }}
@@ -99,7 +97,7 @@ const UserHeader: React.FC<Props> = ({ toggleMenu }) => {
             icon={<AppstoreOutlined />}
             onClick={!md ? handleOpen : toggleMenu}
           />
-          <Logo link={appRoutes.employee.dashboard} />
+          <Logo link={appRoutes.user.dashboard} />
         </Space>
 
         <Flex

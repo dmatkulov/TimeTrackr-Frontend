@@ -1,27 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { ContactInfo, UserMutation } from '../../types/types.user';
+import { UserMutation } from '../../types/types.user';
 import { Button, Form, Input, Select } from 'antd';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hooks';
 import { selectPositions } from '../../store/positions/positionsSlice';
 import { fetchPositions } from '../../store/positions/positionsThunks';
 import PasswordInput from '../FormInputGroups/PasswordInputGroup';
-import { formattedDay } from '../../services/formattedTime.service';
 import { selectRegisterError } from '../../store/users/UsersSlice';
-
-const contactsState: ContactInfo = {
-  mobile: '',
-  city: '',
-  street: '',
-};
 
 const initialState: UserMutation = {
   email: '',
   firstname: '',
   lastname: '',
   position: '',
-  contactInfo: contactsState,
+  phoneNumber: '',
   password: '',
-  startDate: formattedDay(new Date()),
   photo: null,
 };
 

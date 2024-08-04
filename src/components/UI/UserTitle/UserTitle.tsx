@@ -76,7 +76,7 @@ const UserTitle: React.FC<Props> = ({ user }) => {
           </Space>
         </Flex>
       ),
-      onClick: () => navigate(appRoutes.employee.account),
+      onClick: () => navigate(appRoutes.user.account),
       style: listStyle,
     },
     {

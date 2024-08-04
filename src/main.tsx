@@ -13,22 +13,34 @@ import { ConfigProvider } from 'antd';
 
 addInterceptors(store);
 
+const primaryColor = '#3947CF';
+const secondaryHoverColor = '#FFF8E8';
+const defaultGreyColor = '#f5f5f5';
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: '#3947ce',
+          colorPrimary: primaryColor,
           colorBgContainer: '#fff',
           colorText: '#172c3f',
+          boxShadow: 'none',
         },
         components: {
           Menu: {
             collapsedWidth: 1000,
-            subMenuItemBg: '#fff',
-            itemActiveBg: '#FFF8E8',
-            itemSelectedBg: '#FFF8E8',
-            itemHoverBg: '#FFF8E8',
+            subMenuItemBg: 'white',
+            itemActiveBg: secondaryHoverColor,
+            itemHoverBg: secondaryHoverColor,
+          },
+          Button: {
+            borderRadius: 8,
+            defaultBg: defaultGreyColor,
+            boxShadow: 'none',
+            defaultBorderColor: 'none',
+            defaultHoverBorderColor: 'none',
+            defaultHoverBg: secondaryHoverColor,
           },
         },
       }}

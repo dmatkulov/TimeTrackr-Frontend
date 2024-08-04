@@ -7,10 +7,6 @@ import Redirect from './containers/Redirect/Redirect';
 import Protected from './components/ProtectedRoute/Protected';
 import { useAppSelector } from './store/hooks/hooks';
 import { selectUser } from './store/users/UsersSlice';
-import Staff from './containers/Staff/Staff';
-import StaffInfo from './containers/StaffInfo/StaffInfo';
-import StaffContainer from './containers/StaffContainer/StaffContainer';
-import Positions from './containers/Positions/Positions';
 import UserPanel from './containers/UserPanel/UserPanel';
 import UserInfoPage from './containers/UserProfileContainer/UserProfileContainer';
 import CalendarPage from './containers/Calendar/CalendarPage';
@@ -19,6 +15,7 @@ import AuthPage from './containers/auth/AuthPage';
 import Notes from './containers/Notes/Notes';
 import Teams from './containers/Teams/Teams';
 import Projects from './containers/Projects/Projects';
+import { Roles } from './enum/roles.enum';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -31,45 +28,19 @@ const App = () => {
           <Route path={appRoutes.redirect} element={<Redirect />} />
           <Route path={appRoutes.notFound} element={<Page404 />} />
           <Route
-            path={appRoutes.admin.profile}
+            path={appRoutes.user.profile}
             element={
-              <Protected isAllowed={user && user.role === 'admin'}>
+              <Protected isAllowed={user && user.role === Roles.User}>
                 <UserPanel />
               </Protected>
             }
           >
-            <Route path={appRoutes.admin.staff} element={<StaffContainer />}>
-              <Route path={appRoutes.admin.staff} element={<Staff />} />
-              <Route
-                path={`${appRoutes.admin.staffInfo}/:id`}
-                element={<StaffInfo />}
-              />
-            </Route>
-            <Route path={appRoutes.admin.positions} element={<Positions />} />
-          </Route>
-          <Route
-            path={appRoutes.employee.profile}
-            element={
-              <Protected isAllowed={user && user.role === 'employee'}>
-                <UserPanel />
-              </Protected>
-            }
-          >
-            <Route
-              path={appRoutes.employee.account}
-              element={<UserInfoPage />}
-            />
-            <Route
-              path={appRoutes.employee.dashboard}
-              element={<Dashboard />}
-            />
-            <Route path={appRoutes.employee.notes} element={<Notes />} />
-            <Route path={appRoutes.employee.teams} element={<Teams />} />
-            <Route path={appRoutes.employee.projects} element={<Projects />} />
-            <Route
-              path={appRoutes.employee.calendar}
-              element={<CalendarPage />}
-            />
+            <Route path={appRoutes.user.account} element={<UserInfoPage />} />
+            <Route path={appRoutes.user.dashboard} element={<Dashboard />} />
+            <Route path={appRoutes.user.notes} element={<Notes />} />
+            <Route path={appRoutes.user.teams} element={<Teams />} />
+            <Route path={appRoutes.user.projects} element={<Projects />} />
+            <Route path={appRoutes.user.calendar} element={<CalendarPage />} />
           </Route>
         </Routes>
       </AppLayout>

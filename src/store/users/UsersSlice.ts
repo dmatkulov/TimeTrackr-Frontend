@@ -12,6 +12,7 @@ import {
   updateUser,
 } from './UsersThunks';
 import { message } from 'antd';
+import { Roles } from '../../enum/roles.enum';
 
 interface UsersState {
   user: User | null;
@@ -137,9 +138,9 @@ export const usersSlice = createSlice({
       .addCase(updateUser.fulfilled, (state, { payload: data }) => {
         state.updateLoading = false;
 
-        if (state.user?.role === 'admin') {
+        if (state.user?.role === Roles.Admin) {
           state.staff = data.user;
-        } else if (state.user?.role === 'employee') {
+        } else if (state.user?.role === Roles.User) {
           state.user = data.user;
         }
         void message.success(data.message);

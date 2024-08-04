@@ -2,7 +2,6 @@ import React from 'react';
 import StaffForm from '../../components/RegisterForm/StaffForm';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hooks';
 import { selectUserUpdateLoading } from '../../store/users/UsersSlice';
-import dayjs from 'dayjs';
 import { User, UserMutation } from '../../types/types.user';
 import { updateUser } from '../../store/users/UsersThunks';
 import { Navigate } from 'react-router-dom';
@@ -36,12 +35,9 @@ const UserUpdate: React.FC<Props> = ({
 
   let form;
   if (employee) {
-    const startDate = dayjs(employee.startDate).format('YYYY-MM-DD');
-
     const mutation: UserMutation = {
       ...employee,
       position: employee.position._id,
-      startDate: startDate,
       photo: null,
     };
     form = (

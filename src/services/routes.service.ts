@@ -9,7 +9,7 @@ export const appRoutes = {
     staffInfo: '/admin/all-staff/profile',
     stats: '/admin/stats',
   },
-  employee: {
+  user: {
     profile: '/profile',
     account: '/profile/info',
     dashboard: '/profile/dashboard',
@@ -22,18 +22,18 @@ export const appRoutes = {
 };
 
 export const apiRoutes = {
-  users: 'staff',
-  google: 'staff/google',
-  userInfo: 'staff/info/',
-  newUser: 'staff/register-user',
-  sessions: 'staff/sessions',
+  users: 'auth',
+  google: appRoutes.auth + '/google',
+  sessions: appRoutes.auth + '/sessions',
+  userInfo: 'auth/info/',
+  newUser: 'auth/register-user',
   positions: 'positions',
   newPosition: 'positions/new-position',
   positionById: 'positions/info/',
   editPosition: 'positions/edit/',
   deletePositions: 'positions/delete',
-  deleteUser: 'staff/delete/',
-  updateUser: 'staff/edit',
+  deleteUser: 'auth/delete/',
+  updateUser: 'auth/edit',
   tasks: 'tasks',
   createTask: 'tasks/new-task',
   deleteTask: 'tasks/delete',

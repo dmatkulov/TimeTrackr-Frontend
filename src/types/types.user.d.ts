@@ -6,13 +6,11 @@ export interface User {
   token: string;
   firstname: string;
   lastname: string;
-  contactInfo: ContactInfo;
+  phoneNumber: string;
   photo: string;
   position: Position;
   role: string;
-  startDate: string;
   googleID?: string;
-  isGoogleUser: boolean;
 }
 
 export interface StaffData {
@@ -46,10 +44,9 @@ export interface UserMutation {
   email: string;
   firstname: string;
   lastname: string;
-  contactInfo: ContactInfo;
+  phoneNumber: string;
   photo: File | null | string;
   position: string;
-  startDate: string;
   password?: string;
 }
 

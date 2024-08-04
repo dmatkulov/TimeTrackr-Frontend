@@ -9,7 +9,7 @@ const UserInfoPage: React.FC = () => {
   return (
     user && (
       <>
-        <UserProfile employee={user} />
+        <UserProfile user={user} />
       </>
     )
   );
