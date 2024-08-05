@@ -22,12 +22,6 @@ export interface StaffData {
   position: Position;
 }
 
-export interface ContactInfo {
-  mobile: string;
-  city: string;
-  street: string;
-}
-
 export interface Author {
   _id: string;
   photo: string;
@@ -44,7 +38,7 @@ export interface UserMutation {
   email: string;
   firstname: string;
   lastname: string;
-  phoneNumber: string;
+  phoneNumber: string | null;
   photo: File | null | string;
   position: string;
   password?: string;

@@ -27,7 +27,9 @@ export const register = createAsyncThunk<
     formData.append('email', mutation.email);
     formData.append('firstname', mutation.firstname);
     formData.append('lastname', mutation.lastname);
-    formData.append('phoneNumber', mutation.phoneNumber);
+    if (mutation.phoneNumber) {
+      formData.append('phoneNumber', mutation.phoneNumber);
+    }
 
     if (mutation.password) {
       formData.append('password', mutation.password);
@@ -133,7 +135,7 @@ export const login = createAsyncThunk<
 export const updateUser = createAsyncThunk<
   LoginResponse,
   UpdateUserArg,
-  { rejectValue: ValidationError }
+  { rejectValue: GlobalMessage }
 >('users/updateOne', async ({ id, mutation }, { rejectWithValue }) => {
   try {
     const formData = new FormData();
@@ -142,7 +144,9 @@ export const updateUser = createAsyncThunk<
     formData.append('firstname', mutation.firstname);
     formData.append('lastname', mutation.lastname);
     formData.append('position', mutation.position);
-    formData.append('phoneNumber', mutation.phoneNumber);
+    if (mutation.phoneNumber) {
+      formData.append('phoneNumber', mutation.phoneNumber);
+    }
 
     if (mutation.photo) {
       formData.append('photo', mutation.photo);
