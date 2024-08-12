@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Drawer, Flex, Form, FormProps, Input, Select } from 'antd';
+import { Button, Drawer, Flex, Form, Input, Select } from 'antd';
 import buddhistEra from 'dayjs/plugin/buddhistEra';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -31,6 +31,7 @@ interface Props {
   onSubmit: (state: UserMutation) => void;
   existingUser?: UserMutation;
   existingImage?: string | null;
+  existingPhone?: string | null;
   open: boolean;
   onClose: () => void;
   isEdit?: boolean;
@@ -41,6 +42,7 @@ const UserForm: React.FC<Props> = ({
   onSubmit,
   existingUser = initialState,
   existingImage,
+  existingPhone,
   open,
   onClose,
   isEdit = false,
@@ -56,9 +58,15 @@ const UserForm: React.FC<Props> = ({
   useEffect(() => {
     if (existingUser) {
       setState(existingUser);
-      form.setFieldsValue(state);
+      form.setFieldsValue({
+        ...existingUser,
+        phoneNumber: existingPhone ? existingPhone : null,
+      });
+      if (existingPhone) {
+        setHasPhoneNumber(Boolean(existingPhone));
+      }
     }
-  }, [existingUser, form, dispatch]);
+  }, [existingPhone, existingUser, form, dispatch]);
 
   useEffect(() => {
     dispatch(fetchPositions());
@@ -70,26 +78,19 @@ const UserForm: React.FC<Props> = ({
         ...state,
         photo:
           existingImage && state.photo === null ? existingImage : state.photo,
-        phoneNumber: hasPhoneNumber ? state.phoneNumber : null,
+        phoneNumber:
+          existingPhone && state.phoneNumber === null
+            ? existingPhone
+            : state.phoneNumber,
       };
 
       onSubmit(data);
 
       console.log(data);
+      onClose();
     } catch (e) {
       console.log(e);
     }
-  };
-
-  const onFinishFailed: FormProps<UserMutation>['onFinishFailed'] =
-    async () => {
-      return;
-    };
-
-  const closeDrawer = () => {
-    form.resetFields();
-    deletePhoto();
-    onClose();
   };
 
   const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -108,6 +109,18 @@ const UserForm: React.FC<Props> = ({
       ...prevState,
       photo: 'delete',
     }));
+  };
+
+  const deletePhoneNumber = () => {
+    setState((prevState) => ({ ...prevState, phoneNumber: 'delete' }));
+    setHasPhoneNumber(false);
+    form.setFieldsValue({
+      phoneNumber: '',
+    });
+  };
+
+  const addPhoneNumber = () => {
+    setHasPhoneNumber(true);
   };
 
   const fileInputChangeHandler = (
@@ -143,7 +156,7 @@ const UserForm: React.FC<Props> = ({
     <Drawer
       title={isEdit ? 'Обновление данных сотрудника' : 'Добавить сотрудника'}
       width={420}
-      onClose={closeDrawer}
+      onClose={onClose}
       open={open}
       forceRender
     >
@@ -151,7 +164,6 @@ const UserForm: React.FC<Props> = ({
         form={form}
         layout="vertical"
         onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
         <Form.Item name="photo">
@@ -231,44 +243,45 @@ const UserForm: React.FC<Props> = ({
             ]}
           />
         </Form.Item>
-        {hasPhoneNumber ||
-          (existingUser.phoneNumber && (
-            <Form.Item
-              label="Номер телефона"
-              name="phoneNumber"
-              rules={[
-                {
-                  validator: (_, value) => {
-                    if (value && value.length > 3 && value.length !== 12) {
-                      return Promise.reject('Введите номер полностью');
-                    }
-                    return Promise.resolve();
-                  },
+        {hasPhoneNumber && (
+          <Form.Item
+            label="Номер телефона"
+            name="phoneNumber"
+            rules={[
+              {
+                validator: (_, value) => {
+                  if (value && value.length > 3 && value.length !== 12) {
+                    return Promise.reject('Введите номер полностью');
+                  }
+                  return Promise.resolve();
                 },
-              ]}
-            >
-              <PhoneInput
-                country="kg"
-                masks={{ kg: '(...) ..-..-..' }}
-                onlyCountries={['kg']}
-                disableDropdown
-                countryCodeEditable={false}
-                value={state.phoneNumber}
-                onChange={handlePhoneChange}
-                inputProps={{
-                  name: 'phoneNumber',
-                }}
-              />
-            </Form.Item>
-          ))}
+              },
+            ]}
+          >
+            <PhoneInput
+              country="kg"
+              masks={{ kg: '(...) ..-..-..' }}
+              onlyCountries={['kg']}
+              disableDropdown
+              countryCodeEditable={false}
+              value={state.phoneNumber}
+              onChange={handlePhoneChange}
+              inputProps={{
+                name: 'phoneNumber',
+              }}
+            />
+          </Form.Item>
+        )}
         <Flex
           align="flex-end"
           justify="space-between"
           style={{ marginTop: '40px' }}
         >
-          <Button onClick={() => setHasPhoneNumber(!hasPhoneNumber)}>
-            {hasPhoneNumber ? 'Удалить номер' : 'Добавить номер'}
-          </Button>
+          {hasPhoneNumber ? (
+            <Button onClick={deletePhoneNumber}>Удалить номер</Button>
+          ) : (
+            <Button onClick={addPhoneNumber}>Добавить номер</Button>
+          )}
           <Button htmlType="submit" type="primary" disabled={loading}>
             {isEdit ? 'Сохранить' : 'Отправить'}
           </Button>

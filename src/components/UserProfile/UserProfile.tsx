@@ -80,17 +80,18 @@ const UserProfile: React.FC<Props> = ({ user }) => {
     const mutation: UserMutation = {
       ...user,
       position: user.position._id,
-      phoneNumber: user.phoneNumber,
+      phoneNumber: null,
       photo: null,
     };
     form = (
       <UserForm
         onSubmit={handleSubmit}
         existingUser={mutation}
+        existingImage={user.photo}
+        existingPhone={user.phoneNumber}
         open={open}
         onClose={handleClose}
         loading={updating}
-        existingImage={user.photo}
         isEdit
       />
     );
