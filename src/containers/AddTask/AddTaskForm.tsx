@@ -28,7 +28,7 @@ import {
   format,
   formattedDay,
   formattedTime,
-} from '../../services/formattedTime.service';
+} from '../../utils/formattedTime.service';
 
 dayjs.extend(buddhistEra);
 dayjs.extend(utc);

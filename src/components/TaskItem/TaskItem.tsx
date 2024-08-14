@@ -12,11 +12,11 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks/hooks';
 import {
   selectDeleteTaskLoading,
   selectTasks,
-} from '../../store/tasks/tasksSlice';
+} from '../../store/features/tasks/tasksSlice';
 import TaskTag from './TaskTag';
-import { getOneTask } from '../../store/tasks/tasksThunks';
+import { getOneTask } from '../../store/features/tasks/tasksThunks';
 import TaskModal from '../../containers/TaskModal/TaskModal';
-import { convertTime } from '../../services/formattedTime.service';
+import { convertTime } from '../../utils/formattedTime.service';
 
 interface Props {
   task: Task;

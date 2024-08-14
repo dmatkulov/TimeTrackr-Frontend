@@ -18,13 +18,17 @@ import {
   selectOneTaskLoading,
   selectTask,
   toggleEditForm,
-} from '../../store/tasks/tasksSlice';
+} from '../../store/features/tasks/tasksSlice';
 import { TaskMutation } from '../../types/types.task';
-import { editTask, getOneTask, getTasks } from '../../store/tasks/tasksThunks';
+import {
+  editTask,
+  getOneTask,
+  getTasks,
+} from '../../store/features/tasks/tasksThunks';
 import { colStyle } from './taskModalStyles';
 import EditTaskForm from '../../components/EditTask/EditTaskForm';
 import AvatarPic from '../../components/UI/UserAvatar/Avatar';
-import { currentDay } from '../../services/formattedTime.service';
+import { currentDay } from '../../utils/formattedTime.service';
 
 interface Props {
   open: boolean;

@@ -1,12 +1,12 @@
 import React from 'react';
 import PositionForm from '../../components/PositionForm/PositionForm';
-import { selectOnePosition } from '../../store/positions/positionsSlice';
+import { selectOnePosition } from '../../store/features/positions/positionsSlice';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hooks';
 import { PositionMutation } from '../../types/types.position';
 import {
   fetchPositions,
   updatePosition,
-} from '../../store/positions/positionsThunks';
+} from '../../store/features/positions/positionsThunks';
 
 interface Props {
   open: boolean;

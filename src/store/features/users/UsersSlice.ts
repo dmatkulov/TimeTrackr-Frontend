@@ -1,0 +1,209 @@
+// import { StaffData, User } from '../../types/types.user';
+// import { GlobalMessage, ValidationError } from '../../types/types.global';
+// import { createSlice } from '@reduxjs/toolkit';
+// import { RootState } from '../store';
+// import {
+//   deleteUser,
+//   getOneUser,
+//   getUsers,
+//   googleLogin,
+//   login,
+//   register,
+//   updateUser,
+//   updateUserPhoto,
+// } from './UsersThunks';
+// import { message } from 'antd';
+// import { Roles } from '../../enum/roles.enum';
+//
+// interface UsersState {
+//   user: User | null;
+//   staffAll: StaffData[];
+//   staff: User | null;
+//   registerLoading: boolean;
+//   registerError: ValidationError | null;
+//   loginLoading: boolean;
+//   loginError: GlobalMessage | null;
+//   logOutLoading: boolean;
+//   fetchAllLoading: boolean;
+//   fetchOneLoading: boolean;
+//   updateLoading: boolean;
+//   deleteLoading: boolean;
+// }
+//
+// const initialState: UsersState = {
+//   user: null,
+//   staffAll: [],
+//   staff: null,
+//   registerLoading: false,
+//   registerError: null,
+//   loginLoading: false,
+//   loginError: null,
+//   logOutLoading: false,
+//   fetchAllLoading: false,
+//   fetchOneLoading: false,
+//   updateLoading: false,
+//   deleteLoading: false,
+// };
+//
+// export const usersSlice = createSlice({
+//   name: 'users',
+//   initialState,
+//   reducers: {
+//     unsetUser: (state) => {
+//       state.user = null;
+//     },
+//     unsetError: (state) => {
+//       state.registerError = null;
+//     },
+//   },
+//   extraReducers: (builder) => {
+//     builder
+//       .addCase(getUsers.pending, (state) => {
+//         state.fetchAllLoading = true;
+//       })
+//       .addCase(getUsers.fulfilled, (state, { payload: data }) => {
+//         state.fetchAllLoading = false;
+//         state.staffAll = data;
+//       })
+//       .addCase(getUsers.rejected, (state, { payload: error }) => {
+//         state.fetchAllLoading = false;
+//
+//         void message.error(error?.message);
+//       });
+//
+//     builder
+//       .addCase(register.pending, (state) => {
+//         state.registerLoading = true;
+//       })
+//       .addCase(register.fulfilled, (state, { payload: data }) => {
+//         state.registerLoading = false;
+//         state.user = data.user;
+//
+//         if (data.message) {
+//           void message.success(data.message);
+//         }
+//       })
+//       .addCase(register.rejected, (state, { payload: error }) => {
+//         state.registerLoading = false;
+//
+//         if (error) {
+//           state.registerError = error;
+//         }
+//       });
+//
+//     builder
+//       .addCase(getOneUser.pending, (state) => {
+//         state.fetchOneLoading = true;
+//       })
+//       .addCase(getOneUser.fulfilled, (state, { payload: data }) => {
+//         state.fetchOneLoading = false;
+//         if (state.user?.role === Roles.Admin) {
+//           state.staff = data;
+//         } else if (state.user?.role === Roles.User) {
+//           state.user = data;
+//         }
+//       })
+//       .addCase(getOneUser.rejected, (state) => {
+//         state.fetchOneLoading = false;
+//       });
+//
+//     builder
+//       .addCase(login.pending, (state) => {
+//         state.loginLoading = true;
+//       })
+//       .addCase(login.fulfilled, (state, { payload: data }) => {
+//         state.loginLoading = false;
+//         state.user = data.user;
+//         void message.success(data.message);
+//       })
+//       .addCase(login.rejected, (state, { payload: data }) => {
+//         state.loginLoading = false;
+//         void message.error(data?.message);
+//       });
+//
+//     builder
+//       .addCase(googleLogin.pending, (state) => {
+//         state.loginLoading = true;
+//       })
+//       .addCase(googleLogin.fulfilled, (state, { payload: data }) => {
+//         state.loginLoading = false;
+//         state.user = data.user;
+//         void message.success(data.message);
+//       })
+//       .addCase(googleLogin.rejected, (state, { payload: data }) => {
+//         state.loginLoading = false;
+//         void message.error(data?.message);
+//       });
+//
+//     builder
+//       .addCase(updateUser.pending, (state) => {
+//         state.updateLoading = true;
+//       })
+//       .addCase(updateUser.fulfilled, (state, { payload: data }) => {
+//         state.updateLoading = false;
+//
+//         if (state.user?.role === Roles.Admin) {
+//           state.staff = data.user;
+//         } else if (state.user?.role === Roles.User) {
+//           state.user = data.user;
+//         }
+//
+//         void message.success(data.message);
+//       })
+//       .addCase(updateUser.rejected, (state, { payload: error }) => {
+//         state.updateLoading = false;
+//         void message.error(error?.message);
+//       });
+//
+//     builder
+//       .addCase(updateUserPhoto.pending, (state) => {
+//         state.updateLoading = true;
+//       })
+//       .addCase(updateUserPhoto.fulfilled, (state, { payload: data }) => {
+//         state.updateLoading = false;
+//         state.user = data.user;
+//         void message.success(data.message);
+//       })
+//       .addCase(updateUserPhoto.rejected, (state, { payload: error }) => {
+//         state.updateLoading = false;
+//         void message.error(error?.message);
+//       });
+//
+//     builder
+//       .addCase(deleteUser.pending, (state) => {
+//         state.deleteLoading = true;
+//       })
+//       .addCase(deleteUser.fulfilled, (state, { payload: data }) => {
+//         state.deleteLoading = false;
+//         void message.success(data.message);
+//       })
+//       .addCase(deleteUser.rejected, (state) => {
+//         state.deleteLoading = false;
+//       });
+//   },
+// });
+//
+// export const usersReducer = usersSlice.reducer;
+// export const { unsetUser, unsetError } = usersSlice.actions;
+//
+// export const selectUser = (state: RootState) => state.users.user;
+// export const selectStaff = (state: RootState) => state.users.staffAll;
+// export const selectEmployee = (state: RootState) => state.users.staff;
+// export const selectRegisterLoading = (state: RootState) =>
+//   state.users.registerLoading;
+// export const selectLoginLoading = (state: RootState) =>
+//   state.users.loginLoading;
+// export const selectFetchAllLoading = (state: RootState) =>
+//   state.users.fetchAllLoading;
+// export const selectFetchOneLoading = (state: RootState) =>
+//   state.users.fetchOneLoading;
+// export const selectLoginError = (state: RootState) => state.users.loginLoading;
+// export const selectLogoutLoading = (state: RootState) =>
+//   state.users.logOutLoading;
+// export const selectUserUpdateLoading = (state: RootState) =>
+//   state.users.updateLoading;
+// export const selectDeleteUserLoading = (state: RootState) =>
+//   state.users.deleteLoading;
+//
+// export const selectRegisterError = (state: RootState) =>
+//   state.users.registerError;

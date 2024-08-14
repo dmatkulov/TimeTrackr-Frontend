@@ -1,0 +1,58 @@
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AuthResponse, User } from '../../../types/types.user';
+import authApi from './auth';
+import { RootState } from '../../store';
+import { message } from 'antd';
+import { GlobalMessage } from '../../../types/types.global';
+
+interface State {
+  user: User | null;
+}
+
+const initialState: State = {
+  user: null,
+};
+
+const authSlice = createSlice({
+  name: 'auth',
+  initialState,
+  reducers: {
+    unsetUser: (state) => {
+      state.user = null;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addMatcher(
+        authApi.endpoints.signUp.matchFulfilled,
+        (state, { payload: data }) => {
+          state.user = data.user;
+          void message.success(data.message);
+        },
+      )
+      .addMatcher(
+        authApi.endpoints.signIn.matchFulfilled,
+        (state, action: PayloadAction<AuthResponse>) => {
+          state.user = action.payload.user;
+          void message.success(action.payload.message);
+        },
+      )
+      .addMatcher(
+        authApi.endpoints.signIn.matchRejected,
+        (_state, { payload: error }) => {
+          if (error && 'data' in error) {
+            const e = error.data as GlobalMessage;
+            void message.error(e.message);
+          }
+        },
+      )
+      .addMatcher(authApi.endpoints.logout.matchFulfilled, () => {
+        return initialState;
+      });
+  },
+});
+
+export const { unsetUser } = authSlice.actions;
+export const AuthReducer = authSlice.reducer;
+
+export const selectUser = (state: RootState) => state.auth.user;

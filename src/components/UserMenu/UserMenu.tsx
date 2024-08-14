@@ -17,11 +17,10 @@ import {
   StarTwoTone,
   UserOutlined,
 } from '@ant-design/icons';
-import { useAppDispatch } from '../../store/hooks/hooks';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { logOut } from '../../store/users/UsersThunks';
-import { appRoutes } from '../../services/routes.service';
+import { appRoutes } from '../../utils/routes.service';
 import './index.css';
+import { useLogoutMutation } from '../../store/features/auth/auth';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -31,12 +30,12 @@ interface Props {
 }
 
 const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
-  const dispatch = useAppDispatch();
+  const [logout] = useLogoutMutation();
   const navigate = useNavigate();
   const location = useLocation();
 
   const logOutUser = async () => {
-    await dispatch(logOut());
+    await logout();
     navigate(appRoutes.auth);
   };
 

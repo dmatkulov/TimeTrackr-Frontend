@@ -19,26 +19,22 @@ import {
   PhoneOutlined,
   QuestionCircleOutlined,
 } from '@ant-design/icons';
-import { formatPhoneNumber } from '../../services/formatPhoneNumber.service';
+import { formatPhoneNumber } from '../../utils/formatPhoneNumber.service';
 import {
   deleteUser,
   getOneUser,
   updateUser,
   updateUserPhoto,
-} from '../../store/users/UsersThunks';
+} from '../../store/features/users/UsersThunks';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hooks';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { appRoutes } from '../../services/routes.service';
-import {
-  selectDeleteUserLoading,
-  selectUser,
-  selectUserUpdateLoading,
-} from '../../store/users/UsersSlice';
-import { getPhotoUrl } from '../../services/photoURL.service';
+import { appRoutes } from '../../utils/routes.service';
+import { getPhotoUrl } from '../../utils/photoURL.service';
 import { Roles } from '../../enum/roles.enum';
 import UserForm from '../RegisterForm/UserForm';
 import FileInput from '../FormInputGroups/FileInput';
+import { selectUser } from '../../store/features/auth/authSlice';
 
 dayjs.locale('ru');
 
@@ -53,8 +49,8 @@ const UserProfile: React.FC<Props> = ({ user }) => {
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector(selectUser);
   const navigate = useNavigate();
-  const deleteLoading = useAppSelector(selectDeleteUserLoading);
-  const updating = useAppSelector(selectUserUpdateLoading);
+  // const deleteLoading = useAppSelector(selectDeleteUserLoading);
+  // const updating = useAppSelector(selectUserUpdateLoading);
 
   const { sm, lg } = useBreakpoint();
   const photo = getPhotoUrl(user);
@@ -154,7 +150,7 @@ const UserProfile: React.FC<Props> = ({ user }) => {
         existingPhone={user.phoneNumber}
         open={open}
         onClose={handleClose}
-        loading={updating}
+        loading={false}
         isEdit
       />
     );
@@ -275,7 +271,7 @@ const UserProfile: React.FC<Props> = ({ user }) => {
           icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
           okText="Удалить"
           cancelText="Отменить"
-          disabled={deleteLoading}
+          disabled={false}
           onConfirm={() => handleDelete(user._id)}
         >
           <Button

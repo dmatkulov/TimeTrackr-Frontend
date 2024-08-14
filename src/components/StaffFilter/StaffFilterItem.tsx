@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hooks';
-import { selectPositions } from '../../store/positions/positionsSlice';
-import { getUsers } from '../../store/users/UsersThunks';
-import { fetchPositions } from '../../store/positions/positionsThunks';
+import { selectPositions } from '../../store/features/positions/positionsSlice';
+import { getUsers } from '../../store/features/users/UsersThunks';
+import { fetchPositions } from '../../store/features/positions/positionsThunks';
 import { UserQueryValues } from '../../types/types.user';
 import { Col, Row, Space, Switch } from 'antd';
 import StaffFilterForm from './StaffFilterForm';

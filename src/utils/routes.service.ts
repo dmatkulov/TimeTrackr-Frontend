@@ -41,3 +41,17 @@ export const apiRoutes = {
   editTask: 'tasks/edit/',
   updatePhoto: 'photo/edit/',
 };
+
+export const authRoute = {
+  register: 'auth/register',
+  login: 'auth/login',
+  logout: 'auth/logout',
+  googleLogin: 'auth/google',
+};
+export const positionRoute = {
+  positions: 'positions',
+  newPosition: 'positions/new-position',
+  positionById: 'positions/info/',
+  editPosition: 'positions/edit/',
+  deletePositions: 'positions/delete',
+};

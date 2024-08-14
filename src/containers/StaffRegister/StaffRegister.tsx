@@ -1,9 +1,9 @@
 import React from 'react';
 import UserForm from '../../components/RegisterForm/UserForm';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hooks';
-import { selectRegisterLoading } from '../../store/users/UsersSlice';
+import { selectRegisterLoading } from '../../store/features/users/UsersSlice';
 import { UserMutation } from '../../types/types.user';
-import { getUsers, register } from '../../store/users/UsersThunks';
+import { getUsers, register } from '../../store/features/users/UsersThunks';
 
 interface Props {
   open: boolean;

@@ -1,6 +1,6 @@
-import { TaskInfo, Tasks } from '../../types/types.task';
+import { TaskInfo, Tasks } from '../../../types/types.task';
 import { createSlice } from '@reduxjs/toolkit';
-import { RootState } from '../store';
+import { RootState } from '../../store';
 import {
   createTask,
   deleteTask,

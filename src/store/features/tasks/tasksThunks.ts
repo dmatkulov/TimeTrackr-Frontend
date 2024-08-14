@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { BadRequestError, GlobalMessage } from '../../types/types.global';
+import { BadRequestError, GlobalMessage } from '../../../types/types.global';
 import {
   TaskDeleteArgs,
   TaskEditArgs,
@@ -7,10 +7,10 @@ import {
   TaskQueryParams,
   Tasks,
   TasksMutation,
-} from '../../types/types.task';
+} from '../../../types/types.task';
 import { isAxiosError } from 'axios';
-import axiosService from '../../services/axios.service';
-import { apiRoutes } from '../../services/routes.service';
+import axiosService from '../../../utils/axios.service';
+import { apiRoutes } from '../../../utils/routes.service';
 
 export const createTask = createAsyncThunk<
   GlobalMessage,

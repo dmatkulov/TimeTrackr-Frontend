@@ -2,33 +2,23 @@ import React, { useEffect, useRef } from 'react';
 import { Button, Form, FormProps, Input, InputRef } from 'antd';
 import { LoginMutation } from '../../types/types.user';
 import { useNavigate } from 'react-router-dom';
-import { appRoutes } from '../../services/routes.service';
-import { useAppDispatch, useAppSelector } from '../../store/hooks/hooks';
-import { login } from '../../store/users/UsersThunks';
-import {
-  selectLoginError,
-  selectLoginLoading,
-} from '../../store/users/UsersSlice';
+import { appRoutes } from '../../utils/routes.service';
+import { useSignInMutation } from '../../store/features/auth/auth';
 
 const App: React.FC = () => {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const loginError = useAppSelector(selectLoginError);
-  const loginLoading = useAppSelector(selectLoginLoading);
-
+  const [signIn] = useSignInMutation();
   const [form] = Form.useForm();
 
   const onSubmit: FormProps<LoginMutation>['onFinish'] = async (
     loginMutation,
   ) => {
-    await dispatch(login(loginMutation)).unwrap();
+    const data = await signIn(loginMutation);
 
-    if (loginError) {
-      return;
+    if (!(data as { error: object }).error) {
+      navigate(appRoutes.redirect);
+      form.resetFields();
     }
-
-    navigate(appRoutes.redirect);
-    form.resetFields();
   };
 
   const emailInput = useRef<InputRef>(null);
@@ -86,7 +76,7 @@ const App: React.FC = () => {
             htmlType="submit"
             size="large"
             style={{ width: '100%', marginBottom: '16px' }}
-            disabled={loginLoading}
+            disabled={false}
           >
             Войти
           </Button>

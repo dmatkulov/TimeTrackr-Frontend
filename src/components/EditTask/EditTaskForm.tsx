@@ -26,13 +26,13 @@ import {
   selectEditForm,
   selectTaskUpdateLoading,
   toggleEditForm,
-} from '../../store/tasks/tasksSlice';
+} from '../../store/features/tasks/tasksSlice';
 import {
   buddhistLocale,
   convertTime,
   disabledTime,
   format,
-} from '../../services/formattedTime.service';
+} from '../../utils/formattedTime.service';
 
 interface Props {
   task: TaskMutation;

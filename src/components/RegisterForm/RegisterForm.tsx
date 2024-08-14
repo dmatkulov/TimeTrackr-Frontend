@@ -1,38 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { UserMutation } from '../../types/types.user';
+import React, { useState } from 'react';
+import { RegisterMutation } from '../../types/types.user';
 import { Button, Form, Input, Select } from 'antd';
-import { useAppDispatch, useAppSelector } from '../../store/hooks/hooks';
-import { selectPositions } from '../../store/positions/positionsSlice';
-import { fetchPositions } from '../../store/positions/positionsThunks';
 import PasswordInput from '../FormInputGroups/PasswordInputGroup';
-import { selectRegisterError } from '../../store/users/UsersSlice';
+import { useGetPositionsQuery } from '../../store/features/positions/positions';
 
-const initialState: UserMutation = {
+const initialState: RegisterMutation = {
   email: '',
   firstname: '',
   lastname: '',
   position: '',
-  phoneNumber: '',
   password: '',
-  photo: null,
 };
 
 interface Props {
-  onSubmit: (state: UserMutation) => void;
+  onSubmit: (state: RegisterMutation) => void;
   loading?: boolean;
 }
 
 const RegisterForm = ({ onSubmit, loading }: Props) => {
   const [form] = Form.useForm();
-  const dispatch = useAppDispatch();
-  const positions = useAppSelector(selectPositions);
-  const errors = useAppSelector(selectRegisterError);
+  const { data: positions } = useGetPositionsQuery();
 
-  const [state, setState] = useState<UserMutation>(initialState);
-
-  useEffect(() => {
-    dispatch(fetchPositions());
-  }, [dispatch]);
+  const [state, setState] = useState<RegisterMutation>(initialState);
 
   const onFinish = async () => {
     try {
@@ -49,17 +38,6 @@ const RegisterForm = ({ onSubmit, loading }: Props) => {
       return { ...prevState, [name]: value };
     });
   };
-
-  useEffect(() => {
-    if (errors) {
-      form.setFields(
-        errors.message.map((error) => ({
-          name: error.property,
-          errors: [error.message],
-        })),
-      );
-    }
-  }, [errors, form]);
 
   return (
     <>
@@ -114,29 +92,31 @@ const RegisterForm = ({ onSubmit, loading }: Props) => {
             onChange={inputChangeHandler}
           />
         </Form.Item>
-        <Form.Item
-          name="position"
-          label="Должность"
-          rules={[{ required: true, message: 'Выберите позицию' }]}
-        >
-          <Select
-            size="large"
-            value={state.position}
-            onChange={(value) =>
-              setState((prevState) => ({
-                ...prevState,
-                position: value,
-              }))
-            }
-            placeholder="Выберите должность"
-            options={[
-              ...positions.map((position) => ({
-                value: position._id,
-                label: position.name,
-              })),
-            ]}
-          />
-        </Form.Item>
+        {positions && (
+          <Form.Item
+            name="position"
+            label="Должность"
+            rules={[{ required: true, message: 'Выберите позицию' }]}
+          >
+            <Select
+              size="large"
+              value={state.position}
+              onChange={(value) =>
+                setState((prevState) => ({
+                  ...prevState,
+                  position: value,
+                }))
+              }
+              placeholder="Выберите должность"
+              options={[
+                ...positions.map((position) => ({
+                  value: position._id,
+                  label: position.name,
+                })),
+              ]}
+            />
+          </Form.Item>
+        )}
         <PasswordInput state={state} onChange={inputChangeHandler} />
         <Form.Item>
           <Button

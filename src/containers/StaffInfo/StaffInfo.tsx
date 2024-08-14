@@ -5,11 +5,11 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks/hooks';
 import {
   selectEmployee,
   selectFetchOneLoading,
-} from '../../store/users/UsersSlice';
-import { getOneUser } from '../../store/users/UsersThunks';
+} from '../../store/features/users/UsersSlice';
+import { getOneUser } from '../../store/features/users/UsersThunks';
 import Spinner from '../../components/UI/Spin/Spin';
 import { Breadcrumb } from 'antd';
-import { appRoutes } from '../../services/routes.service';
+import { appRoutes } from '../../utils/routes.service';
 
 const StaffInfo: React.FC = () => {
   const { id } = useParams() as { id: string };

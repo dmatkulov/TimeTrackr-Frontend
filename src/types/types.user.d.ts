@@ -13,6 +13,24 @@ export interface User {
   googleID?: string;
 }
 
+export interface RegisterMutation {
+  email: string;
+  firstname: string;
+  lastname: string;
+  position: string;
+  password: string;
+}
+
+export interface LoginMutation {
+  email: string;
+  password: string;
+}
+
+export interface AuthResponse {
+  message: string;
+  user: User;
+}
+
 export interface StaffData {
   _id: string;
   email: string;
@@ -29,11 +47,6 @@ export interface Author {
   lastname: string;
 }
 
-export interface LoginMutation {
-  email: string;
-  password: string;
-}
-
 export interface UserMutation {
   email: string;
   firstname: string;
@@ -46,11 +59,6 @@ export interface UserMutation {
 
 export interface UserPhoto {
   photo: File | null | string;
-}
-
-export interface LoginResponse {
-  message: string;
-  user: User;
 }
 
 export interface UpdateUserArg {

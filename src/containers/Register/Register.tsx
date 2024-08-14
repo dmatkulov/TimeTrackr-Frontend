@@ -1,24 +1,21 @@
 import React from 'react';
-import { useAppDispatch, useAppSelector } from '../../store/hooks/hooks';
-import { selectRegisterLoading } from '../../store/users/UsersSlice';
-import { UserMutation } from '../../types/types.user';
-import { register } from '../../store/users/UsersThunks';
+import { RegisterMutation } from '../../types/types.user';
 import RegisterForm from '../../components/RegisterForm/RegisterForm';
-import { appRoutes } from '../../services/routes.service';
+import { appRoutes } from '../../utils/routes.service';
 import { useNavigate } from 'react-router-dom';
+import { useSignUpMutation } from '../../store/features/auth/auth';
 
 const Register: React.FC = () => {
-  const creating = useAppSelector(selectRegisterLoading);
+  const [signUp, { isLoading }] = useSignUpMutation();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
 
-  const handleFormSubmit = async (state: UserMutation) => {
-    await dispatch(register(state)).unwrap();
+  const handleFormSubmit = async (state: RegisterMutation) => {
+    await signUp(state).unwrap();
     navigate(appRoutes.redirect);
   };
   return (
     <>
-      <RegisterForm onSubmit={handleFormSubmit} loading={creating} />
+      <RegisterForm onSubmit={handleFormSubmit} loading={isLoading} />
     </>
   );
 };

@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
+  AuthResponse,
   LoginMutation,
-  LoginResponse,
   StaffData,
   UpdatePhotoArg,
   UpdateUserArg,
@@ -9,16 +9,16 @@ import {
   UserMutation,
   UserQueryParams,
   UserQueryValues,
-} from '../../types/types.user';
-import { GlobalMessage, ValidationError } from '../../types/types.global';
-import { axiosService } from '../../services/axios.service';
-import { apiRoutes } from '../../services/routes.service';
+} from '../../../types/types.user';
+import { GlobalMessage, ValidationError } from '../../../types/types.global';
+import { axiosService } from '../../../utils/axios.service';
+import { apiRoutes } from '../../../utils/routes.service';
 import { isAxiosError } from 'axios';
-import { RootState } from '../store';
-import { unsetUser } from './UsersSlice';
+import { RootState } from '../../store';
+import { unsetUser } from '../auth/authSlice';
 
 export const register = createAsyncThunk<
-  LoginResponse,
+  AuthResponse,
   UserMutation,
   { rejectValue: ValidationError }
 >('users/addUser', async (mutation, { rejectWithValue }) => {
@@ -36,7 +36,7 @@ export const register = createAsyncThunk<
       formData.append('password', mutation.password);
     }
 
-    const response = await axiosService.post<LoginResponse>(
+    const response = await axiosService.post<AuthResponse>(
       apiRoutes.newUser,
       mutation,
     );
@@ -54,7 +54,7 @@ export const register = createAsyncThunk<
 });
 
 export const googleLogin = createAsyncThunk<
-  LoginResponse,
+  AuthResponse,
   string,
   { rejectValue: GlobalMessage }
 >('users/googleLogin', async (credential, { rejectWithValue }) => {
@@ -117,7 +117,7 @@ export const getUsers = createAsyncThunk<
 });
 
 export const login = createAsyncThunk<
-  LoginResponse,
+  AuthResponse,
   LoginMutation,
   { rejectValue: GlobalMessage }
 >('users/login', async (loginMutation, { rejectWithValue }) => {
@@ -134,7 +134,7 @@ export const login = createAsyncThunk<
 });
 
 export const updateUser = createAsyncThunk<
-  LoginResponse,
+  AuthResponse,
   UpdateUserArg,
   { rejectValue: GlobalMessage }
 >('users/updateOne', async ({ id, mutation }, { rejectWithValue }) => {
@@ -153,7 +153,7 @@ export const updateUser = createAsyncThunk<
       formData.append('photo', mutation.photo);
     }
 
-    const response = await axiosService.patch<LoginResponse>(
+    const response = await axiosService.patch<AuthResponse>(
       `${apiRoutes.users}/edit/${id}`,
       formData,
     );
@@ -171,7 +171,7 @@ export const updateUser = createAsyncThunk<
 });
 
 export const updateUserPhoto = createAsyncThunk<
-  LoginResponse,
+  AuthResponse,
   UpdatePhotoArg,
   { rejectValue: GlobalMessage }
 >('users/updateOnePhoto', async ({ id, mutation }, { rejectWithValue }) => {
@@ -181,7 +181,7 @@ export const updateUserPhoto = createAsyncThunk<
       formData.append('photo', mutation.photo);
     }
 
-    const response = await axiosService.patch<LoginResponse>(
+    const response = await axiosService.patch<AuthResponse>(
       `${apiRoutes.users}/${apiRoutes.updatePhoto}${id}`,
       formData,
     );

@@ -1,9 +1,9 @@
 import React from 'react';
 import UserProfile from '../../components/UserProfile/UserProfile';
 import { useAppSelector } from '../../store/hooks/hooks';
-import { selectUser } from '../../store/users/UsersSlice';
+import { selectUser } from '../../store/features/auth/authSlice';
 
-const UserInfoPage: React.FC = () => {
+const UserProfilePage: React.FC = () => {
   const user = useAppSelector(selectUser);
 
   return (
@@ -15,4 +15,4 @@ const UserInfoPage: React.FC = () => {
   );
 };
 
-export default UserInfoPage;
+export default UserProfilePage;

@@ -8,10 +8,9 @@ import PhoneInput from 'react-phone-input-2';
 import './index.css';
 
 import { UserMutation } from '../../types/types.user';
-import { useAppDispatch, useAppSelector } from '../../store/hooks/hooks';
-import { fetchPositions } from '../../store/positions/positionsThunks';
-import { selectPositions } from '../../store/positions/positionsSlice';
+import { useAppDispatch } from '../../store/hooks/hooks';
 import FileInput from '../FormInputGroups/FileInput';
+import { useGetPositionsQuery } from '../../store/features/positions/positions';
 
 dayjs.extend(buddhistEra);
 dayjs.extend(utc);
@@ -50,7 +49,7 @@ const UserForm: React.FC<Props> = ({
 }) => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-  const positions = useAppSelector(selectPositions);
+  const { data: positions } = useGetPositionsQuery();
 
   const [state, setState] = useState<UserMutation>(existingUser);
   const [hasPhoneNumber, setHasPhoneNumber] = useState<boolean>(false);
@@ -67,10 +66,6 @@ const UserForm: React.FC<Props> = ({
       }
     }
   }, [existingPhone, existingUser, form, dispatch]);
-
-  useEffect(() => {
-    dispatch(fetchPositions());
-  }, [dispatch]);
 
   const onFinish = async () => {
     try {
@@ -219,30 +214,32 @@ const UserForm: React.FC<Props> = ({
             onChange={inputChangeHandler}
           />
         </Form.Item>
-        <Form.Item
-          name="position"
-          label="Позиция"
-          id={isEdit ? 'positionUpd' : 'position'}
-          rules={[{ required: true, message: 'Выберите позицию' }]}
-        >
-          <Select
-            value={state.position}
+        {positions && (
+          <Form.Item
+            name="position"
+            label="Позиция"
             id={isEdit ? 'positionUpd' : 'position'}
-            onChange={(value) =>
-              setState((prevState) => ({
-                ...prevState,
-                position: value,
-              }))
-            }
-            placeholder="Позиция сотрудника"
-            options={[
-              ...positions.map((position) => ({
-                value: position._id,
-                label: position.name,
-              })),
-            ]}
-          />
-        </Form.Item>
+            rules={[{ required: true, message: 'Выберите позицию' }]}
+          >
+            <Select
+              value={state.position}
+              id={isEdit ? 'positionUpd' : 'position'}
+              onChange={(value) =>
+                setState((prevState) => ({
+                  ...prevState,
+                  position: value,
+                }))
+              }
+              placeholder="Позиция сотрудника"
+              options={[
+                ...positions.map((position) => ({
+                  value: position._id,
+                  label: position.name,
+                })),
+              ]}
+            />
+          </Form.Item>
+        )}
         {hasPhoneNumber && (
           <Form.Item
             label="Номер телефона"

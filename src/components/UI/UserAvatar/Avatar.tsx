@@ -1,7 +1,7 @@
 import React from 'react';
 import { Author, StaffData, User } from '../../../types/types.user';
 import { Avatar } from 'antd';
-import { getPhotoUrl } from '../../../services/photoURL.service';
+import { getPhotoUrl } from '../../../utils/photoURL.service';
 
 interface Props {
   user: User | Author | StaffData;

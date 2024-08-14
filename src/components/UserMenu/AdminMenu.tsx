@@ -7,8 +7,8 @@ import {
 } from '@ant-design/icons';
 import { useAppDispatch } from '../../store/hooks/hooks';
 import { useNavigate } from 'react-router-dom';
-import { logOut } from '../../store/users/UsersThunks';
-import { appRoutes } from '../../services/routes.service';
+import { logOut } from '../../store/features/users/UsersThunks';
+import { appRoutes } from '../../utils/routes.service';
 
 type MenuItem = Required<MenuProps>['items'][number];
 

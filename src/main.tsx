@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { persistor, store } from './store/store';
 import { PersistGate } from 'redux-persist/integration/react';
-import { addInterceptors } from './services/axios.service';
+import { addInterceptors } from './utils/axios.service';
 import './index.css';
 import React from 'react';
 import App from './App';

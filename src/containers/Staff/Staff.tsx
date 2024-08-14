@@ -3,7 +3,7 @@ import { useAppSelector } from '../../store/hooks/hooks';
 import {
   selectFetchAllLoading,
   selectStaff,
-} from '../../store/users/UsersSlice';
+} from '../../store/features/users/UsersSlice';
 import Spinner from '../../components/UI/Spin/Spin';
 import {
   Button,
@@ -25,7 +25,7 @@ import { StaffData } from '../../types/types.user';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import StaffFilterItem from '../../components/StaffFilter/StaffFilterItem';
 import { useNavigate } from 'react-router-dom';
-import { appRoutes } from '../../services/routes.service';
+import { appRoutes } from '../../utils/routes.service';
 import NoData from '../../components/UI/NoData/NoData';
 import AvatarPic from '../../components/UI/UserAvatar/Avatar';
 
