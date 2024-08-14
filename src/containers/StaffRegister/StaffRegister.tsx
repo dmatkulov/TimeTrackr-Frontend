@@ -1,5 +1,5 @@
 import React from 'react';
-import StaffForm from '../../components/RegisterForm/StaffForm';
+import UserForm from '../../components/RegisterForm/UserForm';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hooks';
 import { selectRegisterLoading } from '../../store/users/UsersSlice';
 import { UserMutation } from '../../types/types.user';
@@ -21,7 +21,7 @@ const StaffRegister: React.FC<Props> = ({ open, onClose }) => {
 
   return (
     <>
-      <StaffForm
+      <UserForm
         onSubmit={handleFormSubmit}
         open={open}
         onClose={onClose}

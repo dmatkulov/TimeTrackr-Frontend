@@ -35,7 +35,7 @@ const StaffInfo: React.FC = () => {
         ]}
       />
       {employee && (
-        <>{loading ? <Spinner /> : <UserProfile employee={employee} />}</>
+        <>{loading ? <Spinner /> : <UserProfile user={employee} />}</>
       )}
     </>
   );

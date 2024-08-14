@@ -4,6 +4,7 @@ import { useAppSelector } from '../../store/hooks/hooks';
 import { selectUser } from '../../store/users/UsersSlice';
 import { appRoutes } from '../../services/routes.service';
 import Spinner from '../../components/UI/Spin/Spin';
+import { Roles } from '../../enum/roles.enum';
 
 const Redirect: React.FC = () => {
   const navigate = useNavigate();
@@ -13,10 +14,10 @@ const Redirect: React.FC = () => {
 
   const navigateToPanel = useCallback(() => {
     if (user) {
-      if (user.role === 'admin') {
+      if (user.role === Roles.Admin) {
         navigate(appRoutes.admin.staff);
-      } else if (user.role === 'employee') {
-        navigate(appRoutes.employee.dashboard);
+      } else if (user.role === Roles.User) {
+        navigate(appRoutes.user.dashboard);
       }
     } else {
       navigate(appRoutes.notFound);

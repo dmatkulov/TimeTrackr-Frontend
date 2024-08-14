@@ -3,6 +3,7 @@ import {
   LoginMutation,
   LoginResponse,
   StaffData,
+  UpdatePhotoArg,
   UpdateUserArg,
   User,
   UserMutation,
@@ -27,9 +28,9 @@ export const register = createAsyncThunk<
     formData.append('email', mutation.email);
     formData.append('firstname', mutation.firstname);
     formData.append('lastname', mutation.lastname);
-    formData.append('contactInfo[mobile]', mutation.contactInfo.mobile);
-    formData.append('contactInfo[city]', mutation.contactInfo.city);
-    formData.append('contactInfo[street]', mutation.contactInfo.street);
+    if (mutation.phoneNumber) {
+      formData.append('phoneNumber', mutation.phoneNumber);
+    }
 
     if (mutation.password) {
       formData.append('password', mutation.password);
@@ -144,12 +145,9 @@ export const updateUser = createAsyncThunk<
     formData.append('firstname', mutation.firstname);
     formData.append('lastname', mutation.lastname);
     formData.append('position', mutation.position);
-    if (mutation.contactInfo) {
-      formData.append('contactInfo[mobile]', mutation.contactInfo.mobile);
-      formData.append('contactInfo[city]', mutation.contactInfo.city);
-      formData.append('contactInfo[street]', mutation.contactInfo.street);
+    if (mutation.phoneNumber) {
+      formData.append('phoneNumber', mutation.phoneNumber);
     }
-    formData.append('startDate', mutation.startDate);
 
     if (mutation.photo) {
       formData.append('photo', mutation.photo);
@@ -163,13 +161,39 @@ export const updateUser = createAsyncThunk<
   } catch (e) {
     if (
       isAxiosError(e) &&
-      e.response?.status === 400 &&
+      e.response?.status === 422 &&
       e.response?.data.message
     ) {
       return rejectWithValue(e.response.data);
     }
+    throw e;
+  }
+});
 
-    console.log(e);
+export const updateUserPhoto = createAsyncThunk<
+  LoginResponse,
+  UpdatePhotoArg,
+  { rejectValue: GlobalMessage }
+>('users/updateOnePhoto', async ({ id, mutation }, { rejectWithValue }) => {
+  try {
+    const formData = new FormData();
+    if (mutation.photo) {
+      formData.append('photo', mutation.photo);
+    }
+
+    const response = await axiosService.patch<LoginResponse>(
+      `${apiRoutes.users}/${apiRoutes.updatePhoto}${id}`,
+      formData,
+    );
+    return response.data;
+  } catch (e) {
+    if (
+      isAxiosError(e) &&
+      e.response?.status === 422 &&
+      e.response?.data.message
+    ) {
+      return rejectWithValue(e.response.data);
+    }
     throw e;
   }
 });

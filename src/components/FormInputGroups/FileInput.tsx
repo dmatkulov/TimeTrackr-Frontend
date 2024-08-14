@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { DeleteOutlined, UploadOutlined } from '@ant-design/icons';
+import { DeleteFilled, UploadOutlined } from '@ant-design/icons';
 import { Button, Flex, Space, Typography } from 'antd';
 import { red } from '@ant-design/colors';
 
@@ -46,7 +46,12 @@ const FileInput: React.FC<Props> = ({ onChange, name, onDelete, filename }) => {
             >
               {filename || ''}
             </Typography.Text>
-            <Button danger icon={<DeleteOutlined />} onClick={onDelete} />
+            <Button
+              type="text"
+              danger
+              icon={<DeleteFilled />}
+              onClick={onDelete}
+            />
           </Space>
         )}
       </Flex>

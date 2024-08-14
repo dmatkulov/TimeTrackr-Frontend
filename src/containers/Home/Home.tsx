@@ -1,10 +1,11 @@
 import React from 'react';
-import { Button, Flex, Space, Typography } from 'antd';
+import { Button, Flex, Layout, Space, Typography } from 'antd';
 import { blue } from '@ant-design/colors';
 import { useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../services/routes.service';
 import { useAppSelector } from '../../store/hooks/hooks';
 import { selectUser } from '../../store/users/UsersSlice';
+import AppHeader from '../../components/Header/AppHeader';
 
 const { Title, Paragraph } = Typography;
 
@@ -19,6 +20,9 @@ const Home: React.FC = () => {
 
   return (
     <>
+      <Layout>
+        <AppHeader />
+      </Layout>
       <Flex vertical align="center" justify="center">
         <Paragraph style={{ marginTop: '120px' }}>Добро пожаловать в</Paragraph>
         <Title style={titleStyle} level={1}>

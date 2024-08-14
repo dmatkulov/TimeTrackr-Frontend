@@ -10,8 +10,10 @@ import {
   login,
   register,
   updateUser,
+  updateUserPhoto,
 } from './UsersThunks';
 import { message } from 'antd';
+import { Roles } from '../../enum/roles.enum';
 
 interface UsersState {
   user: User | null;
@@ -87,7 +89,6 @@ export const usersSlice = createSlice({
         if (error) {
           state.registerError = error;
         }
-        console.log('state.registerError ', state.registerError);
       });
 
     builder
@@ -96,7 +97,11 @@ export const usersSlice = createSlice({
       })
       .addCase(getOneUser.fulfilled, (state, { payload: data }) => {
         state.fetchOneLoading = false;
-        state.staff = data;
+        if (state.user?.role === Roles.Admin) {
+          state.staff = data;
+        } else if (state.user?.role === Roles.User) {
+          state.user = data;
+        }
       })
       .addCase(getOneUser.rejected, (state) => {
         state.fetchOneLoading = false;
@@ -137,14 +142,29 @@ export const usersSlice = createSlice({
       .addCase(updateUser.fulfilled, (state, { payload: data }) => {
         state.updateLoading = false;
 
-        if (state.user?.role === 'admin') {
+        if (state.user?.role === Roles.Admin) {
           state.staff = data.user;
-        } else if (state.user?.role === 'employee') {
+        } else if (state.user?.role === Roles.User) {
           state.user = data.user;
         }
+
         void message.success(data.message);
       })
       .addCase(updateUser.rejected, (state, { payload: error }) => {
+        state.updateLoading = false;
+        void message.error(error?.message);
+      });
+
+    builder
+      .addCase(updateUserPhoto.pending, (state) => {
+        state.updateLoading = true;
+      })
+      .addCase(updateUserPhoto.fulfilled, (state, { payload: data }) => {
+        state.updateLoading = false;
+        state.user = data.user;
+        void message.success(data.message);
+      })
+      .addCase(updateUserPhoto.rejected, (state, { payload: error }) => {
         state.updateLoading = false;
         void message.error(error?.message);
       });

@@ -7,12 +7,12 @@ const isUrlWithoutExtension = (url: string): boolean => {
   return regex.test(url);
 };
 
-export const getPhotoUrl = (employee: User | Author): string => {
-  if (employee.photo) {
-    if (!isUrlWithoutExtension(employee.photo)) {
-      return employee.photo;
+export const getPhotoUrl = (user: User | Author): string => {
+  if (user.photo) {
+    if (!isUrlWithoutExtension(user.photo)) {
+      return user.photo;
     } else {
-      return `${apiURL}/${employee.photo}`;
+      return `${apiURL}/${user.photo}`;
     }
   } else {
     return noPhoto;
