@@ -104,13 +104,6 @@ const UserForm: React.FC<Props> = ({
     });
   };
 
-  const deletePhoto = () => {
-    setState((prevState) => ({
-      ...prevState,
-      photo: 'delete',
-    }));
-  };
-
   const deletePhoneNumber = () => {
     setState((prevState) => ({ ...prevState, phoneNumber: 'delete' }));
     setHasPhoneNumber(false);
@@ -121,6 +114,13 @@ const UserForm: React.FC<Props> = ({
 
   const addPhoneNumber = () => {
     setHasPhoneNumber(true);
+  };
+
+  const deletePhoto = () => {
+    setState((prevState) => ({
+      ...prevState,
+      photo: 'delete',
+    }));
   };
 
   const fileInputChangeHandler = (

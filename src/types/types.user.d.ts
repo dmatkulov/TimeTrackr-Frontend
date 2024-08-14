@@ -44,6 +44,10 @@ export interface UserMutation {
   password?: string;
 }
 
+export interface UserPhoto {
+  photo: File | null | string;
+}
+
 export interface LoginResponse {
   message: string;
   user: User;
@@ -52,6 +56,11 @@ export interface LoginResponse {
 export interface UpdateUserArg {
   id: string;
   mutation: UserMutation;
+}
+
+export interface UpdatePhotoArg {
+  id: string;
+  mutation: UserPhoto;
 }
 
 export interface UserQueryValues {

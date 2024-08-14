@@ -10,6 +10,7 @@ import {
   login,
   register,
   updateUser,
+  updateUserPhoto,
 } from './UsersThunks';
 import { message } from 'antd';
 import { Roles } from '../../enum/roles.enum';
@@ -150,6 +151,20 @@ export const usersSlice = createSlice({
         void message.success(data.message);
       })
       .addCase(updateUser.rejected, (state, { payload: error }) => {
+        state.updateLoading = false;
+        void message.error(error?.message);
+      });
+
+    builder
+      .addCase(updateUserPhoto.pending, (state) => {
+        state.updateLoading = true;
+      })
+      .addCase(updateUserPhoto.fulfilled, (state, { payload: data }) => {
+        state.updateLoading = false;
+        state.user = data.user;
+        void message.success(data.message);
+      })
+      .addCase(updateUserPhoto.rejected, (state, { payload: error }) => {
         state.updateLoading = false;
         void message.error(error?.message);
       });

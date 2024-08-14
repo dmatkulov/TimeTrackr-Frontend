@@ -1,8 +1,17 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
-import { Button, Flex, Popconfirm, Space, Tag, Typography } from 'antd';
-import { User, UserMutation } from '../../types/types.user';
+import {
+  Button,
+  Flex,
+  Form,
+  Modal,
+  Popconfirm,
+  Space,
+  Tag,
+  Typography,
+} from 'antd';
+import { User, UserMutation, UserPhoto } from '../../types/types.user';
 import {
   CameraFilled,
   DeleteOutlined,
@@ -15,6 +24,7 @@ import {
   deleteUser,
   getOneUser,
   updateUser,
+  updateUserPhoto,
 } from '../../store/users/UsersThunks';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import { useAppDispatch, useAppSelector } from '../../store/hooks/hooks';
@@ -28,6 +38,7 @@ import {
 import { getPhotoUrl } from '../../services/photoURL.service';
 import { Roles } from '../../enum/roles.enum';
 import UserForm from '../RegisterForm/UserForm';
+import FileInput from '../FormInputGroups/FileInput';
 
 dayjs.locale('ru');
 
@@ -38,6 +49,7 @@ interface Props {
 }
 
 const UserProfile: React.FC<Props> = ({ user }) => {
+  const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector(selectUser);
   const navigate = useNavigate();
@@ -47,9 +59,27 @@ const UserProfile: React.FC<Props> = ({ user }) => {
   const { sm, lg } = useBreakpoint();
   const photo = getPhotoUrl(user);
   let phone;
-  let form;
+  let userForm;
+  let modal;
 
+  const [state, setState] = useState<UserPhoto>({ photo: null });
   const [open, setOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setState((prevState) => ({ ...prevState, photo: user.photo }));
+    setIsModalOpen(true);
+  };
+
+  const handleOk = async () => {
+    await dispatch(updateUserPhoto({ id: user._id, mutation: state }));
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    form.resetFields;
+    setIsModalOpen(false);
+  };
 
   const handleClose = () => {
     setOpen(false);
@@ -74,6 +104,39 @@ const UserProfile: React.FC<Props> = ({ user }) => {
     [dispatch],
   );
 
+  const deletePhoto = () => {
+    setState((prevState) => ({
+      ...prevState,
+      photo: 'delete',
+    }));
+  };
+
+  const fileInputChangeHandler = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const { name, files } = event.target;
+    if (files && user) {
+      setState((prevState) => ({
+        ...prevState,
+        [name]: files[0],
+      }));
+    }
+  };
+
+  const selectedFilename = useMemo(() => {
+    if (state.photo instanceof File) {
+      return state.photo.name;
+    } else if (state.photo === 'delete') {
+      return undefined;
+    } else if (user.photo) {
+      return user.photo.split('/').pop();
+    }
+  }, [state.photo, user.photo]);
+
+  if (user.phoneNumber) {
+    phone = formatPhoneNumber(user.phoneNumber);
+  }
+
   if (!user) {
     return <Navigate to={appRoutes.notFound} />;
   } else if (user) {
@@ -83,7 +146,7 @@ const UserProfile: React.FC<Props> = ({ user }) => {
       phoneNumber: null,
       photo: null,
     };
-    form = (
+    userForm = (
       <UserForm
         onSubmit={handleSubmit}
         existingUser={mutation}
@@ -95,10 +158,26 @@ const UserProfile: React.FC<Props> = ({ user }) => {
         isEdit
       />
     );
-  }
-
-  if (user.phoneNumber) {
-    phone = formatPhoneNumber(user.phoneNumber);
+    modal = (
+      <Modal
+        title="Basic Modal"
+        open={isModalOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        forceRender
+      >
+        <Form form={form} layout="vertical" autoComplete="off">
+          <Form.Item name="photo">
+            <FileInput
+              name="photo"
+              filename={selectedFilename}
+              onChange={fileInputChangeHandler}
+              onDelete={deletePhoto}
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
+    );
   }
 
   return (
@@ -148,7 +227,7 @@ const UserProfile: React.FC<Props> = ({ user }) => {
                 }}
               />
             </div>
-            <Button type="primary" icon={<CameraFilled />}>
+            <Button type="primary" icon={<CameraFilled />} onClick={showModal}>
               Новое фото
             </Button>
           </div>
@@ -210,7 +289,8 @@ const UserProfile: React.FC<Props> = ({ user }) => {
         </Popconfirm>
       )}
 
-      {form}
+      {userForm}
+      {modal}
     </>
   );
 };

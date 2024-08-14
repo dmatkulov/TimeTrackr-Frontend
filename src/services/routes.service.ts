@@ -39,4 +39,5 @@ export const apiRoutes = {
   deleteTask: 'tasks/delete',
   getTask: 'tasks/info',
   editTask: 'tasks/edit/',
+  updatePhoto: 'photo/edit/',
 };

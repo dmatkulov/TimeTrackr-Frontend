@@ -3,6 +3,7 @@ import {
   LoginMutation,
   LoginResponse,
   StaffData,
+  UpdatePhotoArg,
   UpdateUserArg,
   User,
   UserMutation,
@@ -154,6 +155,34 @@ export const updateUser = createAsyncThunk<
 
     const response = await axiosService.patch<LoginResponse>(
       `${apiRoutes.users}/edit/${id}`,
+      formData,
+    );
+    return response.data;
+  } catch (e) {
+    if (
+      isAxiosError(e) &&
+      e.response?.status === 422 &&
+      e.response?.data.message
+    ) {
+      return rejectWithValue(e.response.data);
+    }
+    throw e;
+  }
+});
+
+export const updateUserPhoto = createAsyncThunk<
+  LoginResponse,
+  UpdatePhotoArg,
+  { rejectValue: GlobalMessage }
+>('users/updateOnePhoto', async ({ id, mutation }, { rejectWithValue }) => {
+  try {
+    const formData = new FormData();
+    if (mutation.photo) {
+      formData.append('photo', mutation.photo);
+    }
+
+    const response = await axiosService.patch<LoginResponse>(
+      `${apiRoutes.users}/${apiRoutes.updatePhoto}${id}`,
       formData,
     );
     return response.data;
