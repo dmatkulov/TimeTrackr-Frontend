@@ -54,7 +54,6 @@ export interface UserMutation {
   phoneNumber: string | null;
   photo: File | null | string;
   position: string;
-  password?: string;
 }
 
 export interface UserPhoto {

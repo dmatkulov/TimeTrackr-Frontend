@@ -1,40 +1,29 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ru';
+import { User, UserMutation, UserPhoto } from '../../types/types.user';
+import {
+  useGetUserQuery,
+  useUpdatePhotoMutation,
+  useUpdateUserMutation,
+} from '../../store/features/user/user';
+import Spinner from '../UI/Spin/Spin';
 import {
   Button,
   Flex,
   Form,
+  message,
   Modal,
-  Popconfirm,
   Space,
   Tag,
   Typography,
 } from 'antd';
-import { User, UserMutation, UserPhoto } from '../../types/types.user';
-import {
-  CameraFilled,
-  DeleteOutlined,
-  MailOutlined,
-  PhoneOutlined,
-  QuestionCircleOutlined,
-} from '@ant-design/icons';
-import { formatPhoneNumber } from '../../utils/formatPhoneNumber.service';
-import {
-  deleteUser,
-  getOneUser,
-  updateUser,
-  updateUserPhoto,
-} from '../../store/features/users/UsersThunks';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
-import { useAppDispatch, useAppSelector } from '../../store/hooks/hooks';
-import { Navigate, useNavigate } from 'react-router-dom';
-import { appRoutes } from '../../utils/routes.service';
 import { getPhotoUrl } from '../../utils/photoURL.service';
-import { Roles } from '../../enum/roles.enum';
+import { formatPhoneNumber } from '../../utils/formatPhoneNumber.service';
 import UserForm from '../RegisterForm/UserForm';
 import FileInput from '../FormInputGroups/FileInput';
-import { selectUser } from '../../store/features/auth/authSlice';
+import { CameraFilled, MailOutlined, PhoneOutlined } from '@ant-design/icons';
 
 dayjs.locale('ru');
 
@@ -45,30 +34,44 @@ interface Props {
 }
 
 const UserProfile: React.FC<Props> = ({ user }) => {
+  const { data: currentUser, isFetching } = useGetUserQuery(user._id);
+  const [updateUser, { isLoading: isUpdatingUser, isError: updateUserError }] =
+    useUpdateUserMutation();
+  const [
+    updatePhoto,
+    { isLoading: isUpdatingPhoto, isError: updatePhotoError },
+  ] = useUpdatePhotoMutation();
   const [form] = Form.useForm();
-  const dispatch = useAppDispatch();
-  const currentUser = useAppSelector(selectUser);
-  const navigate = useNavigate();
-  // const deleteLoading = useAppSelector(selectDeleteUserLoading);
-  // const updating = useAppSelector(selectUserUpdateLoading);
-
   const { sm, lg } = useBreakpoint();
-  const photo = getPhotoUrl(user);
-  let phone;
-  let userForm;
-  let modal;
 
   const [state, setState] = useState<UserPhoto>({ photo: null });
   const [open, setOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  useEffect(() => {
+    if (updateUserError || updatePhotoError) {
+      void message.error('Что-то пошло не так!');
+    }
+  }, [updateUserError, updatePhotoError]);
+
   const showModal = () => {
-    setState((prevState) => ({ ...prevState, photo: user.photo }));
+    if (currentUser) {
+      setState((prevState) => ({ ...prevState, photo: currentUser.photo }));
+    }
     setIsModalOpen(true);
   };
 
+  let photo;
+  let phone;
+  let userForm;
+  let modal;
+
+  if (currentUser) {
+    photo = getPhotoUrl(currentUser);
+  }
+
   const handleOk = async () => {
-    await dispatch(updateUserPhoto({ id: user._id, mutation: state }));
+    await updatePhoto({ id: user._id, mutation: state });
     setIsModalOpen(false);
   };
 
@@ -82,23 +85,14 @@ const UserProfile: React.FC<Props> = ({ user }) => {
   };
 
   const handleOpen = async () => {
-    await dispatch(getOneUser(user._id));
     setOpen(true);
   };
 
   const handleSubmit = async (state: UserMutation) => {
-    if (user) {
-      await dispatch(updateUser({ id: user._id, mutation: state }));
+    if (currentUser) {
+      await updateUser({ id: currentUser._id, mutation: state });
     }
   };
-
-  const handleDelete = useCallback(
-    async (id: string) => {
-      await dispatch(deleteUser(id)).unwrap();
-      navigate(appRoutes.admin.staff);
-    },
-    [dispatch],
-  );
 
   const deletePhoto = () => {
     setState((prevState) => ({
@@ -111,7 +105,7 @@ const UserProfile: React.FC<Props> = ({ user }) => {
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const { name, files } = event.target;
-    if (files && user) {
+    if (files && currentUser) {
       setState((prevState) => ({
         ...prevState,
         [name]: files[0],
@@ -124,21 +118,21 @@ const UserProfile: React.FC<Props> = ({ user }) => {
       return state.photo.name;
     } else if (state.photo === 'delete') {
       return undefined;
-    } else if (user.photo) {
-      return user.photo.split('/').pop();
+    } else if (currentUser && currentUser.photo) {
+      return currentUser.photo.split('/').pop();
     }
-  }, [state.photo, user.photo]);
+  }, [state.photo, currentUser]);
 
-  if (user.phoneNumber) {
-    phone = formatPhoneNumber(user.phoneNumber);
-  }
+  if (currentUser) {
+    if (currentUser.phoneNumber) {
+      phone = formatPhoneNumber(currentUser.phoneNumber);
+    }
 
-  if (!user) {
-    return <Navigate to={appRoutes.notFound} />;
-  } else if (user) {
     const mutation: UserMutation = {
-      ...user,
-      position: user.position._id,
+      email: currentUser.email,
+      firstname: currentUser.firstname,
+      lastname: currentUser.lastname,
+      position: currentUser.position._id,
       phoneNumber: null,
       photo: null,
     };
@@ -146,17 +140,18 @@ const UserProfile: React.FC<Props> = ({ user }) => {
       <UserForm
         onSubmit={handleSubmit}
         existingUser={mutation}
-        existingImage={user.photo}
-        existingPhone={user.phoneNumber}
+        existingImage={currentUser.photo}
+        existingPhone={currentUser.phoneNumber}
         open={open}
         onClose={handleClose}
-        loading={false}
+        loading={isUpdatingUser}
         isEdit
       />
     );
     modal = (
       <Modal
-        title="Basic Modal"
+        okButtonProps={{ disabled: isUpdatingPhoto }}
+        title="Редактировать фото"
         open={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -178,111 +173,102 @@ const UserProfile: React.FC<Props> = ({ user }) => {
 
   return (
     <>
-      <div
-        style={{
-          display: 'flex',
-          gap: '20px',
-          justifyContent: 'center',
-          flexDirection: !sm ? 'column' : 'row',
-          alignItems: 'stretch',
-          marginTop: '30px',
-        }}
-      >
-        <div
-          style={{
-            borderRadius: 20,
-            background: '#fff',
-            padding: '20px',
-          }}
-        >
+      {isFetching ? (
+        <Spinner />
+      ) : (
+        currentUser && (
           <div
             style={{
               display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              height: '100%',
-              gap: 10,
+              gap: '20px',
+              justifyContent: 'center',
+              flexDirection: !sm ? 'column' : 'row',
+              alignItems: 'stretch',
+              marginTop: '30px',
             }}
           >
             <div
               style={{
-                width: '150px',
-                height: '150px',
-                overflow: 'hidden',
+                borderRadius: 20,
+                background: '#fff',
+                padding: '20px',
               }}
             >
-              <img
-                src={photo}
-                alt={user.lastname}
+              <div
                 style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
                   height: '100%',
-                  width: '100%',
-                  objectFit: 'cover',
-                  borderRadius: '50%',
+                  gap: 10,
                 }}
-              />
+              >
+                <div
+                  style={{
+                    width: '150px',
+                    height: '150px',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <img
+                    src={photo}
+                    alt={currentUser.lastname}
+                    style={{
+                      height: '100%',
+                      width: '100%',
+                      objectFit: 'cover',
+                      borderRadius: '50%',
+                    }}
+                  />
+                </div>
+                <Button
+                  type="primary"
+                  icon={<CameraFilled />}
+                  onClick={showModal}
+                >
+                  Новое фото
+                </Button>
+              </div>
             </div>
-            <Button type="primary" icon={<CameraFilled />} onClick={showModal}>
-              Новое фото
-            </Button>
+            <div
+              style={{
+                borderRadius: 20,
+                background: '#fff',
+                padding: '20px 30px',
+                flexBasis: !sm ? 'auto' : '400px',
+              }}
+            >
+              <Title style={{ margin: '0 0 15px 0' }} level={3}>
+                {currentUser.lastname} {currentUser.firstname}
+              </Title>
+              <Tag color={currentUser.position.tag}>
+                {currentUser.position.name}
+              </Tag>
+              <Flex
+                vertical
+                align="flex-start"
+                gap={12}
+                style={{ margin: '30px 0' }}
+              >
+                <Text style={{ fontWeight: 'bolder' }}>Контакты</Text>
+                <Flex align="center" gap={!lg ? 12 : 20} wrap={true}>
+                  <Space>
+                    <MailOutlined />
+                    <Text>{currentUser.email}</Text>
+                  </Space>
+                  {phone && (
+                    <Space>
+                      <PhoneOutlined />
+                      <Text>{phone}</Text>
+                    </Space>
+                  )}
+                </Flex>
+              </Flex>
+              <Button onClick={handleOpen}>Редактировать</Button>
+            </div>
           </div>
-        </div>
-        <div
-          style={{
-            borderRadius: 20,
-            background: '#fff',
-            padding: '20px 30px',
-            flexBasis: !sm ? 'auto' : '400px',
-          }}
-        >
-          <Title style={{ margin: '0 0 15px 0' }} level={3}>
-            {user.lastname} {user.firstname}
-          </Title>
-          <Tag color={user.position.tag}>{user.position.name}</Tag>
-          <Flex
-            vertical
-            align="flex-start"
-            gap={12}
-            style={{ margin: '30px 0' }}
-          >
-            <Text style={{ fontWeight: 'bolder' }}>Контакты</Text>
-            <Flex align="center" gap={!lg ? 12 : 20} wrap={true}>
-              <Space>
-                <MailOutlined />
-                <Text>{user.email}</Text>
-              </Space>
-              {phone && (
-                <Space>
-                  <PhoneOutlined />
-                  <Text>{phone}</Text>
-                </Space>
-              )}
-            </Flex>
-          </Flex>
-          <Button onClick={handleOpen}>Редактировать</Button>
-        </div>
-      </div>
-
-      {currentUser?.role === Roles.Admin && currentUser?._id !== user._id && (
-        <Popconfirm
-          title="Удаление сотрудника"
-          description="Вы уверены, что хотите удалить сотрудника?"
-          icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-          okText="Удалить"
-          cancelText="Отменить"
-          disabled={false}
-          onConfirm={() => handleDelete(user._id)}
-        >
-          <Button
-            style={{ width: !sm ? '280px' : 'auto' }}
-            danger
-            type="text"
-            icon={<DeleteOutlined />}
-          >
-            Удалить сотрудника
-          </Button>
-        </Popconfirm>
+        )
       )}
 
       {userForm}

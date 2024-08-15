@@ -10,7 +10,7 @@ import {
 } from '../../../types/types.task';
 import { isAxiosError } from 'axios';
 import axiosService from '../../../utils/axios.service';
-import { apiRoutes } from '../../../utils/routes.service';
+import { apiRoutes } from '../../../containers/routes.service';
 
 export const createTask = createAsyncThunk<
   GlobalMessage,

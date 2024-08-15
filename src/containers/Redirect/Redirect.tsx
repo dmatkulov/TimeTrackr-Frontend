@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { appRoutes } from '../../utils/routes.service';
+import { appRoutes } from '../routes.service';
 import Spinner from '../../components/UI/Spin/Spin';
 import { Roles } from '../../enum/roles.enum';
 import { useAppSelector } from '../../store/hooks/hooks';

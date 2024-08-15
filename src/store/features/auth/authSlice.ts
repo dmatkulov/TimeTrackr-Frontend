@@ -4,6 +4,7 @@ import authApi from './auth';
 import { RootState } from '../../store';
 import { message } from 'antd';
 import { GlobalMessage } from '../../../types/types.global';
+import { userApi } from '../user/user';
 
 interface State {
   user: User | null;
@@ -16,11 +17,7 @@ const initialState: State = {
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {
-    unsetUser: (state) => {
-      state.user = null;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addMatcher(
@@ -46,13 +43,26 @@ const authSlice = createSlice({
           }
         },
       )
+      .addMatcher(
+        userApi.endpoints.updateUser.matchFulfilled,
+        (state, { payload: data }) => {
+          state.user = data.user;
+          void message.success(data.message);
+        },
+      )
+      .addMatcher(
+        userApi.endpoints.updatePhoto.matchFulfilled,
+        (state, { payload: data }) => {
+          state.user = data.user;
+          void message.success(data.message);
+        },
+      )
       .addMatcher(authApi.endpoints.logout.matchFulfilled, () => {
         return initialState;
       });
   },
 });
 
-export const { unsetUser } = authSlice.actions;
 export const AuthReducer = authSlice.reducer;
 
 export const selectUser = (state: RootState) => state.auth.user;

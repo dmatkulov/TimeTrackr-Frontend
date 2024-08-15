@@ -9,7 +9,7 @@ import {
 import { getOneUser } from '../../store/features/users/UsersThunks';
 import Spinner from '../../components/UI/Spin/Spin';
 import { Breadcrumb } from 'antd';
-import { appRoutes } from '../../utils/routes.service';
+import { appRoutes } from '../routes.service';
 
 const StaffInfo: React.FC = () => {
   const { id } = useParams() as { id: string };

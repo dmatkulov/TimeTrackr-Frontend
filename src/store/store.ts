@@ -27,7 +27,6 @@ const persistConfig = {
 const rootReducer = combineReducers({
   [api.reducerPath]: api.reducer,
   auth: AuthReducer,
-  // positions: positionsReducer,
 });
 
 const persistedReducer = persistReducer<any, UnknownAction>(

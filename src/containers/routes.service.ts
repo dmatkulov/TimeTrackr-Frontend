@@ -48,6 +48,14 @@ export const authRoute = {
   logout: 'auth/logout',
   googleLogin: 'auth/google',
 };
+
+export const userRoute = {
+  user: 'user/info/',
+  updateUser: 'user/edit/',
+  deleteUser: 'user/delete/',
+  updatePhoto: 'user/photo/edit/',
+};
+
 export const positionRoute = {
   positions: 'positions',
   newPosition: 'positions/new-position',

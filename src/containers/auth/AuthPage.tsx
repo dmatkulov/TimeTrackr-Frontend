@@ -4,7 +4,7 @@ import Login from '../Login/Login';
 import { useAppDispatch } from '../../store/hooks/hooks';
 import { useNavigate } from 'react-router-dom';
 import { googleLogin } from '../../store/features/users/UsersThunks';
-import { appRoutes } from '../../utils/routes.service';
+import { appRoutes } from '../routes.service';
 import { GoogleLogin } from '@react-oauth/google';
 import { AuthEnum } from '../../enum/auth.enum';
 import Register from '../Register/Register';

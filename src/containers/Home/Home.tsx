@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Flex, Layout, Space, Typography } from 'antd';
 import { blue } from '@ant-design/colors';
 import { useNavigate } from 'react-router-dom';
-import { appRoutes } from '../../utils/routes.service';
+import { appRoutes } from '../routes.service';
 import AppHeader from '../../components/Header/AppHeader';
 import { useAppSelector } from '../../store/hooks/hooks';
 

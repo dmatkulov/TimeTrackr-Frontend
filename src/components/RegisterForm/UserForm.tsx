@@ -22,7 +22,6 @@ const initialState: UserMutation = {
   lastname: '',
   position: '',
   phoneNumber: '',
-  password: '',
   photo: null,
 };
 
@@ -78,10 +77,7 @@ const UserForm: React.FC<Props> = ({
             ? existingPhone
             : state.phoneNumber,
       };
-
       onSubmit(data);
-
-      console.log(data);
       onClose();
     } catch (e) {
       console.log(e);

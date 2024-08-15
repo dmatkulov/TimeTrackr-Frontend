@@ -8,7 +8,7 @@ import {
 import { useAppDispatch } from '../../store/hooks/hooks';
 import { useNavigate } from 'react-router-dom';
 import { logOut } from '../../store/features/users/UsersThunks';
-import { appRoutes } from '../../utils/routes.service';
+import { appRoutes } from '../../containers/routes.service';
 
 type MenuItem = Required<MenuProps>['items'][number];
 

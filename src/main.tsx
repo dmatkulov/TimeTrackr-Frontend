@@ -2,7 +2,6 @@ import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { persistor, store } from './store/store';
 import { PersistGate } from 'redux-persist/integration/react';
-import { addInterceptors } from './utils/axios.service';
 import './index.css';
 import React from 'react';
 import App from './App';
@@ -10,8 +9,6 @@ import { BrowserRouter } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { GOOGLE_CLIENT_ID } from './helpers/constants';
 import { ConfigProvider } from 'antd';
-
-addInterceptors(store);
 
 const primaryColor = '#3947CF';
 const secondaryHoverColor = '#FFF8E8';

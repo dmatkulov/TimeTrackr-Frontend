@@ -4,7 +4,7 @@ import {
   LoginMutation,
   RegisterMutation,
 } from '../../../types/types.user';
-import { authRoute } from '../../../utils/routes.service';
+import { authRoute } from '../../../containers/routes.service';
 
 export const authApi = api.injectEndpoints({
   endpoints: (build) => ({
