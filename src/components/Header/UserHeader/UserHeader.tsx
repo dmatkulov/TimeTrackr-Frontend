@@ -10,7 +10,7 @@ import {
 } from '@ant-design/icons';
 import UserMenu from '../../UserMenu/UserMenu';
 import Logo from '../../UI/Logo/Logo';
-import { appRoutes } from '../../../services/routes.service';
+import { appRoutes } from '../../../common/routes';
 import { store } from '../../../store/store';
 
 interface Props {

@@ -1,21 +1,21 @@
 import AppLayout from './components/Layout/AppLayout';
 import { Route, Routes } from 'react-router-dom';
-import { appRoutes } from './services/routes.service';
+import { appRoutes } from './common/routes';
 import Home from './containers/Home/Home';
 import Page404 from './components/UI/404/Page404';
 import Redirect from './containers/Redirect/Redirect';
 import Protected from './components/ProtectedRoute/Protected';
 import UserPanel from './containers/UserPanel/UserPanel';
-import UserProfilePage from './containers/UserProfilePage/UserProfilePage';
+import UserProfile from './containers/UserProfile/UserProfile';
 import CalendarPage from './containers/Calendar/CalendarPage';
 import Dashboard from './containers/Dashboard/Dashboard';
-import AuthPage from './containers/auth/AuthPage';
+import Auth from './containers/Auth/Auth';
 import Notes from './containers/Notes/Notes';
 import Teams from './containers/Teams/Teams';
 import Projects from './containers/Projects/Projects';
 import { Roles } from './enum/roles.enum';
 import { useAppSelector } from './store/hooks/hooks';
-import { selectUser } from './store/features/auth/authSlice';
+import { selectUser } from './store/services/auth/authSlice';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -24,7 +24,7 @@ const App = () => {
       <AppLayout>
         <Routes>
           <Route path={appRoutes.home} element={<Home />} />
-          <Route path={appRoutes.auth} element={<AuthPage />} />
+          <Route path={appRoutes.auth} element={<Auth />} />
           <Route path={appRoutes.redirect} element={<Redirect />} />
           <Route path={appRoutes.notFound} element={<Page404 />} />
           <Route
@@ -35,10 +35,7 @@ const App = () => {
               </Protected>
             }
           >
-            <Route
-              path={appRoutes.user.account}
-              element={<UserProfilePage />}
-            />
+            <Route path={appRoutes.user.account} element={<UserProfile />} />
             <Route path={appRoutes.user.dashboard} element={<Dashboard />} />
             <Route path={appRoutes.user.notes} element={<Notes />} />
             <Route path={appRoutes.user.teams} element={<Teams />} />

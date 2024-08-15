@@ -18,9 +18,9 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { appRoutes } from '../../services/routes.service';
+import { appRoutes } from '../../common/routes';
 import './index.css';
-import { useLogoutMutation } from '../../store/features/auth/auth';
+import { useLogoutMutation } from '../../store/services/auth/auth';
 
 type MenuItem = Required<MenuProps>['items'][number];
 

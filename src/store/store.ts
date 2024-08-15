@@ -12,9 +12,9 @@ import {
   REGISTER,
 } from 'redux-persist';
 import { api } from './index';
-import { AuthReducer } from './features/auth/authSlice';
+import { AuthReducer } from './services/auth/authSlice';
 import autoMergeLevel2 from 'redux-persist/es/stateReconciler/autoMergeLevel2';
-// import { positionsReducer } from './features/positions/positionsSlice';
+// import { positionsReducer } from './utils/positions/positionsSlice';
 
 const persistConfig = {
   key: 'root',

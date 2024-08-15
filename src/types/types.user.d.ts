@@ -31,22 +31,6 @@ export interface AuthResponse {
   user: User;
 }
 
-export interface StaffData {
-  _id: string;
-  email: string;
-  firstname: string;
-  lastname: string;
-  photo: string;
-  position: Position;
-}
-
-export interface Author {
-  _id: string;
-  photo: string;
-  firstname: string;
-  lastname: string;
-}
-
 export interface UserMutation {
   email: string;
   firstname: string;
@@ -80,4 +64,20 @@ export interface UserQueryParams {
   positions?: string;
   email?: string;
   lastname?: string;
+}
+
+export interface StaffData {
+  _id: string;
+  email: string;
+  firstname: string;
+  lastname: string;
+  photo: string;
+  position: Position;
+}
+
+export interface Author {
+  _id: string;
+  photo: string;
+  firstname: string;
+  lastname: string;
 }

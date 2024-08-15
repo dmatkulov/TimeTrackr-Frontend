@@ -16,7 +16,7 @@
 // import {
 //   selectOnePositionLoading,
 //   selectPositionsCreating,
-// } from '../../store/features/positions/positionsSlice';
+// } from '../../store/utils/positions/positionsSlice';
 // import Spinner from '../UI/Spin/Spin';
 // import { TagEnum } from '../../enum/tag.enum';
 //

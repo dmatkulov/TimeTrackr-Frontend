@@ -1,8 +1,8 @@
 // import React, { useCallback, useEffect, useState } from 'react';
 // import { useAppDispatch, useAppSelector } from '../../store/hooks/hooks';
-// import { selectPositions } from '../../store/features/positions/positionsSlice';
-// import { getUsers } from '../../store/features/users/UsersThunks';
-// import { fetchPositions } from '../../store/features/positions/positionsThunks';
+// import { selectPositions } from '../../store/utils/positions/positionsSlice';
+// import { getUsers } from '../../store/utils/users/UsersThunks';
+// import { fetchPositions } from '../../store/utils/positions/positionsThunks';
 // import { UserQueryValues } from '../../types/types.user';
 // import { Col, Row, Space, Switch } from 'antd';
 // import StaffFilterForm from './StaffFilterForm';

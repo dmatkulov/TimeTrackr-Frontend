@@ -3,11 +3,11 @@ import { Badge, Dropdown, Flex, MenuProps, Space, Typography } from 'antd';
 import { User } from '../../../types/types.user';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import AvatarPic from '../UserAvatar/Avatar';
-import { appRoutes } from '../../../services/routes.service';
+import { appRoutes } from '../../../common/routes';
 import { useNavigate } from 'react-router-dom';
 import { BellFilled, LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import './index.css';
-import { useLogoutMutation } from '../../../store/features/auth/auth';
+import { useLogoutMutation } from '../../../store/services/auth/auth';
 
 const { Text } = Typography;
 

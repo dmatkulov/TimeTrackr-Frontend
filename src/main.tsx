@@ -7,7 +7,7 @@ import React from 'react';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import { GoogleOAuthProvider } from '@react-oauth/google';
-import { GOOGLE_CLIENT_ID } from './helpers/constants';
+import { GOOGLE_CLIENT_ID } from './common/constants';
 import { ConfigProvider } from 'antd';
 
 const primaryColor = '#3947CF';

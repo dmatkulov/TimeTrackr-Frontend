@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { appRoutes } from '../../services/routes.service';
+import { appRoutes } from '../../common/routes';
 
 interface Props extends React.PropsWithChildren {
   isAllowed: boolean | null;

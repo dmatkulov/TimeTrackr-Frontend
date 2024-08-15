@@ -6,7 +6,7 @@
 //   selectPositionDeleting,
 //   selectPositions,
 //   selectPositionsLoading,
-// } from '../../store/features/positions/positionsSlice';
+// } from '../../store/utils/positions/positionsSlice';
 // import { Position } from '../../types/types.position';
 // import {
 //   DeleteOutlined,
@@ -21,8 +21,8 @@
 //   deletePosition,
 //   fetchOnePosition,
 //   fetchPositions,
-// } from '../../store/features/positions/positionsThunks';
-// import { getUsers } from '../../store/features/users/UsersThunks';
+// } from '../../store/utils/positions/positionsThunks';
+// import { getUsers } from '../../store/utils/users/UsersThunks';
 // import NoData from '../../components/UI/NoData/NoData';
 //
 // const Positions: React.FC = () => {
