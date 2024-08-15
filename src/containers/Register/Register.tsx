@@ -1,7 +1,7 @@
 import React from 'react';
 import { RegisterMutation } from '../../types/types.user';
 import RegisterForm from '../../components/RegisterForm/RegisterForm';
-import { appRoutes } from '../routes.service';
+import { appRoutes } from '../../services/routes.service';
 import { useNavigate } from 'react-router-dom';
 import { useSignUpMutation } from '../../store/features/auth/auth';
 

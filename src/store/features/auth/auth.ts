@@ -4,7 +4,7 @@ import {
   LoginMutation,
   RegisterMutation,
 } from '../../../types/types.user';
-import { authRoute } from '../../../containers/routes.service';
+import { authRoute } from '../../../services/routes.service';
 
 export const authApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -22,6 +22,13 @@ export const authApi = api.injectEndpoints({
         body,
       }),
     }),
+    googleLogin: build.mutation<AuthResponse, string>({
+      query: (credentials) => ({
+        url: authRoute.googleLogin,
+        method: 'post',
+        body: { credential: credentials },
+      }),
+    }),
     logout: build.mutation<void, void>({
       query: () => ({
         url: authRoute.logout,
@@ -31,6 +38,10 @@ export const authApi = api.injectEndpoints({
   }),
 });
 
-export const { useSignUpMutation, useSignInMutation, useLogoutMutation } =
-  authApi;
+export const {
+  useSignUpMutation,
+  useSignInMutation,
+  useGoogleLoginMutation,
+  useLogoutMutation,
+} = authApi;
 export default authApi;

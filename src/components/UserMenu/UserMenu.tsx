@@ -18,7 +18,7 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { appRoutes } from '../../containers/routes.service';
+import { appRoutes } from '../../services/routes.service';
 import './index.css';
 import { useLogoutMutation } from '../../store/features/auth/auth';
 

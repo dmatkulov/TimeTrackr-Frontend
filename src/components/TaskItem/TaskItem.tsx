@@ -16,7 +16,7 @@ import {
 import TaskTag from './TaskTag';
 import { getOneTask } from '../../store/features/tasks/tasksThunks';
 import TaskModal from '../../containers/TaskModal/TaskModal';
-import { convertTime } from '../../utils/formattedTime.service';
+import { convertTime } from '../../services/formattedTime.service';
 
 interface Props {
   task: Task;

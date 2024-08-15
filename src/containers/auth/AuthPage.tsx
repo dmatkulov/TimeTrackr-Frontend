@@ -1,23 +1,22 @@
 import React, { useState } from 'react';
 import { Divider, Segmented, Space, Typography } from 'antd';
 import Login from '../Login/Login';
-import { useAppDispatch } from '../../store/hooks/hooks';
 import { useNavigate } from 'react-router-dom';
-import { googleLogin } from '../../store/features/users/UsersThunks';
-import { appRoutes } from '../routes.service';
+import { appRoutes } from '../../services/routes.service';
 import { GoogleLogin } from '@react-oauth/google';
 import { AuthEnum } from '../../enum/auth.enum';
 import Register from '../Register/Register';
+import { useGoogleLoginMutation } from '../../store/features/auth/auth';
 
 const { Title } = Typography;
 const AuthPage: React.FC = () => {
-  const dispatch = useAppDispatch();
+  const [googleLogin] = useGoogleLoginMutation();
   const navigate = useNavigate();
 
   const [value, setValue] = useState<string>(AuthEnum.Login);
 
   const googleLoginHandler = async (credential: string) => {
-    await dispatch(googleLogin(credential)).unwrap();
+    await googleLogin(credential).unwrap();
     navigate(appRoutes.redirect);
   };
   return (

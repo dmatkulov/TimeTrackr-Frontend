@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { Button, Form, FormProps, Input, InputRef } from 'antd';
 import { LoginMutation } from '../../types/types.user';
 import { useNavigate } from 'react-router-dom';
-import { appRoutes } from '../routes.service';
+import { appRoutes } from '../../services/routes.service';
 import { useSignInMutation } from '../../store/features/auth/auth';
 
 const App: React.FC = () => {

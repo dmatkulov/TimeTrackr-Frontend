@@ -32,7 +32,7 @@ import {
   convertTime,
   disabledTime,
   format,
-} from '../../utils/formattedTime.service';
+} from '../../services/formattedTime.service';
 
 interface Props {
   task: TaskMutation;

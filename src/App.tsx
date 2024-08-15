@@ -1,6 +1,6 @@
 import AppLayout from './components/Layout/AppLayout';
 import { Route, Routes } from 'react-router-dom';
-import { appRoutes } from './containers/routes.service';
+import { appRoutes } from './services/routes.service';
 import Home from './containers/Home/Home';
 import Page404 from './components/UI/404/Page404';
 import Redirect from './containers/Redirect/Redirect';

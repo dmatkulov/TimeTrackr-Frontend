@@ -19,8 +19,8 @@ import {
   Typography,
 } from 'antd';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
-import { getPhotoUrl } from '../../utils/photoURL.service';
-import { formatPhoneNumber } from '../../utils/formatPhoneNumber.service';
+import { getPhotoUrl } from '../../services/photoURL.service';
+import { formatPhoneNumber } from '../../services/formatPhoneNumber.service';
 import UserForm from '../RegisterForm/UserForm';
 import FileInput from '../FormInputGroups/FileInput';
 import { CameraFilled, MailOutlined, PhoneOutlined } from '@ant-design/icons';
@@ -71,7 +71,7 @@ const UserProfile: React.FC<Props> = ({ user }) => {
   }
 
   const handleOk = async () => {
-    await updatePhoto({ id: user._id, mutation: state });
+    await updatePhoto({ id: user._id, mutation: state }).unwrap();
     setIsModalOpen(false);
   };
 
@@ -90,7 +90,7 @@ const UserProfile: React.FC<Props> = ({ user }) => {
 
   const handleSubmit = async (state: UserMutation) => {
     if (currentUser) {
-      await updateUser({ id: currentUser._id, mutation: state });
+      await updateUser({ id: currentUser._id, mutation: state }).unwrap();
     }
   };
 

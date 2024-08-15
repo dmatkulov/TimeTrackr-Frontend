@@ -5,7 +5,7 @@ import {
   UpdateUserArg,
   User,
 } from '../../../types/types.user';
-import { userRoute } from '../../../containers/routes.service';
+import { userRoute } from '../../../services/routes.service';
 
 export const userApi = api.injectEndpoints({
   endpoints: (build) => ({

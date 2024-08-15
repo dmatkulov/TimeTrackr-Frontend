@@ -1,6 +1,6 @@
 import { api } from '../../index';
 import { Position } from '../../../types/types.position';
-import { positionRoute } from '../../../containers/routes.service';
+import { positionRoute } from '../../../services/routes.service';
 
 const positionApi = api.injectEndpoints({
   endpoints: (builder) => ({

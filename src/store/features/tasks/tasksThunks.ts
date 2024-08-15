@@ -9,8 +9,8 @@ import {
   TasksMutation,
 } from '../../../types/types.task';
 import { isAxiosError } from 'axios';
-import axiosService from '../../../utils/axios.service';
-import { apiRoutes } from '../../../containers/routes.service';
+import axiosService from '../../../services/axios.service';
+import { apiRoutes } from '../../../services/routes.service';
 
 export const createTask = createAsyncThunk<
   GlobalMessage,

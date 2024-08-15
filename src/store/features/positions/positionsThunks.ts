@@ -4,8 +4,8 @@
 //   PositionMutation,
 //   UpdatePositionArg,
 // } from '../../../types/types.position';
-// import axiosService from '../../../utils/axios.service';
-// import { apiRoutes } from '../../../utils/routes.service';
+// import axiosService from '../../../services/axios.service';
+// import { apiRoutes } from '../../../services/routes.service';
 // import { BadRequestError, GlobalMessage } from '../../../types/types.global';
 // import { isAxiosError } from 'axios';
 //

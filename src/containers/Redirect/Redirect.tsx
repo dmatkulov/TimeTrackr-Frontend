@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { appRoutes } from '../routes.service';
+import { appRoutes } from '../../services/routes.service';
 import Spinner from '../../components/UI/Spin/Spin';
 import { Roles } from '../../enum/roles.enum';
 import { useAppSelector } from '../../store/hooks/hooks';
@@ -9,7 +9,6 @@ import { selectUser } from '../../store/features/auth/authSlice';
 const Redirect: React.FC = () => {
   const navigate = useNavigate();
   const user = useAppSelector(selectUser);
-  console.log('user in redirect', user);
 
   const [loading, setLoading] = useState(true);
 

@@ -9,7 +9,7 @@ import {
   Statistic,
   Typography,
 } from 'antd';
-import { convertTime } from '../../utils/formattedTime.service';
+import { convertTime } from '../../services/formattedTime.service';
 
 interface Props {
   totalTimeSpent: number;

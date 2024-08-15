@@ -28,7 +28,7 @@ import {
 import { colStyle } from './taskModalStyles';
 import EditTaskForm from '../../components/EditTask/EditTaskForm';
 import AvatarPic from '../../components/UI/UserAvatar/Avatar';
-import { currentDay } from '../../utils/formattedTime.service';
+import { currentDay } from '../../services/formattedTime.service';
 
 interface Props {
   open: boolean;
