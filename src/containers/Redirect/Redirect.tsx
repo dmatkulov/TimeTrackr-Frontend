@@ -14,9 +14,9 @@ const Redirect: React.FC = () => {
 
   const navigateToPanel = useCallback(() => {
     if (user) {
-      if (user.role === Roles.Admin) {
+      if (user.roles.includes(Roles.Admin)) {
         navigate(appRoutes.admin.staff);
-      } else if (user.role === Roles.User) {
+      } else if (user.roles.includes(Roles.User)) {
         navigate(appRoutes.user.dashboard);
       }
     } else {

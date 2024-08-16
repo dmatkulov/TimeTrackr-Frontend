@@ -30,7 +30,7 @@ const App = () => {
           <Route
             path={appRoutes.user.profile}
             element={
-              <Protected isAllowed={user && user.role === Roles.User}>
+              <Protected isAllowed={user && user?.roles?.includes(Roles.User)}>
                 <UserPanel />
               </Protected>
             }

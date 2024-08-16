@@ -9,7 +9,7 @@ export interface User {
   phoneNumber: string;
   photo: string;
   position: Position;
-  role: string;
+  roles: string[];
   googleID?: string;
 }
 
