@@ -16,3 +16,5 @@ export const teamApi = api.injectEndpoints({
 });
 
 export const { useCreateTeamMutation } = teamApi;
+
+export default teamApi;

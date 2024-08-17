@@ -3,8 +3,8 @@ import { AuthResponse, User } from '../../../types/types.user';
 import authApi from './auth';
 import { RootState } from '../../store';
 import { message } from 'antd';
-import { GlobalMessage } from '../../../types/types.global';
 import { userApi } from '../user/user';
+import { handleError } from '../../../utils/handleError';
 
 interface State {
   user: User | null;
@@ -37,10 +37,7 @@ const authSlice = createSlice({
       .addMatcher(
         authApi.endpoints.signIn.matchRejected,
         (_state, { payload: error }) => {
-          if (error && 'data' in error) {
-            const e = error.data as GlobalMessage;
-            void message.error(e.message);
-          }
+          handleError(error);
         },
       )
       .addMatcher(
