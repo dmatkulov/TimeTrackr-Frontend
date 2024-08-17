@@ -21,6 +21,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../common/routes';
 import './index.css';
 import { useLogoutMutation } from '../../store/services/auth/auth';
+import TeamAdd from '../Team/TeamAdd';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -33,6 +34,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
   const [logout] = useLogoutMutation();
   const navigate = useNavigate();
   const location = useLocation();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const logOutUser = async () => {
     await logout();
@@ -122,7 +124,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
           key: 'addTeam',
           label: (
             <Button
-              onClick={() => alert('clicked')}
+              onClick={() => setIsOpen(true)}
               type="primary"
               icon={<PlusCircleOutlined />}
             >
@@ -208,38 +210,41 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
   };
 
   return (
-    <Menu
-      defaultSelectedKeys={[activeKey]}
-      mode="inline"
-      openKeys={openKeys}
-      onOpenChange={handleOpenChange}
-      items={items}
-      expandIcon={({ isOpen }) => (
-        <Flex
-          align="center"
-          justify="center"
-          style={{
-            width: '28px',
-            height: '28px',
-            background: '#FFF8E8',
-            borderRadius: '8px',
-            marginLeft: 'auto',
-            color: '#3947ce',
-          }}
-        >
-          {isOpen ? <MinusOutlined /> : <PlusOutlined />}
-        </Flex>
-      )}
-      style={{
-        height: '100%',
-        display: 'flex',
-        paddingTop: '30px',
-        paddingBottom: '30px',
-        flexDirection: 'column',
-        border: 'none',
-        flexGrow: 1,
-      }}
-    />
+    <>
+      <Menu
+        defaultSelectedKeys={[activeKey]}
+        mode="inline"
+        openKeys={openKeys}
+        onOpenChange={handleOpenChange}
+        items={items}
+        expandIcon={({ isOpen }) => (
+          <Flex
+            align="center"
+            justify="center"
+            style={{
+              width: '28px',
+              height: '28px',
+              background: '#FFF8E8',
+              borderRadius: '8px',
+              marginLeft: 'auto',
+              color: '#3947ce',
+            }}
+          >
+            {isOpen ? <MinusOutlined /> : <PlusOutlined />}
+          </Flex>
+        )}
+        style={{
+          height: '100%',
+          display: 'flex',
+          paddingTop: '30px',
+          paddingBottom: '30px',
+          flexDirection: 'column',
+          border: 'none',
+          flexGrow: 1,
+        }}
+      />
+      <TeamAdd isOpen={isOpen} onClose={() => setIsOpen(false)} />
+    </>
   );
 };
 

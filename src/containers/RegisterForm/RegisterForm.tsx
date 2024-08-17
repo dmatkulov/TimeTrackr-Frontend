@@ -3,21 +3,18 @@ import { RegisterMutation } from '../../types/types.user';
 import { appRoutes } from '../../common/routes';
 import { useNavigate } from 'react-router-dom';
 import { useSignUpMutation } from '../../store/services/auth/auth';
-import { Button, Form, Input, Select } from 'antd';
-import { useGetPositionsQuery } from '../../store/services/positions/positions';
+import { Button, Form, Input } from 'antd';
 import PasswordInput from '../../components/FormInputGroups/PasswordInputGroup';
 
 const initialState: RegisterMutation = {
   email: '',
   firstname: '',
   lastname: '',
-  position: '',
   password: '',
 };
 
 const RegisterForm: React.FC = () => {
   const [signUp, { isLoading }] = useSignUpMutation();
-  const { data: positions } = useGetPositionsQuery();
   const navigate = useNavigate();
 
   const [form] = Form.useForm();
@@ -97,31 +94,6 @@ const RegisterForm: React.FC = () => {
             onChange={inputChangeHandler}
           />
         </Form.Item>
-        {positions && (
-          <Form.Item
-            name="position"
-            label="Должность"
-            rules={[{ required: true, message: 'Выберите позицию' }]}
-          >
-            <Select
-              size="large"
-              value={state.position}
-              onChange={(value) =>
-                setState((prevState) => ({
-                  ...prevState,
-                  position: value,
-                }))
-              }
-              placeholder="Выберите должность"
-              options={[
-                ...positions.map((position) => ({
-                  value: position._id,
-                  label: position.name,
-                })),
-              ]}
-            />
-          </Form.Item>
-        )}
         <PasswordInput state={state} onChange={inputChangeHandler} />
         <Form.Item>
           <Button

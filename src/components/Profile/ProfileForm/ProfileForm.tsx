@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Drawer, Flex, Form, Input, Select } from 'antd';
+import { Button, Drawer, Flex, Form, Input } from 'antd';
 import buddhistEra from 'dayjs/plugin/buddhistEra';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
@@ -10,7 +10,6 @@ import './index.css';
 import { UserMutation } from '../../../types/types.user';
 import { useAppDispatch } from '../../../store/hooks/hooks';
 import FileInput from '../../FormInputGroups/FileInput';
-import { useGetPositionsQuery } from '../../../store/services/positions/positions';
 
 dayjs.extend(buddhistEra);
 dayjs.extend(utc);
@@ -20,7 +19,6 @@ const initialState: UserMutation = {
   email: '',
   firstname: '',
   lastname: '',
-  position: '',
   phoneNumber: '',
   photo: null,
 };
@@ -48,7 +46,6 @@ const ProfileForm: React.FC<Props> = ({
 }) => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
-  const { data: positions } = useGetPositionsQuery();
 
   const [state, setState] = useState<UserMutation>(existingUser);
   const [hasPhoneNumber, setHasPhoneNumber] = useState<boolean>(false);
@@ -210,32 +207,6 @@ const ProfileForm: React.FC<Props> = ({
             onChange={inputChangeHandler}
           />
         </Form.Item>
-        {positions && (
-          <Form.Item
-            name="position"
-            label="Позиция"
-            id={isEdit ? 'positionUpd' : 'position'}
-            rules={[{ required: true, message: 'Выберите позицию' }]}
-          >
-            <Select
-              value={state.position}
-              id={isEdit ? 'positionUpd' : 'position'}
-              onChange={(value) =>
-                setState((prevState) => ({
-                  ...prevState,
-                  position: value,
-                }))
-              }
-              placeholder="Позиция сотрудника"
-              options={[
-                ...positions.map((position) => ({
-                  value: position._id,
-                  label: position.name,
-                })),
-              ]}
-            />
-          </Form.Item>
-        )}
         {hasPhoneNumber && (
           <Form.Item
             label="Номер телефона"

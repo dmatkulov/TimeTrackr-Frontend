@@ -8,16 +8,7 @@ import {
   useUpdateUserMutation,
 } from '../../store/services/user/user';
 import Spinner from '../UI/Spin/Spin';
-import {
-  Button,
-  Flex,
-  Form,
-  message,
-  Modal,
-  Space,
-  Tag,
-  Typography,
-} from 'antd';
+import { Button, Flex, Form, message, Modal, Space, Typography } from 'antd';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import { getPhotoUrl } from '../../utils/photoURL';
 import { formatPhoneNumber } from '../../utils/formatPhoneNumber';
@@ -132,7 +123,6 @@ const Profile: React.FC<Props> = ({ user }) => {
       email: currentUser.email,
       firstname: currentUser.firstname,
       lastname: currentUser.lastname,
-      position: currentUser.position._id,
       phoneNumber: null,
       photo: null,
     };
@@ -242,9 +232,6 @@ const Profile: React.FC<Props> = ({ user }) => {
               <Title style={{ margin: '0 0 15px 0' }} level={3}>
                 {currentUser.lastname} {currentUser.firstname}
               </Title>
-              <Tag color={currentUser.position.tag}>
-                {currentUser.position.name}
-              </Tag>
               <Flex
                 vertical
                 align="flex-start"

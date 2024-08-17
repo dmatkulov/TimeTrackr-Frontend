@@ -20,7 +20,6 @@ export const userApi = api.injectEndpoints({
         formData.append('email', mutation.email);
         formData.append('firstname', mutation.firstname);
         formData.append('lastname', mutation.lastname);
-        formData.append('position', mutation.position);
 
         if (mutation.phoneNumber) {
           formData.append('phoneNumber', mutation.phoneNumber);

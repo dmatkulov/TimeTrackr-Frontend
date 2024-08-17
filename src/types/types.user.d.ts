@@ -1,5 +1,3 @@
-import { Position } from './types.position';
-
 export interface User {
   _id: string;
   email: string;
@@ -8,7 +6,6 @@ export interface User {
   lastname: string;
   phoneNumber: string;
   photo: string;
-  position: Position;
   roles: string[];
   googleID?: string;
 }
@@ -17,7 +14,6 @@ export interface RegisterMutation {
   email: string;
   firstname: string;
   lastname: string;
-  position: string;
   password: string;
 }
 
@@ -37,7 +33,6 @@ export interface UserMutation {
   lastname: string;
   phoneNumber: string | null;
   photo: File | null | string;
-  position: string;
 }
 
 export interface UserPhoto {
@@ -72,7 +67,6 @@ export interface StaffData {
   firstname: string;
   lastname: string;
   photo: string;
-  position: Position;
 }
 
 export interface Author {

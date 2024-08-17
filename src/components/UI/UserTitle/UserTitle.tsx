@@ -121,9 +121,6 @@ const UserTitle: React.FC<Props> = ({ user }) => {
             <Text style={{ fontWeight: 'bold' }}>
               {user.firstname + ' ' + user.lastname}
             </Text>
-            <Text style={{ fontSize: '12px', color: 'gray' }}>
-              {user.position.name}
-            </Text>
           </>
         )}
       </div>
