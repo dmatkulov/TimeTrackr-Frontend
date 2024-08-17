@@ -1,4 +1,3 @@
-import { Author, User } from '../types/types.user';
 import noPhoto from '../assets/no-photo.png';
 import { apiURL } from '../common/constants';
 
@@ -7,12 +6,12 @@ const isUrlWithoutExtension = (url: string): boolean => {
   return regex.test(url);
 };
 
-export const getPhotoUrl = (user: User | Author): string => {
-  if (user.photo) {
-    if (!isUrlWithoutExtension(user.photo)) {
-      return user.photo;
+export const getPhotoUrl = (photo: string | null): string => {
+  if (photo) {
+    if (!isUrlWithoutExtension(photo)) {
+      return photo;
     } else {
-      return `${apiURL}/${user.photo}`;
+      return `${apiURL}/${photo}`;
     }
   } else {
     return noPhoto;

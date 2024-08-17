@@ -5,7 +5,7 @@ import { positionUrl } from '../../../common/routes';
 const positionApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getPositions: builder.query<Position[], void>({
-      query: () => positionUrl.positions,
+      query: () => positionUrl.get,
       providesTags: ['Position'],
     }),
   }),

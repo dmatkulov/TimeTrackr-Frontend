@@ -58,7 +58,7 @@ const Profile: React.FC<Props> = ({ user }) => {
   let modal;
 
   if (currentUser) {
-    photo = getPhotoUrl(currentUser);
+    photo = getPhotoUrl(currentUser.photo);
   }
 
   const handleOk = async () => {
@@ -227,6 +227,9 @@ const Profile: React.FC<Props> = ({ user }) => {
                 background: '#fff',
                 padding: '20px 30px',
                 flexBasis: !sm ? 'auto' : '400px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
               }}
             >
               <Title style={{ margin: '0 0 15px 0' }} level={3}>
@@ -252,7 +255,9 @@ const Profile: React.FC<Props> = ({ user }) => {
                   )}
                 </Flex>
               </Flex>
-              <Button onClick={handleOpen}>Редактировать</Button>
+              <Button style={{ marginTop: 'auto' }} onClick={handleOpen}>
+                Редактировать
+              </Button>
             </div>
           </div>
         )

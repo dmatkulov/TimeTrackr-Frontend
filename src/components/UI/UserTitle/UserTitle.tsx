@@ -132,7 +132,7 @@ const UserTitle: React.FC<Props> = ({ user }) => {
         arrow
       >
         <div>
-          <AvatarPic user={user} />
+          <AvatarPic image={user.photo} firstname={user.firstname} />
         </div>
       </Dropdown>
     </Flex>

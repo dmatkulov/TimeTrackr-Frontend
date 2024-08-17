@@ -9,10 +9,15 @@ import { userUrl } from '../../../common/routes';
 
 export const userApi = api.injectEndpoints({
   endpoints: (build) => ({
+    getAllUser: build.query<User[], void>({
+      query: () => userUrl.get,
+    }),
+
     getUser: build.query<User, string>({
-      query: (id) => userUrl.user + id,
+      query: (id) => userUrl.getOne + id,
       providesTags: ['User'],
     }),
+
     updateUser: build.mutation<AuthResponse, UpdateUserArg>({
       query: ({ id, mutation }) => {
         const formData = new FormData();
@@ -30,13 +35,14 @@ export const userApi = api.injectEndpoints({
         }
 
         return {
-          url: userUrl.updateUser + id,
+          url: userUrl.update + id,
           method: 'PATCH',
           body: formData,
         };
       },
       invalidatesTags: ['User'],
     }),
+
     updatePhoto: build.mutation<AuthResponse, UpdatePhotoArg>({
       query: ({ id, mutation }) => {
         const formData = new FormData();
@@ -55,6 +61,7 @@ export const userApi = api.injectEndpoints({
 });
 
 export const {
+  useGetAllUserQuery,
   useGetUserQuery,
   useUpdateUserMutation,
   useUpdatePhotoMutation,

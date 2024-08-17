@@ -29,16 +29,22 @@ export const authUrl = {
 };
 
 export const userUrl = {
-  user: 'user/info/',
-  updateUser: 'user/edit/',
-  deleteUser: 'user/delete/',
+  get: 'user',
+  getOne: 'user/info/',
+  update: 'user/edit/',
+  delete: 'user/delete/',
   updatePhoto: 'user/photo/edit/',
 };
 
 export const positionUrl = {
-  positions: 'positions',
-  newPosition: 'positions/new-position',
-  positionById: 'positions/info/',
-  editPosition: 'positions/edit/',
-  deletePositions: 'positions/delete',
+  get: 'positions',
+  create: 'positions/new-position',
+  getOne: 'positions/info/',
+  update: 'positions/edit/',
+  delete: 'positions/delete',
+};
+
+export const teamUrl = {
+  get: 'team',
+  create: 'team/new-team',
 };
