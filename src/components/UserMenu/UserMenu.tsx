@@ -1,4 +1,4 @@
-import React, { CSSProperties, useState } from 'react';
+import React, { CSSProperties, useEffect, useState } from 'react';
 import { Button, Flex, Menu, MenuProps, Space, Typography } from 'antd';
 import {
   CalendarFilled,
@@ -13,6 +13,7 @@ import {
   MinusOutlined,
   PlusCircleOutlined,
   PlusOutlined,
+  RightOutlined,
   RocketTwoTone,
   StarFilled,
   StarOutlined,
@@ -46,7 +47,7 @@ interface MenuChildren {
 
 const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
   const [logout] = useLogoutMutation();
-  const { data: teams = [] } = useGetTeamsQuery();
+  const { data: teams = [], refetch } = useGetTeamsQuery();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -59,8 +60,11 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
     event.stopPropagation();
   };
 
+  useEffect(() => {
+    refetch();
+  }, []);
+
   if (teams && teams.length > 0) {
-    console.log(teams);
     children = teams
       .map((team: TeamList) => ({
         key: team._id,
@@ -79,6 +83,16 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
         style: { paddingRight: '8px' },
       }))
       .splice(0, 6);
+    children.push({
+      key: 'allTeams',
+      label: (
+        <Flex justify="space-between" align="center">
+          Все команды
+          <RightOutlined />
+        </Flex>
+      ),
+      onClick: () => handleNavigate(appRoutes.user.teams),
+    });
   } else if (teams.length === 0) {
     children = [
       {
@@ -165,13 +179,8 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
         marginTop: '30px',
       },
       children: [
-        {
-          key: 'allTeams',
-          label: 'Все команды',
-          onClick: () => handleNavigate(appRoutes.user.teams),
-        },
-        { type: 'divider' },
         ...children,
+        { type: 'divider' },
         {
           key: 'addTeam',
           label: (
