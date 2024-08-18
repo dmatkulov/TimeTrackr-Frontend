@@ -69,7 +69,7 @@ export interface StaffData {
   photo: string;
 }
 
-export interface Author {
+export interface UserSummary {
   _id: string;
   photo: string;
   firstname: string;

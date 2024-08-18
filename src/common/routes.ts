@@ -45,6 +45,6 @@ export const positionUrl = {
 };
 
 export const teamUrl = {
-  get: 'team',
-  create: 'team/new-team',
+  get: 'teams',
+  create: 'teams/new-team',
 };

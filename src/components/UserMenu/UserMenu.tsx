@@ -1,10 +1,11 @@
 import React, { CSSProperties, useState } from 'react';
-import { Button, Flex, Menu, MenuProps } from 'antd';
+import { Button, Flex, Menu, MenuProps, Space, Typography } from 'antd';
 import {
   CalendarFilled,
   CalendarOutlined,
   DashboardFilled,
   DashboardOutlined,
+  ExclamationCircleOutlined,
   FileFilled,
   FileOutlined,
   GlobalOutlined,
@@ -14,6 +15,7 @@ import {
   PlusOutlined,
   RocketTwoTone,
   StarFilled,
+  StarOutlined,
   StarTwoTone,
   UserOutlined,
 } from '@ant-design/icons';
@@ -22,6 +24,9 @@ import { appRoutes } from '../../common/routes';
 import './index.css';
 import { useLogoutMutation } from '../../store/services/auth/auth';
 import TeamAdd from '../Team/TeamAdd';
+import { useGetTeamsQuery } from '../../store/services/team/team';
+import { TeamList } from '../../types/types.team';
+import { blue } from '@ant-design/colors';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -30,11 +35,68 @@ interface Props {
   collapsed?: boolean;
 }
 
+interface MenuChildren {
+  key: string;
+  label: React.JSX.Element;
+  onClick?: () => void;
+  style?: CSSProperties;
+  className?: string;
+  disabled?: boolean;
+}
+
 const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
   const [logout] = useLogoutMutation();
+  const { data: teams = [] } = useGetTeamsQuery();
+
   const navigate = useNavigate();
   const location = useLocation();
+
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  let children: MenuChildren[] = [];
+
+  const toggleSaved = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+  };
+
+  if (teams && teams.length > 0) {
+    console.log(teams);
+    children = teams
+      .map((team: TeamList) => ({
+        key: team._id,
+        label: (
+          <Flex justify="space-between" align="center">
+            {team.name}
+            <Button
+              type="text"
+              style={{ color: '#969a9e' }}
+              onClick={toggleSaved}
+              icon={team.isSaved ? <StarFilled /> : <StarOutlined />}
+            />
+          </Flex>
+        ),
+        onClick: () => console.log('clicked'),
+        style: { paddingRight: '8px' },
+      }))
+      .splice(0, 6);
+  } else if (teams.length === 0) {
+    children = [
+      {
+        key: 'emptyTeams',
+        label: (
+          <Space>
+            <ExclamationCircleOutlined />
+            <Typography.Text style={{ color: '#969a9e' }}>
+              Нет данных
+            </Typography.Text>
+          </Space>
+        ),
+        style: { background: 'none', cursor: 'default' },
+        className: 'menuItemBtn',
+        disabled: true,
+      },
+    ];
+  }
 
   const logOutUser = async () => {
     await logout();
@@ -104,28 +166,19 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
       },
       children: [
         {
-          key: 'team1',
-          label: (
-            <Flex justify="space-between" align="center">
-              team1 <Button type="text" icon={<StarFilled />} />
-            </Flex>
-          ),
-          style: {
-            paddingRight: '5px',
-          },
-        },
-        { key: 'team2', label: 'team2' },
-        {
           key: 'allTeams',
           label: 'Все команды',
           onClick: () => handleNavigate(appRoutes.user.teams),
         },
+        { type: 'divider' },
+        ...children,
         {
           key: 'addTeam',
           label: (
             <Button
+              style={{ color: blue.primary, padding: '0' }}
               onClick={() => setIsOpen(true)}
-              type="primary"
+              type="link"
               icon={<PlusCircleOutlined />}
             >
               Добавить
@@ -154,7 +207,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
             </Flex>
           ),
           style: {
-            paddingRight: '5px',
+            paddingRight: '8px',
           },
         },
         { key: 'project2', label: 'project2' },

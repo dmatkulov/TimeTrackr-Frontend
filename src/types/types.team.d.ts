@@ -1,3 +1,18 @@
+import { UserSummary } from './types.user';
+import { Position } from './types.position';
+
+export interface TeamList {
+  _id: string;
+  name: string;
+  isSaved: boolean;
+}
+
+export interface TeamMember {
+  _id: string;
+  user: UserSummary;
+  position: Position;
+}
+
 export interface TeamMutation {
   name: string;
   description: string;

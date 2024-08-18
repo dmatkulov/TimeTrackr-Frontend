@@ -1,4 +1,4 @@
-import { Author } from './types.user';
+import { UserSummary } from './types.user';
 
 export interface Task {
   _id: string;
@@ -12,7 +12,7 @@ export interface Task {
 
 export interface Tasks {
   _id: string;
-  userId: Author;
+  userId: UserSummary;
   executionDate: string;
   totalTimeSpent: number;
   tasks: Task[];
@@ -33,7 +33,7 @@ interface TaskMutation {
 
 export interface TaskInfo extends Task {
   globalId: string;
-  author: Author;
+  author: UserSummary;
   executionDate: string;
 }
 
