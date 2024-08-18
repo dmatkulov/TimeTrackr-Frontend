@@ -168,6 +168,7 @@ const ProfileForm: React.FC<Props> = ({
           rules={[{ required: true, message: 'Введите фамилию' }]}
         >
           <Input
+            size="large"
             placeholder="Фамилия сотрудника"
             name="lastname"
             id={isEdit ? 'lastnameUpd' : 'lastname'}
@@ -181,6 +182,7 @@ const ProfileForm: React.FC<Props> = ({
           rules={[{ required: true, message: 'Введите имя' }]}
         >
           <Input
+            size="large"
             placeholder="Имя сотрудника"
             name="firstname"
             id={isEdit ? 'firstnameUpd' : 'firstname'}
@@ -200,6 +202,7 @@ const ProfileForm: React.FC<Props> = ({
           ]}
         >
           <Input
+            size="large"
             placeholder="Электронная почта"
             name="email"
             id={isEdit ? 'emailUpd' : 'email'}

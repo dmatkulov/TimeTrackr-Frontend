@@ -37,6 +37,7 @@ type MenuItem = Required<MenuProps>['items'][number];
 interface MenuChildren {
   key: string;
   label: React.JSX.Element;
+  type?: string;
   onClick?: () => void;
   style?: CSSProperties;
   className?: string;
@@ -61,6 +62,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
   const [openKeys, setOpenKeys] = useState<string[]>([]);
 
   let children: MenuChildren[] = [];
+  let favouriteTeams: MenuChildren[] = [];
 
   const toggleFav = async (
     event: React.MouseEvent,
@@ -79,8 +81,8 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
     refetch();
   }, []);
 
-  if (teams && teams.length > 0) {
-    children = teams
+  const createTeamItem = (teams: TeamList[]) => {
+    return teams
       .map((team: TeamList) => ({
         key: team._id,
         label: (
@@ -92,14 +94,26 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
               onClick={(event: React.MouseEvent) =>
                 toggleFav(event, team._id, !team.isFavorite)
               }
-              icon={team.isFavorite ? <StarFilled /> : <StarOutlined />}
+              icon={
+                team.isFavorite ? (
+                  <StarFilled style={{ color: '#FABB18' }} />
+                ) : (
+                  <StarOutlined />
+                )
+              }
             />
           </Flex>
         ),
-        onClick: () => console.log('clicked'),
         style: { paddingRight: '8px' },
       }))
       .splice(0, 6);
+  };
+
+  if (teams && teams.length > 0) {
+    const teamList = teams.filter((team) => !team.isFavorite);
+    const selectedTeamList = teams.filter((team) => team.isFavorite);
+    children = createTeamItem(teamList);
+
     children.push({
       key: 'allTeams',
       label: (
@@ -110,6 +124,8 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
       ),
       onClick: () => handleNavigate(appRoutes.user.teams),
     });
+
+    favouriteTeams = createTeamItem(selectedTeamList);
   } else if (teams.length === 0) {
     children = [
       {
@@ -150,7 +166,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
     display: collapsed ? 'flex' : 'list-item',
     width: collapsed ? '50px' : 'auto',
     border: '1px solid rgba(5, 5, 5, 0.06)',
-    borderRadius: '12px',
+    borderRadius: '16px',
   };
 
   const items: MenuItem[] = [
@@ -198,6 +214,17 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
         marginTop: '30px',
       },
       children: [
+        {
+          key: 'g1',
+          label: 'Избранное',
+          type: 'group',
+          children: favouriteTeams,
+          style: { display: favouriteTeams.length > 0 ? 'block' : 'none' },
+        },
+        {
+          type: 'divider',
+          style: { display: favouriteTeams.length > 0 ? 'block' : 'none' },
+        },
         ...children,
         { type: 'divider' },
         {
@@ -205,7 +232,12 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
           label: (
             <Button
               style={{ color: blue.primary, padding: '0' }}
-              onClick={() => setIsOpen(true)}
+              onClick={() => {
+                setIsOpen(true);
+                if (handleMobile) {
+                  handleMobile();
+                }
+              }}
               type="link"
               icon={<PlusCircleOutlined />}
             >

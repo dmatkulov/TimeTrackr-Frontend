@@ -22,6 +22,8 @@ import { useGetPositionsQuery } from '../../store/services/positions/positions';
 import AvatarPic from '../UI/UserAvatar/Avatar';
 import './index.css';
 import { handleFormFieldError } from '../../utils/handleError';
+import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
+import { useMediaQuery } from 'react-responsive';
 
 const initialState: TeamMutation = {
   name: '',
@@ -55,6 +57,11 @@ const TeamForm: React.FC<Props> = ({
   const [state, setState] = useState<TeamMutation>(initialState);
   const { data: users } = useGetAllUserQuery();
   const { data: positions } = useGetPositionsQuery();
+
+  const { md } = useBreakpoint();
+  const xxs = useMediaQuery({
+    query: '(min-width: 320px) and (max-width: 480px)',
+  });
 
   const handleSubmit = async () => {
     onSubmit(state);
@@ -173,7 +180,8 @@ const TeamForm: React.FC<Props> = ({
                 value={state.description}
                 onChange={handleChange}
                 name="description"
-                autoSize={{ minRows: 3, maxRows: 5 }}
+                placeholder="Дайте описание команды"
+                autoSize={{ minRows: 5, maxRows: 5 }}
               />
             </Form.Item>
           </Col>
@@ -191,6 +199,7 @@ const TeamForm: React.FC<Props> = ({
                       ]}
                     >
                       <Select
+                        size="large"
                         variant="filled"
                         notFoundContent="Никого не удалось найти"
                         style={{ width: '100%' }}
@@ -221,9 +230,10 @@ const TeamForm: React.FC<Props> = ({
                       rules={[{ required: true, message: 'Укажите позицию' }]}
                     >
                       <Select
+                        size="large"
                         variant="filled"
                         notFoundContent="Не удалось найти"
-                        style={{ width: '100%' }}
+                        style={{ width: '100%', fontSize: '14px' }}
                         value={member.position}
                         filterOption={filterOption}
                         placeholder="Выберите позицию"
@@ -252,6 +262,7 @@ const TeamForm: React.FC<Props> = ({
                         {state.members.length > 1 && (
                           <Button
                             danger
+                            size="large"
                             type="text"
                             icon={<MinusCircleOutlined />}
                             onClick={() => removeMember(index)}
@@ -261,10 +272,13 @@ const TeamForm: React.FC<Props> = ({
                       {state.members.length - 1 === index && (
                         <Form.Item>
                           <Button
+                            size="large"
                             type="dashed"
                             onClick={addMember}
                             icon={<PlusOutlined />}
-                          />
+                          >
+                            {!md && 'Добавить'}
+                          </Button>
                         </Form.Item>
                       )}
                     </Space>
@@ -274,14 +288,27 @@ const TeamForm: React.FC<Props> = ({
           </Col>
         </Row>
         <Divider style={{ marginBottom: '44px' }} />
-        <Flex justify="space-between">
-          <Space>
-            <Button icon={<ClearOutlined />} onClick={() => form.resetFields()}>
+        <Flex justify="space-between" vertical={xxs} gap={24}>
+          <Space
+            style={{ justifyContent: xxs ? 'space-between' : 'flex-start' }}
+          >
+            <Button
+              icon={<ClearOutlined />}
+              onClick={() => form.resetFields()}
+              size="large"
+            >
               Очистить поля
             </Button>
-            <Button onClick={handleClose}>Отменить</Button>
+            <Button onClick={handleClose} size="large">
+              Отменить
+            </Button>
           </Space>
-          <Button type="primary" htmlType="submit" disabled={loading}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            disabled={loading}
+            size="large"
+          >
             Создать
           </Button>
         </Flex>

@@ -36,8 +36,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             // defaultBg: defaultGreyColor,
             boxShadow: 'none',
             // defaultBorderColor: 'none',
-            // defaultHoverBorderColor: 'none',
-            // defaultHoverBg: secondaryHoverColor,
+            defaultHoverBorderColor: 'none',
+            defaultHoverBg: secondaryHoverColor,
           },
         },
       }}

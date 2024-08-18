@@ -29,7 +29,7 @@ const FileInput: React.FC<Props> = ({ onChange, name, onDelete, filename }) => {
         ref={inputRef}
       />
       <Flex align="center" justify="space-between">
-        <Button icon={<UploadOutlined />} onClick={activateInput}>
+        <Button type="dashed" icon={<UploadOutlined />} onClick={activateInput}>
           {filename ? 'Заменить фото' : 'Загрузить фото'}
         </Button>
         {filename && (
