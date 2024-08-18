@@ -14,7 +14,6 @@ const App: React.FC = () => {
     loginMutation,
   ) => {
     const data = await signIn(loginMutation);
-
     if (!(data as { error: object }).error) {
       navigate(appRoutes.redirect);
       form.resetFields();

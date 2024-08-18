@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { RegisterMutation } from '../../types/types.user';
 import { appRoutes } from '../../common/routes';
 import { useNavigate } from 'react-router-dom';
 import { useSignUpMutation } from '../../store/services/auth/auth';
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import PasswordInput from '../../components/FormInputGroups/PasswordInputGroup';
+import { handleFormFieldError } from '../../utils/handleError';
 
 const initialState: RegisterMutation = {
   email: '',
@@ -14,24 +15,21 @@ const initialState: RegisterMutation = {
 };
 
 const RegisterForm: React.FC = () => {
-  const [signUp, { isLoading }] = useSignUpMutation();
+  const [signUp, { isLoading, isError, error }] = useSignUpMutation();
   const navigate = useNavigate();
 
   const [form] = Form.useForm();
   const [state, setState] = useState<RegisterMutation>(initialState);
 
   const handleFormSubmit = async (state: RegisterMutation) => {
-    await signUp(state).unwrap();
+    const response = await signUp(state).unwrap();
+    message.success(response.message);
     navigate(appRoutes.redirect);
   };
 
-  const onFinish = async () => {
-    try {
-      await handleFormSubmit(state);
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  useEffect(() => {
+    handleFormFieldError(isError, error, form);
+  }, [isError, error, form]);
 
   const inputChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -46,7 +44,7 @@ const RegisterForm: React.FC = () => {
       <Form
         form={form}
         layout="vertical"
-        onFinish={onFinish}
+        onFinish={handleFormSubmit}
         autoComplete="off"
       >
         <Form.Item

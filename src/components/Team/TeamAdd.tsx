@@ -1,9 +1,8 @@
-import { message } from 'antd';
 import React from 'react';
 import TeamForm from './TeamForm';
 import { useCreateTeamMutation } from '../../store/services/team/team';
 import { TeamMutation } from '../../types/types.team';
-import { handleError } from '../../utils/handleError';
+import { message } from 'antd';
 
 interface Props {
   isOpen: boolean;
@@ -11,16 +10,12 @@ interface Props {
 }
 
 const TeamAdd: React.FC<Props> = ({ isOpen, onClose }) => {
-  const [createTeam, { isLoading }] = useCreateTeamMutation();
+  const [createTeam, { isLoading, isError, error }] = useCreateTeamMutation();
 
   const handleSubmit = async (state: TeamMutation) => {
-    try {
-      const response = await createTeam(state).unwrap();
-      message.success(response.message);
-      onClose();
-    } catch (error) {
-      handleError(error);
-    }
+    const response = await createTeam(state).unwrap();
+    message.success(response.message);
+    onClose();
   };
 
   return (
@@ -30,6 +25,8 @@ const TeamAdd: React.FC<Props> = ({ isOpen, onClose }) => {
         onClose={onClose}
         onSubmit={handleSubmit}
         loading={isLoading}
+        isError={isError}
+        error={error}
       />
     </>
   );

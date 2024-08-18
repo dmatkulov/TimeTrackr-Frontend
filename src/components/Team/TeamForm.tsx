@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   Col,
@@ -21,6 +21,7 @@ import { useGetAllUserQuery } from '../../store/services/user/user';
 import { useGetPositionsQuery } from '../../store/services/positions/positions';
 import AvatarPic from '../UI/UserAvatar/Avatar';
 import './index.css';
+import { handleFormFieldError } from '../../utils/handleError';
 
 const initialState: TeamMutation = {
   name: '',
@@ -38,9 +39,18 @@ interface Props {
   loading: boolean;
   isOpen: boolean;
   onClose: () => void;
+  isError: boolean;
+  error: unknown;
 }
 
-const TeamForm: React.FC<Props> = ({ onSubmit, loading, isOpen, onClose }) => {
+const TeamForm: React.FC<Props> = ({
+  onSubmit,
+  loading,
+  isOpen,
+  onClose,
+  isError,
+  error,
+}) => {
   const [form] = Form.useForm();
   const [state, setState] = useState<TeamMutation>(initialState);
   const { data: users } = useGetAllUserQuery();
@@ -51,6 +61,10 @@ const TeamForm: React.FC<Props> = ({ onSubmit, loading, isOpen, onClose }) => {
     setState(initialState);
     form.setFieldsValue(initialState);
   };
+
+  useEffect(() => {
+    handleFormFieldError(isError, error, form);
+  }, [isError, error, form]);
 
   const addMember = () => {
     setState((prevState) => ({
