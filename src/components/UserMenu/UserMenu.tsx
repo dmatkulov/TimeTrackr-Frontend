@@ -25,16 +25,14 @@ import { appRoutes } from '../../common/routes';
 import './index.css';
 import { useLogoutMutation } from '../../store/services/auth/auth';
 import TeamAdd from '../Team/TeamAdd';
-import { useGetTeamsQuery } from '../../store/services/team/team';
+import {
+  useGetTeamsQuery,
+  useToggleFavouriteMutation,
+} from '../../store/services/team/team';
 import { TeamList } from '../../types/types.team';
 import { blue } from '@ant-design/colors';
 
 type MenuItem = Required<MenuProps>['items'][number];
-
-interface Props {
-  handleMobile?: () => void;
-  collapsed?: boolean;
-}
 
 interface MenuChildren {
   key: string;
@@ -45,19 +43,36 @@ interface MenuChildren {
   disabled?: boolean;
 }
 
+interface Props {
+  handleMobile?: () => void;
+  collapsed?: boolean;
+}
+
 const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
   const [logout] = useLogoutMutation();
   const { data: teams = [], refetch } = useGetTeamsQuery();
+  const [toggle] = useToggleFavouriteMutation();
 
   const navigate = useNavigate();
   const location = useLocation();
+  const activeKey = location.pathname;
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [openKeys, setOpenKeys] = useState<string[]>([]);
 
   let children: MenuChildren[] = [];
 
-  const toggleSaved = (event: React.MouseEvent<HTMLDivElement>) => {
+  const toggleFav = async (
+    event: React.MouseEvent,
+    id: string,
+    favourite: boolean,
+  ) => {
     event.stopPropagation();
+    try {
+      await toggle({ id, isFavorite: favourite }).unwrap();
+    } catch (error) {
+      console.error('Failed to toggle favorite:', error);
+    }
   };
 
   useEffect(() => {
@@ -74,8 +89,10 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
             <Button
               type="text"
               style={{ color: '#969a9e' }}
-              onClick={toggleSaved}
-              icon={team.isSaved ? <StarFilled /> : <StarOutlined />}
+              onClick={(event: React.MouseEvent) =>
+                toggleFav(event, team._id, !team.isFavorite)
+              }
+              icon={team.isFavorite ? <StarFilled /> : <StarOutlined />}
             />
           </Flex>
         ),
@@ -125,7 +142,9 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
     }
   };
 
-  const activeKey = location.pathname;
+  const handleOpenChange = (keys: string[]) => {
+    setOpenKeys(keys);
+  };
 
   const itemStyle: CSSProperties = {
     display: collapsed ? 'flex' : 'list-item',
@@ -264,12 +283,6 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
       danger: true,
     },
   ];
-
-  const [openKeys, setOpenKeys] = useState<string[]>([]);
-
-  const handleOpenChange = (keys: string[]) => {
-    setOpenKeys(keys);
-  };
 
   return (
     <>

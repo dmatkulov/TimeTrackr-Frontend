@@ -4,7 +4,7 @@ import { Position } from './types.position';
 export interface TeamList {
   _id: string;
   name: string;
-  isSaved: boolean;
+  isFavorite: boolean;
 }
 
 export interface TeamMember {
@@ -22,4 +22,9 @@ export interface TeamMutation {
 export interface TeamMemberMutation {
   user: string;
   position: string;
+}
+
+export interface UpdateTeamFav {
+  id: string;
+  isFavorite: boolean;
 }
