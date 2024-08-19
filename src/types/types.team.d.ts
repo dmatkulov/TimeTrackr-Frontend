@@ -1,6 +1,13 @@
 import { UserSummary } from './types.user';
 import { Position } from './types.position';
 
+export interface Team {
+  _id: string;
+  name: string;
+  isFavorite: boolean;
+  members: TeamMember[];
+}
+
 export interface TeamList {
   _id: string;
   name: string;

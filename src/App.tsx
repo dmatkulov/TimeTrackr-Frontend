@@ -15,7 +15,7 @@ import Projects from './containers/Projects/Projects';
 import { Roles } from './enum/roles.enum';
 import { useAppSelector } from './store/hooks/hooks';
 import { selectUser } from './store/services/auth/authSlice';
-import TeamsOulet from './containers/Teams/TeamsOulet';
+import TeamsOutlet from './containers/Teams/TeamsOutlet';
 import Teams from './containers/Teams/Teams';
 import TeamInfo from './containers/Teams/TeamInfo';
 
@@ -42,7 +42,7 @@ const App = () => {
             <Route path={appRoutes.user.notes} element={<Notes />} />
             <Route
               path={appRoutes.user.teams}
-              element={<TeamsOulet></TeamsOulet>}
+              element={<TeamsOutlet></TeamsOutlet>}
             />
             <Route path={appRoutes.user.teamsAll} element={<Teams />} />
             <Route

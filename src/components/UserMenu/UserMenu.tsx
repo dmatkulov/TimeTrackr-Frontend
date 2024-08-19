@@ -26,17 +26,20 @@ import './index.css';
 import { useLogoutMutation } from '../../store/services/auth/auth';
 import TeamAdd from '../Team/TeamAdd';
 import {
-  useGetTeamsQuery,
+  useGetTeamsListQuery,
   useToggleFavouriteMutation,
 } from '../../store/services/team/team';
 import { TeamList } from '../../types/types.team';
 import { blue } from '@ant-design/colors';
+import { useAppSelector } from '../../store/hooks/hooks';
+import { selectUser } from '../../store/services/auth/authSlice';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
 interface MenuChildren {
   key: string;
   label: React.JSX.Element;
+  icon?: React.JSX.Element;
   type?: string;
   onClick?: () => void;
   style?: CSSProperties;
@@ -50,9 +53,11 @@ interface Props {
 }
 
 const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
-  const [logout] = useLogoutMutation();
-  const { data: teams = [], refetch } = useGetTeamsQuery();
+  const user = useAppSelector(selectUser);
+
+  const { data: teams = [], refetch } = useGetTeamsListQuery(user._id);
   const [toggle] = useToggleFavouriteMutation();
+  const [logout] = useLogoutMutation();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -87,7 +92,15 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
         key: team._id,
         label: (
           <Flex justify="space-between" align="center">
-            {team.name}
+            <Typography.Text
+              style={{
+                maxWidth: '100px',
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+              }}
+            >
+              {team.name}
+            </Typography.Text>
             <Button
               type="text"
               style={{ color: '#969a9e' }}

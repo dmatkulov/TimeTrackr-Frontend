@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
 
-const TeamsOulet = () => {
+const TeamsOutlet = () => {
   return (
     <>
       container for teams
@@ -9,4 +9,4 @@ const TeamsOulet = () => {
   );
 };
 
-export default TeamsOulet;
+export default TeamsOutlet;
