@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from 'antd';
-import { appRoutes } from '../../../services/routes.service';
+import { appRoutes } from '../../../common/routes';
 import { useNavigate } from 'react-router-dom';
 
 const GuestAppBar: React.FC = () => {

@@ -34,5 +34,7 @@
     "dist/",
     "index.html"
   ],
-  "rules": {}
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "off"
+  }
 }

@@ -2,21 +2,20 @@ import React from 'react';
 import { Button, Flex, Layout, Space, Typography } from 'antd';
 import { blue } from '@ant-design/colors';
 import { useNavigate } from 'react-router-dom';
-import { appRoutes } from '../../services/routes.service';
-import { useAppSelector } from '../../store/hooks/hooks';
-import { selectUser } from '../../store/users/UsersSlice';
+import { appRoutes } from '../../common/routes';
 import AppHeader from '../../components/Header/AppHeader';
+import { useAppSelector } from '../../store/hooks/hooks';
 
 const { Title, Paragraph } = Typography;
+const titleStyle = {
+  marginTop: 0,
+  color: blue.primary,
+  marginBottom: '30px',
+};
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
-  const user = useAppSelector(selectUser);
-  const titleStyle = {
-    marginTop: 0,
-    color: blue.primary,
-    marginBottom: '30px',
-  };
+  const user = useAppSelector((state) => state.user);
 
   return (
     <>

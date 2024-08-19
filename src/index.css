@@ -74,3 +74,15 @@ input[type='number'] {
 .ant-badge {
   display: block;
 }
+
+.ant-select-selection-placeholder {
+  font-size: 14px;
+}
+
+.ant-select-selection-item {
+  font-size: 14px;
+}
+
+.ant-input {
+  font-size: 14px;
+}

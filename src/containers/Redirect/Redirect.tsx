@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppSelector } from '../../store/hooks/hooks';
-import { selectUser } from '../../store/users/UsersSlice';
-import { appRoutes } from '../../services/routes.service';
+import { appRoutes } from '../../common/routes';
 import Spinner from '../../components/UI/Spin/Spin';
 import { Roles } from '../../enum/roles.enum';
+import { useAppSelector } from '../../store/hooks/hooks';
+import { selectUser } from '../../store/services/auth/authSlice';
 
 const Redirect: React.FC = () => {
   const navigate = useNavigate();
@@ -14,9 +14,9 @@ const Redirect: React.FC = () => {
 
   const navigateToPanel = useCallback(() => {
     if (user) {
-      if (user.role === Roles.Admin) {
+      if (user.roles.includes(Roles.Admin)) {
         navigate(appRoutes.admin.staff);
-      } else if (user.role === Roles.User) {
+      } else if (user.roles.includes(Roles.User)) {
         navigate(appRoutes.user.dashboard);
       }
     } else {

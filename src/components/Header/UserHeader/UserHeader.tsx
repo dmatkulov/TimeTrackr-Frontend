@@ -1,9 +1,7 @@
 import React, { ReactNode, useState } from 'react';
 import { Badge, Button, Drawer, Flex, Input, Space } from 'antd';
-import { useAppSelector } from '../../../store/hooks/hooks';
 import UserTitle from '../../UI/UserTitle/UserTitle';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
-import { selectUser } from '../../../store/users/UsersSlice';
 import {
   AppstoreOutlined,
   BellFilled,
@@ -12,14 +10,15 @@ import {
 } from '@ant-design/icons';
 import UserMenu from '../../UserMenu/UserMenu';
 import Logo from '../../UI/Logo/Logo';
-import { appRoutes } from '../../../services/routes.service';
+import { appRoutes } from '../../../common/routes';
+import { store } from '../../../store/store';
 
 interface Props {
   toggleMenu?: () => void;
 }
 
 const UserHeader: React.FC<Props> = ({ toggleMenu }) => {
-  const user = useAppSelector(selectUser);
+  const user = store.getState().auth?.user;
   const { md } = useBreakpoint();
 
   const [open, setOpen] = useState(false);

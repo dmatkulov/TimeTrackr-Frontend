@@ -1,36 +1,47 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import {
+  combineReducers,
+  configureStore,
+  UnknownAction,
+} from '@reduxjs/toolkit';
 import storage from 'redux-persist/lib/storage';
 import {
-  FLUSH,
-  PAUSE,
   PERSIST,
   persistReducer,
   persistStore,
+  PURGE,
+  REGISTER,
 } from 'redux-persist';
-import { PURGE, REGISTER, REHYDRATE } from 'redux-persist/es/constants';
-import { usersReducer } from './users/UsersSlice';
-import { positionsReducer } from './positions/positionsSlice';
-import { tasksReducer } from './tasks/tasksSlice';
+import { api } from './index';
+import { AuthReducer } from './services/auth/authSlice';
+import autoMergeLevel2 from 'redux-persist/es/stateReconciler/autoMergeLevel2';
+// import { positionsReducer } from './utils/positions/positionsSlice';
 
-const usersPersistConfig = {
-  key: 'trckr:users',
-  storage: storage,
+const persistConfig = {
+  key: 'root',
+  storage,
+  version: 1,
+  blacklist: ['api'],
+  stateReconciler: autoMergeLevel2,
 };
 
 const rootReducer = combineReducers({
-  users: persistReducer(usersPersistConfig, usersReducer),
-  positions: positionsReducer,
-  tasks: tasksReducer,
+  [api.reducerPath]: api.reducer,
+  auth: AuthReducer,
 });
 
+const persistedReducer = persistReducer<any, UnknownAction>(
+  persistConfig,
+  rootReducer,
+);
+
 export const store = configureStore({
-  reducer: rootReducer,
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: [FLUSH, PAUSE, PERSIST, REHYDRATE, PURGE, REGISTER],
+        ignoredActions: [REGISTER, PERSIST, PURGE],
       },
-    }),
+    }).concat(api.middleware),
 });
 
 export const persistor = persistStore(store);

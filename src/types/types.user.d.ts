@@ -1,5 +1,3 @@
-import { Position } from './types.position';
-
 export interface User {
   _id: string;
   email: string;
@@ -8,30 +6,25 @@ export interface User {
   lastname: string;
   phoneNumber: string;
   photo: string;
-  position: Position;
-  role: string;
+  roles: string[];
   googleID?: string;
 }
 
-export interface StaffData {
-  _id: string;
+export interface RegisterMutation {
   email: string;
   firstname: string;
   lastname: string;
-  photo: string;
-  position: Position;
-}
-
-export interface Author {
-  _id: string;
-  photo: string;
-  firstname: string;
-  lastname: string;
+  password: string;
 }
 
 export interface LoginMutation {
   email: string;
   password: string;
+}
+
+export interface AuthResponse {
+  message: string;
+  user: User;
 }
 
 export interface UserMutation {
@@ -40,17 +33,10 @@ export interface UserMutation {
   lastname: string;
   phoneNumber: string | null;
   photo: File | null | string;
-  position: string;
-  password?: string;
 }
 
 export interface UserPhoto {
   photo: File | null | string;
-}
-
-export interface LoginResponse {
-  message: string;
-  user: User;
 }
 
 export interface UpdateUserArg {
@@ -73,4 +59,19 @@ export interface UserQueryParams {
   positions?: string;
   email?: string;
   lastname?: string;
+}
+
+export interface StaffData {
+  _id: string;
+  email: string;
+  firstname: string;
+  lastname: string;
+  photo: string;
+}
+
+export interface UserSummary {
+  _id: string;
+  photo: string;
+  firstname: string;
+  lastname: string;
 }

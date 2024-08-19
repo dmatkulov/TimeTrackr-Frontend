@@ -1,9 +1,9 @@
 import React from 'react';
 import { Form, Input } from 'antd';
-import { UserMutation } from '../../types/types.user';
+import { RegisterMutation } from '../../types/types.user';
 
 interface Props {
-  state: UserMutation;
+  state: RegisterMutation;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 

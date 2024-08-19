@@ -2,13 +2,12 @@ import React, { CSSProperties } from 'react';
 import { Badge, Dropdown, Flex, MenuProps, Space, Typography } from 'antd';
 import { User } from '../../../types/types.user';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
-import AvatarPic from '../UserAvatar/Avatar';
-import { useAppDispatch } from '../../../store/hooks/hooks';
-import { logOut } from '../../../store/users/UsersThunks';
-import { appRoutes } from '../../../services/routes.service';
+import UserAvatar from '../UserAvatar/UserAvatar';
+import { appRoutes } from '../../../common/routes';
 import { useNavigate } from 'react-router-dom';
 import { BellFilled, LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import './index.css';
+import { useLogoutMutation } from '../../../store/services/auth/auth';
 
 const { Text } = Typography;
 
@@ -17,12 +16,12 @@ interface Props {
 }
 
 const UserTitle: React.FC<Props> = ({ user }) => {
+  const [logout] = useLogoutMutation();
   const { md, lg } = useBreakpoint();
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const logOutUser = async () => {
-    await dispatch(logOut());
+    await logout();
     navigate(appRoutes.auth);
   };
 
@@ -122,9 +121,6 @@ const UserTitle: React.FC<Props> = ({ user }) => {
             <Text style={{ fontWeight: 'bold' }}>
               {user.firstname + ' ' + user.lastname}
             </Text>
-            <Text style={{ fontSize: '12px', color: 'gray' }}>
-              {user.position.name}
-            </Text>
           </>
         )}
       </div>
@@ -136,7 +132,11 @@ const UserTitle: React.FC<Props> = ({ user }) => {
         arrow
       >
         <div>
-          <AvatarPic user={user} />
+          <UserAvatar
+            image={user.photo}
+            firstname={user.firstname}
+            lastname={user.lastname}
+          />
         </div>
       </Dropdown>
     </Flex>
