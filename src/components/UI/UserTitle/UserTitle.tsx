@@ -2,7 +2,7 @@ import React, { CSSProperties } from 'react';
 import { Badge, Dropdown, Flex, MenuProps, Space, Typography } from 'antd';
 import { User } from '../../../types/types.user';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
-import AvatarPic from '../UserAvatar/Avatar';
+import UserAvatar from '../UserAvatar/UserAvatar';
 import { appRoutes } from '../../../common/routes';
 import { useNavigate } from 'react-router-dom';
 import { BellFilled, LogoutOutlined, UserOutlined } from '@ant-design/icons';
@@ -132,7 +132,11 @@ const UserTitle: React.FC<Props> = ({ user }) => {
         arrow
       >
         <div>
-          <AvatarPic image={user.photo} firstname={user.firstname} />
+          <UserAvatar
+            image={user.photo}
+            firstname={user.firstname}
+            lastname={user.lastname}
+          />
         </div>
       </Dropdown>
     </Flex>

@@ -146,6 +146,7 @@ const Profile: React.FC<Props> = ({ user }) => {
         onOk={handleOk}
         onCancel={handleCancel}
         forceRender
+        styles={{ body: { paddingTop: '30px' } }}
       >
         <Form form={form} layout="vertical" autoComplete="off">
           <Form.Item name="photo">

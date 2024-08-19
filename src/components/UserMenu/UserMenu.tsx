@@ -104,6 +104,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
             />
           </Flex>
         ),
+        onClick: () => handleNavigate(appRoutes.user.teamsAll + '/' + team._id),
         style: { paddingRight: '8px' },
       }))
       .splice(0, 6);
@@ -122,7 +123,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
           <RightOutlined />
         </Flex>
       ),
-      onClick: () => handleNavigate(appRoutes.user.teams),
+      onClick: () => handleNavigate(appRoutes.user.teamsAll),
     });
 
     favouriteTeams = createTeamItem(selectedTeamList);

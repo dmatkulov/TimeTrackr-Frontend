@@ -16,41 +16,41 @@ const secondaryHoverColor = '#FFF8E8';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ConfigProvider
-      theme={{
-        token: {
-          colorPrimary: primaryColor,
-          colorBgContainer: '#fff',
-          colorText: '#172c3f',
-          boxShadow: 'none',
-        },
-        components: {
-          Menu: {
-            collapsedWidth: 1000,
-            subMenuItemBg: 'white',
-            itemActiveBg: secondaryHoverColor,
-            itemHoverBg: secondaryHoverColor,
-          },
-          Button: {
-            borderRadius: 8,
-            // defaultBg: defaultGreyColor,
-            boxShadow: 'none',
-            // defaultBorderColor: 'none',
-            defaultHoverBorderColor: 'none',
-            defaultHoverBg: secondaryHoverColor,
-          },
-        },
-      }}
-    >
-      <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-        <Provider store={store}>
-          <PersistGate persistor={persistor}>
-            <BrowserRouter>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+      <Provider store={store}>
+        <PersistGate persistor={persistor}>
+          <BrowserRouter>
+            <ConfigProvider
+              theme={{
+                token: {
+                  colorPrimary: primaryColor,
+                  colorBgContainer: '#fff',
+                  colorText: '#172c3f',
+                  boxShadow: 'none',
+                },
+                components: {
+                  Menu: {
+                    collapsedWidth: 1000,
+                    subMenuItemBg: 'white',
+                    itemActiveBg: secondaryHoverColor,
+                    itemHoverBg: secondaryHoverColor,
+                  },
+                  Button: {
+                    borderRadius: 8,
+                    // defaultBg: defaultGreyColor,
+                    boxShadow: 'none',
+                    // defaultBorderColor: 'none',
+                    defaultHoverBorderColor: 'none',
+                    defaultHoverBg: secondaryHoverColor,
+                  },
+                },
+              }}
+            >
               <App />
-            </BrowserRouter>
-          </PersistGate>
-        </Provider>
-      </GoogleOAuthProvider>
-    </ConfigProvider>
+            </ConfigProvider>
+          </BrowserRouter>
+        </PersistGate>
+      </Provider>
+    </GoogleOAuthProvider>
   </React.StrictMode>,
 );

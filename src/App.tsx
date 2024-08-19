@@ -11,11 +11,13 @@ import CalendarPage from './containers/Calendar/CalendarPage';
 import Dashboard from './containers/Dashboard/Dashboard';
 import Auth from './containers/Auth/Auth';
 import Notes from './containers/Notes/Notes';
-import Teams from './containers/Teams/Teams';
 import Projects from './containers/Projects/Projects';
 import { Roles } from './enum/roles.enum';
 import { useAppSelector } from './store/hooks/hooks';
 import { selectUser } from './store/services/auth/authSlice';
+import TeamsOulet from './containers/Teams/TeamsOulet';
+import Teams from './containers/Teams/Teams';
+import TeamInfo from './containers/Teams/TeamInfo';
 
 const App = () => {
   const user = useAppSelector(selectUser);
@@ -38,7 +40,15 @@ const App = () => {
             <Route path={appRoutes.user.account} element={<UserProfile />} />
             <Route path={appRoutes.user.dashboard} element={<Dashboard />} />
             <Route path={appRoutes.user.notes} element={<Notes />} />
-            <Route path={appRoutes.user.teams} element={<Teams />} />
+            <Route
+              path={appRoutes.user.teams}
+              element={<TeamsOulet></TeamsOulet>}
+            />
+            <Route path={appRoutes.user.teamsAll} element={<Teams />} />
+            <Route
+              path={appRoutes.user.teamsAll + '/' + ':id'}
+              element={<TeamInfo />}
+            />
             <Route path={appRoutes.user.projects} element={<Projects />} />
             <Route path={appRoutes.user.calendar} element={<CalendarPage />} />
           </Route>

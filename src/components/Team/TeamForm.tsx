@@ -19,7 +19,7 @@ import {
 import { TeamMemberMutation, TeamMutation } from '../../types/types.team';
 import { useGetAllUserQuery } from '../../store/services/user/user';
 import { useGetPositionsQuery } from '../../store/services/positions/positions';
-import AvatarPic from '../UI/UserAvatar/Avatar';
+import UserAvatar from '../UI/UserAvatar/UserAvatar';
 import './index.css';
 import { handleFormFieldError } from '../../utils/handleError';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
@@ -133,6 +133,8 @@ const TeamForm: React.FC<Props> = ({
     value: user._id,
     label: `${user.firstname} ${user.lastname}`,
     photo: user.photo,
+    // firstname: user.firstname,
+    // lastname: user.lastname,
   }));
 
   return (
@@ -211,9 +213,10 @@ const TeamForm: React.FC<Props> = ({
                         options={userOptions}
                         optionRender={(option) => (
                           <Space>
-                            <AvatarPic
+                            <UserAvatar
                               image={option.data.photo}
-                              firstname={option.data.label}
+                              firstname={option.data.label.split(' ')[0]}
+                              lastname={option.data.label.split(' ')[1]}
                             />
                             {option.data.label}
                           </Space>
