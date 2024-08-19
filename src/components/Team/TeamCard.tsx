@@ -11,6 +11,7 @@ import {
 } from 'antd';
 import {
   DeleteOutlined,
+  FolderOpenOutlined,
   MoreOutlined,
   StarFilled,
   StarOutlined,
@@ -20,6 +21,9 @@ import { useMediaQuery } from 'react-responsive';
 import { Team } from '../../types/types.team';
 import { apiURL } from '../../common/constants';
 import { useToggleFavouriteMutation } from '../../store/services/team/team';
+import { useNavigate } from 'react-router-dom';
+import { appRoutes } from '../../common/routes';
+import './index.css';
 
 interface Props {
   team: Team;
@@ -28,7 +32,7 @@ interface Props {
 const TeamCard: React.FC<Props> = ({ team }) => {
   const [toggle] = useToggleFavouriteMutation();
   const { md, lg } = useBreakpoint();
-
+  const navigate = useNavigate();
   const xxs = useMediaQuery({
     query: '(min-width: 320px) and (max-width: 360px)',
   });
@@ -73,7 +77,10 @@ const TeamCard: React.FC<Props> = ({ team }) => {
         title={team.name}
         bordered={false}
         hoverable
-        style={{ height: '100%', boxShadow: 'none' }}
+        style={{
+          height: '100%',
+        }}
+        className="team-card"
         styles={{ header: { border: 'none' } }}
         extra={
           <>
@@ -88,7 +95,7 @@ const TeamCard: React.FC<Props> = ({ team }) => {
             </Dropdown>
           </>
         }
-        onClick={() => console.log('clicked card')}
+        onClick={() => navigate(appRoutes.user.teamsAll + '/' + team._id)}
       >
         <Flex
           justify="space-between"
@@ -108,7 +115,11 @@ const TeamCard: React.FC<Props> = ({ team }) => {
             maxPopoverTrigger="hover"
           >
             {team.members.map((member) => (
-              <Tooltip title={member.user.firstname} placement="top">
+              <Tooltip
+                title={member.user.firstname}
+                placement="top"
+                key={member.user._id}
+              >
                 {member.user.photo ? (
                   <Avatar src={apiURL + '/' + member.user.photo} />
                 ) : (
@@ -119,7 +130,12 @@ const TeamCard: React.FC<Props> = ({ team }) => {
               </Tooltip>
             ))}
           </Avatar.Group>
-          <Tag style={{ marginRight: 0 }} bordered={false}>
+          <Tag
+            style={{ marginRight: 0 }}
+            bordered={false}
+            icon={<FolderOpenOutlined />}
+            color="processing"
+          >
             10 проектов
           </Tag>
         </Flex>
