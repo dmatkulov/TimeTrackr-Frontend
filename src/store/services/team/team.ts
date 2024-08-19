@@ -10,6 +10,11 @@ import { teamUrl } from '../../../common/routes';
 
 export const teamApi = api.injectEndpoints({
   endpoints: (build) => ({
+    getTeams: build.query<Team[], void>({
+      query: () => teamUrl.get,
+      providesTags: ['Teams'],
+    }),
+
     getTeamsList: build.query<TeamList[], string>({
       query: (id) => teamUrl.get + '?teamList=' + (id ?? ''),
       providesTags: ['Teams'],
@@ -41,6 +46,7 @@ export const teamApi = api.injectEndpoints({
 });
 
 export const {
+  useGetTeamsQuery,
   useGetTeamsListQuery,
   useCreateTeamMutation,
   useGetSelectedTeamQuery,

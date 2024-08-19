@@ -1,7 +1,7 @@
 import React from 'react';
 import TeamForm from './TeamForm';
-import { useCreateTeamMutation } from '../../store/services/team/team';
-import { TeamMutation } from '../../types/types.team';
+import { useCreateTeamMutation } from '../../../store/services/team/team';
+import { TeamMutation } from '../../../types/types.team';
 import { message } from 'antd';
 
 interface Props {

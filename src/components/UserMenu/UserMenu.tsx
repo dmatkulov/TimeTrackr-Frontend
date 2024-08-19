@@ -24,7 +24,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../common/routes';
 import './index.css';
 import { useLogoutMutation } from '../../store/services/auth/auth';
-import TeamAdd from '../Team/TeamAdd';
+import TeamAdd from '../Team/TeamForm/TeamAdd';
 import {
   useGetTeamsListQuery,
   useToggleFavouriteMutation,

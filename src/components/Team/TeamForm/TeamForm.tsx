@@ -16,12 +16,12 @@ import {
   MinusCircleOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
-import { TeamMemberMutation, TeamMutation } from '../../types/types.team';
-import { useGetAllUserQuery } from '../../store/services/user/user';
-import { useGetPositionsQuery } from '../../store/services/positions/positions';
-import UserAvatar from '../UI/UserAvatar/UserAvatar';
+import { TeamMemberMutation, TeamMutation } from '../../../types/types.team';
+import { useGetAllUserQuery } from '../../../store/services/user/user';
+import { useGetPositionsQuery } from '../../../store/services/positions/positions';
+import UserAvatar from '../../UI/UserAvatar/UserAvatar';
 import './index.css';
-import { handleFormFieldError } from '../../utils/handleError';
+import { handleFormFieldError } from '../../../utils/handleError';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import { useMediaQuery } from 'react-responsive';
 
