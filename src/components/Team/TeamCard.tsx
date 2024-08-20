@@ -9,13 +9,7 @@ import {
   Tag,
   Tooltip,
 } from 'antd';
-import {
-  DeleteOutlined,
-  FolderOpenOutlined,
-  MoreOutlined,
-  StarFilled,
-  StarOutlined,
-} from '@ant-design/icons';
+import { FolderOpenOutlined, MoreOutlined } from '@ant-design/icons';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import { useMediaQuery } from 'react-responsive';
 import { Team } from '../../types/types.team';
@@ -47,23 +41,27 @@ const TeamCard: React.FC<Props> = ({ team }) => {
 
   const items: MenuProps['items'] = [
     {
-      key: '1',
+      key: 'favourite',
       label: team.isFavorite ? 'Удалить из избранного' : 'Добавить в избранное',
       onClick: async (info) => {
         info.domEvent.stopPropagation();
         await toggleFav(team._id, !team.isFavorite);
       },
-      icon: team.isFavorite ? <StarFilled /> : <StarOutlined />,
     },
     {
-      key: '2',
-      danger: true,
+      key: 'edit',
+      label: 'Редактрировать',
+      onClick: async (info) => {
+        info.domEvent.stopPropagation();
+      },
+    },
+    { type: 'divider' },
+    {
+      key: 'delete',
       label: 'Удалить',
       onClick: (info) => {
         info.domEvent.stopPropagation();
       },
-      icon: <DeleteOutlined />,
-      disabled: false,
     },
   ];
 
@@ -81,13 +79,15 @@ const TeamCard: React.FC<Props> = ({ team }) => {
           height: '100%',
         }}
         className="team-card"
-        styles={{ header: { border: 'none' } }}
+        styles={{
+          header: { border: 'none', padding: '0 16px' },
+          body: { padding: '24px 16px' },
+        }}
         extra={
           <>
             <Dropdown
               menu={{ items }}
               placement="bottomRight"
-              arrow
               overlayStyle={{ zIndex: 10 }}
               trigger={['click']}
             >
@@ -131,10 +131,10 @@ const TeamCard: React.FC<Props> = ({ team }) => {
             ))}
           </Avatar.Group>
           <Tag
-            style={{ marginRight: 0 }}
+            style={{ marginRight: 0, borderRadius: '12px' }}
             bordered={false}
             icon={<FolderOpenOutlined />}
-            color="processing"
+            color="orange"
           >
             10 проектов
           </Tag>
