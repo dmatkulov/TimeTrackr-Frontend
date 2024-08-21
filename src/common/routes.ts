@@ -48,5 +48,5 @@ export const positionUrl = {
 export const teamUrl = {
   get: 'teams',
   create: 'teams/new-team',
-  toggle: 'teams/toogle-favourite/',
+  toggle: 'teams/toggle-favourite/',
 };

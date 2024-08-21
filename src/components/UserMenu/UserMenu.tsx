@@ -33,6 +33,7 @@ import { TeamList } from '../../types/types.team';
 import { blue } from '@ant-design/colors';
 import { useAppSelector } from '../../store/hooks/hooks';
 import { selectUser } from '../../store/services/auth/authSlice';
+import { Roles } from '../../enum/roles.enum';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -54,6 +55,8 @@ interface Props {
 
 const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
   const user = useAppSelector(selectUser);
+
+  const isTeamLead = user && user.roles.includes(Roles.TeamLead);
 
   const { data: teams = [], refetch } = useGetTeamsListQuery(user._id);
   const [toggle] = useToggleFavouriteMutation();
@@ -258,7 +261,11 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
               Добавить
             </Button>
           ),
-          style: { background: 'none', cursor: 'default' },
+          style: {
+            display: !isTeamLead ? 'none' : 'block',
+            background: 'none',
+            cursor: 'default',
+          },
           className: 'menuItemBtn',
         },
       ],
