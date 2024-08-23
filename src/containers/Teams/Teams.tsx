@@ -10,7 +10,8 @@ const Teams: React.FC = () => {
   const { data: teams = [], isFetching } = useGetTeamsQuery();
   const [open, setOpen] = useState<boolean>(false);
 
-  console.log('teams', teams);
+  const teamList = teams.filter((team) => !team.isFavorite);
+  const selectedTeamList = teams.filter((team) => team.isFavorite);
   return (
     <>
       <Flex
@@ -36,20 +37,42 @@ const Teams: React.FC = () => {
       {isFetching ? (
         <Spinner />
       ) : (
-        <Row gutter={16}>
-          {teams.map((team) => (
-            <Col
-              style={{ marginBottom: 16 }}
-              key={team._id}
-              xs={{ span: 24 }}
-              sm={{ span: 12 }}
-              lg={{ span: 8 }}
-              xl={{ span: 6 }}
-            >
-              <TeamCard team={team} />
-            </Col>
-          ))}
-        </Row>
+        <>
+          {selectedTeamList.length > 0 && (
+            <Row gutter={24} style={{ marginBottom: '20px' }}>
+              <Col span={24} style={{ marginBottom: '20px' }}>
+                <Typography.Text>Избранное</Typography.Text>
+              </Col>
+              {selectedTeamList.map((team) => (
+                <Col
+                  style={{ marginBottom: 16 }}
+                  key={team._id}
+                  xs={{ span: 24 }}
+                  sm={{ span: 12 }}
+                  lg={{ span: 8 }}
+                  xl={{ span: 6 }}
+                >
+                  <TeamCard team={team} />
+                </Col>
+              ))}
+              <Divider style={{ margin: '30px 0' }} />
+            </Row>
+          )}
+          <Row gutter={16}>
+            {teamList.map((team) => (
+              <Col
+                style={{ marginBottom: 16 }}
+                key={team._id}
+                xs={{ span: 24 }}
+                sm={{ span: 12 }}
+                lg={{ span: 8 }}
+                xl={{ span: 6 }}
+              >
+                <TeamCard team={team} />
+              </Col>
+            ))}
+          </Row>
+        </>
       )}
       <TeamAdd isOpen={open} onClose={() => setOpen(false)} />
     </>

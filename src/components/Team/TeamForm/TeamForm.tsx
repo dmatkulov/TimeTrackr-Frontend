@@ -53,8 +53,8 @@ const TeamForm: React.FC<Props> = ({
   const handleSubmit = async () => {
     console.log(state);
     onSubmit(state);
-    // setState(initialState);
-    // form.setFieldsValue(initialState);
+    setState(initialState);
+    form.setFieldsValue(initialState);
   };
 
   useEffect(() => {
@@ -86,6 +86,7 @@ const TeamForm: React.FC<Props> = ({
     value: user._id,
     label: `${user.firstname} ${user.lastname}`,
     photo: user.photo,
+    position: user.position.name,
   }));
 
   const handleMemberChange = (value: string[]) => {
@@ -173,7 +174,10 @@ const TeamForm: React.FC<Props> = ({
                           firstname={option.data.label.split(' ')[0]}
                           lastname={option.data.label.split(' ')[1]}
                         />
-                        {option.data.label}
+                        {option.data.label}{' '}
+                        <span style={{ color: '#969a9e' }}>
+                          {option.data.position}
+                        </span>
                       </Space>
                     )}
                     onChange={handleMemberChange}

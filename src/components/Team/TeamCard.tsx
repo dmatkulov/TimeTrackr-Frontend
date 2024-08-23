@@ -6,10 +6,15 @@ import {
   Dropdown,
   Flex,
   MenuProps,
+  Space,
   Tag,
   Tooltip,
 } from 'antd';
-import { FolderOpenOutlined, MoreOutlined } from '@ant-design/icons';
+import {
+  FolderOpenOutlined,
+  MoreOutlined,
+  StarFilled,
+} from '@ant-design/icons';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import { useMediaQuery } from 'react-responsive';
 import { Team } from '../../types/types.team';
@@ -18,12 +23,16 @@ import { useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../common/routes';
 import './index.css';
 import { apiURL } from '../../common/constants';
+import { useAppSelector } from '../../store/hooks/hooks';
+import { selectUser } from '../../store/services/auth/authSlice';
+import { Roles } from '../../enum/roles.enum';
 
 interface Props {
   team: Team;
 }
 
 const TeamCard: React.FC<Props> = ({ team }) => {
+  const user = useAppSelector(selectUser);
   const [toggle] = useToggleFavouriteMutation();
   const { md, lg } = useBreakpoint();
   const navigate = useNavigate();
@@ -48,22 +57,27 @@ const TeamCard: React.FC<Props> = ({ team }) => {
         await toggleFav(team._id);
       },
     },
-    {
-      key: 'edit',
-      label: 'Редактрировать',
-      onClick: async (info) => {
-        info.domEvent.stopPropagation();
-      },
-    },
-    { type: 'divider' },
-    {
-      key: 'delete',
-      label: 'Удалить',
-      onClick: (info) => {
-        info.domEvent.stopPropagation();
-      },
-    },
   ];
+
+  if (user.roles.includes(Roles.TeamLead)) {
+    items.push(
+      {
+        key: 'edit',
+        label: 'Редактрировать',
+        onClick: async (info) => {
+          info.domEvent.stopPropagation();
+        },
+      },
+      { type: 'divider' },
+      {
+        key: 'delete',
+        label: 'Удалить',
+        onClick: (info) => {
+          info.domEvent.stopPropagation();
+        },
+      },
+    );
+  }
 
   const handleDropdownClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
@@ -72,7 +86,12 @@ const TeamCard: React.FC<Props> = ({ team }) => {
   return (
     <>
       <Card
-        title={team.name}
+        title={
+          <Space size="middle">
+            {team.isFavorite && <StarFilled style={{ color: '#FABB18' }} />}
+            {team.name}
+          </Space>
+        }
         bordered={false}
         hoverable
         style={{

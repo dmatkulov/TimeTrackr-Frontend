@@ -237,7 +237,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
           style: { display: favouriteTeams.length > 0 ? 'block' : 'none' },
         },
         ...children,
-        { type: 'divider' },
+        { type: 'divider', style: { display: !isTeamLead ? 'none' : 'block' } },
         {
           key: 'addTeam',
           label: (
