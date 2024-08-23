@@ -1,11 +1,6 @@
 import { api } from '../../index';
 import { GlobalMessage } from '../../../types/types.global';
-import {
-  Team,
-  TeamList,
-  TeamMutation,
-  UpdateTeamFav,
-} from '../../../types/types.team';
+import { Team, TeamMutation, UpdateTeamFav } from '../../../types/types.team';
 import { teamUrl } from '../../../common/routes';
 
 export const teamApi = api.injectEndpoints({
@@ -15,9 +10,8 @@ export const teamApi = api.injectEndpoints({
       providesTags: ['Teams'],
     }),
 
-    getTeamsList: build.query<TeamList[], string>({
-      query: (id) => teamUrl.get + '?teamList=' + (id ?? ''),
-      providesTags: ['Teams'],
+    getTeamsByUser: build.query<Team[], string>({
+      query: (id) => teamUrl.get + '?user-teams=' + (id ?? ''),
     }),
 
     getSelectedTeam: build.query<Team, string>({
@@ -35,10 +29,9 @@ export const teamApi = api.injectEndpoints({
     }),
 
     toggleFavourite: build.mutation<void, UpdateTeamFav>({
-      query: ({ id, isFavorite }) => ({
+      query: ({ id }) => ({
         url: teamUrl.toggle + id,
         method: 'PATCH',
-        body: { isFavorite },
       }),
       invalidatesTags: ['Teams', 'Team'],
     }),
@@ -47,7 +40,7 @@ export const teamApi = api.injectEndpoints({
 
 export const {
   useGetTeamsQuery,
-  useGetTeamsListQuery,
+  useGetTeamsByUserQuery,
   useCreateTeamMutation,
   useGetSelectedTeamQuery,
   useToggleFavouriteMutation,

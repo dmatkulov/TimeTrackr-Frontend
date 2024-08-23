@@ -9,6 +9,8 @@ import TeamAdd from '../../components/Team/TeamForm/TeamAdd';
 const Teams: React.FC = () => {
   const { data: teams = [], isFetching } = useGetTeamsQuery();
   const [open, setOpen] = useState<boolean>(false);
+
+  console.log('teams', teams);
   return (
     <>
       <Flex

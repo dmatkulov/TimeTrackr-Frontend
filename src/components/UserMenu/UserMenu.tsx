@@ -26,10 +26,10 @@ import './index.css';
 import { useLogoutMutation } from '../../store/services/auth/auth';
 import TeamAdd from '../Team/TeamForm/TeamAdd';
 import {
-  useGetTeamsListQuery,
+  useGetTeamsQuery,
   useToggleFavouriteMutation,
 } from '../../store/services/team/team';
-import { TeamList } from '../../types/types.team';
+import { Team } from '../../types/types.team';
 import { blue } from '@ant-design/colors';
 import { useAppSelector } from '../../store/hooks/hooks';
 import { selectUser } from '../../store/services/auth/authSlice';
@@ -58,7 +58,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
 
   const isTeamLead = user && user.roles.includes(Roles.TeamLead);
 
-  const { data: teams = [], refetch } = useGetTeamsListQuery(user._id);
+  const { data: teams = [], refetch } = useGetTeamsQuery();
   const [toggle] = useToggleFavouriteMutation();
   const [logout] = useLogoutMutation();
 
@@ -72,14 +72,10 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
   let children: MenuChildren[] = [];
   let favouriteTeams: MenuChildren[] = [];
 
-  const toggleFav = async (
-    event: React.MouseEvent,
-    id: string,
-    favourite: boolean,
-  ) => {
+  const toggleFav = async (event: React.MouseEvent, id: string) => {
     event.stopPropagation();
     try {
-      await toggle({ id, isFavorite: favourite }).unwrap();
+      await toggle({ id }).unwrap();
     } catch (error) {
       console.error('Failed to toggle favorite:', error);
     }
@@ -89,9 +85,9 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
     refetch();
   }, []);
 
-  const createTeamItem = (teams: TeamList[]) => {
+  const createTeamItem = (teams: Team[]) => {
     return teams
-      .map((team: TeamList) => ({
+      .map((team: Team) => ({
         key: team._id,
         label: (
           <Flex justify="space-between" align="center">
@@ -107,9 +103,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
             <Button
               type="text"
               style={{ color: '#969a9e' }}
-              onClick={(event: React.MouseEvent) =>
-                toggleFav(event, team._id, !team.isFavorite)
-              }
+              onClick={(event: React.MouseEvent) => toggleFav(event, team._id)}
               icon={
                 team.isFavorite ? (
                   <StarFilled style={{ color: '#FABB18' }} />

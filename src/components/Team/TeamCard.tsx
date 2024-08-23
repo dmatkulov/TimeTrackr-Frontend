@@ -13,11 +13,11 @@ import { FolderOpenOutlined, MoreOutlined } from '@ant-design/icons';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import { useMediaQuery } from 'react-responsive';
 import { Team } from '../../types/types.team';
-import { apiURL } from '../../common/constants';
 import { useToggleFavouriteMutation } from '../../store/services/team/team';
 import { useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../common/routes';
 import './index.css';
+import { apiURL } from '../../common/constants';
 
 interface Props {
   team: Team;
@@ -31,9 +31,9 @@ const TeamCard: React.FC<Props> = ({ team }) => {
     query: '(min-width: 320px) and (max-width: 360px)',
   });
 
-  const toggleFav = async (id: string, favourite: boolean) => {
+  const toggleFav = async (id: string) => {
     try {
-      await toggle({ id, isFavorite: favourite }).unwrap();
+      await toggle({ id }).unwrap();
     } catch (error) {
       console.error('Failed to toggle favorite:', error);
     }
@@ -45,7 +45,7 @@ const TeamCard: React.FC<Props> = ({ team }) => {
       label: team.isFavorite ? 'Удалить из избранного' : 'Добавить в избранное',
       onClick: async (info) => {
         info.domEvent.stopPropagation();
-        await toggleFav(team._id, !team.isFavorite);
+        await toggleFav(team._id);
       },
     },
     {
@@ -116,15 +116,15 @@ const TeamCard: React.FC<Props> = ({ team }) => {
           >
             {team.members.map((member) => (
               <Tooltip
-                title={member.user.firstname}
+                title={member.firstname}
                 placement="top"
-                key={member.user._id}
+                key={member._id}
               >
-                {member.user.photo ? (
-                  <Avatar src={apiURL + '/' + member.user.photo} />
+                {member.photo ? (
+                  <Avatar src={apiURL + '/' + member.photo} />
                 ) : (
                   <Avatar style={{ backgroundColor: '#f56a00' }}>
-                    {member.user.firstname}
+                    {member.firstname}
                   </Avatar>
                 )}
               </Tooltip>

@@ -11,29 +11,18 @@ import {
   Select,
   Space,
 } from 'antd';
-import {
-  ClearOutlined,
-  MinusCircleOutlined,
-  PlusOutlined,
-} from '@ant-design/icons';
-import { TeamMemberMutation, TeamMutation } from '../../../types/types.team';
+import { ClearOutlined } from '@ant-design/icons';
+import { TeamMutation } from '../../../types/types.team';
 import { useGetAllUserQuery } from '../../../store/services/user/user';
-import { useGetPositionsQuery } from '../../../store/services/positions/positions';
 import UserAvatar from '../../UI/UserAvatar/UserAvatar';
 import './index.css';
 import { handleFormFieldError } from '../../../utils/handleError';
-import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import { useMediaQuery } from 'react-responsive';
 
 const initialState: TeamMutation = {
   name: '',
   description: '',
-  members: [
-    {
-      user: '',
-      position: '',
-    },
-  ],
+  members: [],
 };
 
 interface Props {
@@ -56,46 +45,21 @@ const TeamForm: React.FC<Props> = ({
   const [form] = Form.useForm();
   const [state, setState] = useState<TeamMutation>(initialState);
   const { data: users } = useGetAllUserQuery();
-  const { data: positions } = useGetPositionsQuery();
 
-  const { md } = useBreakpoint();
   const xxs = useMediaQuery({
     query: '(min-width: 320px) and (max-width: 480px)',
   });
 
   const handleSubmit = async () => {
+    console.log(state);
     onSubmit(state);
-    setState(initialState);
-    form.setFieldsValue(initialState);
+    // setState(initialState);
+    // form.setFieldsValue(initialState);
   };
 
   useEffect(() => {
     handleFormFieldError(isError, error, form);
   }, [isError, error, form]);
-
-  const addMember = () => {
-    setState((prevState) => ({
-      ...prevState,
-      members: [
-        ...prevState.members,
-        {
-          user: '',
-          position: '',
-        },
-      ],
-    }));
-  };
-
-  const removeMember = (index: number) => {
-    setState((prevState) => {
-      const members = [...prevState.members];
-      members.splice(index, 1);
-      return {
-        ...prevState,
-        members,
-      };
-    });
-  };
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -105,17 +69,6 @@ const TeamForm: React.FC<Props> = ({
       ...prevState,
       [name]: value,
     }));
-  };
-
-  const handleMemberChange = (name: string, index: number, value: string) => {
-    setState((prevState) => {
-      const members = [...prevState.members];
-      members[index][name as keyof TeamMemberMutation] = value;
-      return {
-        ...prevState,
-        members,
-      };
-    });
   };
 
   const handleClose = () => {
@@ -133,9 +86,14 @@ const TeamForm: React.FC<Props> = ({
     value: user._id,
     label: `${user.firstname} ${user.lastname}`,
     photo: user.photo,
-    // firstname: user.firstname,
-    // lastname: user.lastname,
   }));
+
+  const handleMemberChange = (value: string[]) => {
+    setState((prevState) => ({
+      ...prevState,
+      members: value,
+    }));
+  };
 
   return (
     <Modal
@@ -189,105 +147,40 @@ const TeamForm: React.FC<Props> = ({
           </Col>
           <Col xs={24} style={{ marginBottom: '24px' }}>
             <p className="members-label">Добавьте участников</p>
-            {users &&
-              positions &&
-              state.members.map((member, index) => (
-                <Row gutter={24} key={index}>
-                  <Col xs={24} md={10}>
-                    <Form.Item
-                      name={['members', index, 'user']}
-                      rules={[
-                        { required: true, message: 'Укажите пользователя' },
-                      ]}
-                    >
-                      <Select
-                        size="large"
-                        variant="filled"
-                        notFoundContent="Никого не удалось найти"
-                        style={{ width: '100%' }}
-                        value={member.user}
-                        filterOption={filterOption}
-                        placeholder="Введите имя"
-                        allowClear
-                        showSearch
-                        options={userOptions}
-                        optionRender={(option) => (
-                          <Space>
-                            <UserAvatar
-                              image={option.data.photo}
-                              firstname={option.data.label.split(' ')[0]}
-                              lastname={option.data.label.split(' ')[1]}
-                            />
-                            {option.data.label}
-                          </Space>
-                        )}
-                        onChange={(value) =>
-                          handleMemberChange('user', index, value)
-                        }
-                      />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} md={10}>
-                    <Form.Item
-                      name={['members', index, 'position']}
-                      rules={[{ required: true, message: 'Укажите позицию' }]}
-                    >
-                      <Select
-                        size="large"
-                        variant="filled"
-                        notFoundContent="Не удалось найти"
-                        style={{ width: '100%', fontSize: '14px' }}
-                        value={member.position}
-                        filterOption={filterOption}
-                        placeholder="Выберите позицию"
-                        allowClear
-                        showSearch
-                        onChange={(value) =>
-                          handleMemberChange('position', index, value)
-                        }
-                        options={[
-                          ...positions.map((position) => ({
-                            value: position._id,
-                            label: position.name,
-                          })),
-                        ]}
-                      />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} md={4}>
-                    <Space
-                      style={{
-                        justifyContent: 'space-between',
-                        display: 'flex',
-                      }}
-                    >
-                      <Form.Item>
-                        {state.members.length > 1 && (
-                          <Button
-                            danger
-                            size="large"
-                            type="text"
-                            icon={<MinusCircleOutlined />}
-                            onClick={() => removeMember(index)}
-                          />
-                        )}
-                      </Form.Item>
-                      {state.members.length - 1 === index && (
-                        <Form.Item>
-                          <Button
-                            size="large"
-                            type="dashed"
-                            onClick={addMember}
-                            icon={<PlusOutlined />}
-                          >
-                            {!md && 'Добавить'}
-                          </Button>
-                        </Form.Item>
-                      )}
-                    </Space>
-                  </Col>
-                </Row>
-              ))}
+
+            <Row gutter={24}>
+              <Col xs={24}>
+                <Form.Item
+                  name={['members']}
+                  rules={[{ required: true, message: 'Укажите пользователя' }]}
+                >
+                  <Select
+                    mode="multiple"
+                    size="large"
+                    variant="filled"
+                    notFoundContent="Никого не удалось найти"
+                    style={{ width: '100%' }}
+                    value={state.members}
+                    filterOption={filterOption}
+                    placeholder="Введите имя"
+                    allowClear
+                    showSearch
+                    options={userOptions}
+                    optionRender={(option) => (
+                      <Space>
+                        <UserAvatar
+                          image={option.data.photo}
+                          firstname={option.data.label.split(' ')[0]}
+                          lastname={option.data.label.split(' ')[1]}
+                        />
+                        {option.data.label}
+                      </Space>
+                    )}
+                    onChange={handleMemberChange}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
           </Col>
         </Row>
         <Divider style={{ marginBottom: '44px' }} />
