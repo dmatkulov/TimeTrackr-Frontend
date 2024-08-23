@@ -5,13 +5,20 @@ import { Button, Col, Divider, Flex, Row, Typography } from 'antd';
 import { PlusCircleFilled } from '@ant-design/icons';
 import React, { useState } from 'react';
 import TeamAdd from '../../components/Team/TeamForm/TeamAdd';
+import { useAppSelector } from '../../store/hooks/hooks';
+import { selectUser } from '../../store/services/auth/authSlice';
+import { Roles } from '../../enum/roles.enum';
 
 const Teams: React.FC = () => {
+  const user = useAppSelector(selectUser);
+  const isTeamLead = user.roles.includes(Roles.TeamLead);
+
   const { data: teams = [], isFetching } = useGetTeamsQuery();
   const [open, setOpen] = useState<boolean>(false);
 
   const teamList = teams.filter((team) => !team.isFavorite);
   const selectedTeamList = teams.filter((team) => team.isFavorite);
+
   return (
     <>
       <Flex
@@ -22,16 +29,18 @@ const Teams: React.FC = () => {
         <Typography.Title level={2} style={{ margin: 0 }}>
           Мои команды
         </Typography.Title>
-        <Button
-          onClick={() => setOpen(true)}
-          size="large"
-          type="text"
-          style={{ color: '#3947cf' }}
-          icon={<PlusCircleFilled />}
-          iconPosition="start"
-        >
-          Добавить команду
-        </Button>
+        {isTeamLead && (
+          <Button
+            onClick={() => setOpen(true)}
+            size="large"
+            type="text"
+            style={{ color: '#3947cf' }}
+            icon={<PlusCircleFilled />}
+            iconPosition="start"
+          >
+            Добавить команду
+          </Button>
+        )}
       </Flex>
       <Divider style={{ margin: '0 0 50px 0' }} />
       {isFetching ? (
@@ -52,7 +61,7 @@ const Teams: React.FC = () => {
                   lg={{ span: 8 }}
                   xl={{ span: 6 }}
                 >
-                  <TeamCard team={team} />
+                  <TeamCard team={team} isTeamLead={isTeamLead} />
                 </Col>
               ))}
               <Divider style={{ margin: '30px 0' }} />
@@ -68,7 +77,7 @@ const Teams: React.FC = () => {
                 lg={{ span: 8 }}
                 xl={{ span: 6 }}
               >
-                <TeamCard team={team} />
+                <TeamCard team={team} isTeamLead={isTeamLead} />
               </Col>
             ))}
           </Row>

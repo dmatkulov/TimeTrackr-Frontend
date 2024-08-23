@@ -23,16 +23,13 @@ import { useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../common/routes';
 import './index.css';
 import { apiURL } from '../../common/constants';
-import { useAppSelector } from '../../store/hooks/hooks';
-import { selectUser } from '../../store/services/auth/authSlice';
-import { Roles } from '../../enum/roles.enum';
 
 interface Props {
   team: Team;
+  isTeamLead: boolean;
 }
 
-const TeamCard: React.FC<Props> = ({ team }) => {
-  const user = useAppSelector(selectUser);
+const TeamCard: React.FC<Props> = ({ team, isTeamLead = false }) => {
   const [toggle] = useToggleFavouriteMutation();
   const { md, lg } = useBreakpoint();
   const navigate = useNavigate();
@@ -59,7 +56,7 @@ const TeamCard: React.FC<Props> = ({ team }) => {
     },
   ];
 
-  if (user.roles.includes(Roles.TeamLead)) {
+  if (isTeamLead) {
     items.push(
       {
         key: 'edit',

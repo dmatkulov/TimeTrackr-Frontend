@@ -79,4 +79,5 @@ export interface UserSummary {
   photo: string;
   firstname: string;
   lastname: string;
+  position: Position;
 }
