@@ -16,3 +16,8 @@ export interface TeamMutation {
 export interface UpdateTeamFav {
   id: string;
 }
+
+export interface UpdateTeamMemberMutation {
+  id: string;
+  members: string[];
+}

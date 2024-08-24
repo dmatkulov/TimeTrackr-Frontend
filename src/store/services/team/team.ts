@@ -1,6 +1,11 @@
 import { api } from '../../index';
 import { GlobalMessage } from '../../../types/types.global';
-import { Team, TeamMutation, UpdateTeamFav } from '../../../types/types.team';
+import {
+  Team,
+  TeamMutation,
+  UpdateTeamFav,
+  UpdateTeamMemberMutation,
+} from '../../../types/types.team';
 import { teamUrl } from '../../../common/routes';
 
 export const teamApi = api.injectEndpoints({
@@ -28,6 +33,15 @@ export const teamApi = api.injectEndpoints({
       invalidatesTags: ['Teams'],
     }),
 
+    deleteMembers: build.mutation<GlobalMessage, UpdateTeamMemberMutation>({
+      query: ({ id, members }) => ({
+        url: teamUrl.updateMembers + id,
+        method: 'delete',
+        body: { members },
+        invalidatesTags: ['Teams', 'Team'],
+      }),
+    }),
+
     toggleFavourite: build.mutation<void, UpdateTeamFav>({
       query: ({ id }) => ({
         url: teamUrl.toggle + id,
@@ -43,5 +57,6 @@ export const {
   useGetTeamsByUserQuery,
   useCreateTeamMutation,
   useGetSelectedTeamQuery,
+  useDeleteMembersMutation,
   useToggleFavouriteMutation,
 } = teamApi;

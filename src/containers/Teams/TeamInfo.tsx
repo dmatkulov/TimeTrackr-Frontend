@@ -12,17 +12,21 @@ import {
   Typography,
 } from 'antd';
 import { appRoutes } from '../../common/routes';
-import { useGetSelectedTeamQuery } from '../../store/services/team/team';
+import {
+  useDeleteMembersMutation,
+  useGetSelectedTeamQuery,
+} from '../../store/services/team/team';
 import { UserSummary } from '../../types/types.user';
 import UserAvatar from '../../components/UI/UserAvatar/UserAvatar';
 import NoData from '../../components/UI/NoData/NoData';
-import { DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined, PlusCircleFilled } from '@ant-design/icons';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 
 const TeamInfo: React.FC = () => {
   const { id } = useParams() as { id: string };
 
-  const { data: team } = useGetSelectedTeamQuery(id);
+  const { data: team, refetch } = useGetSelectedTeamQuery(id);
+  const [updateMember, { isLoading }] = useDeleteMembersMutation();
   const [selected, setSelected] = useState<string[]>([]);
 
   const { sm } = useBreakpoint();
@@ -40,30 +44,29 @@ const TeamInfo: React.FC = () => {
     />
   );
 
+  const handleDeleteMember = async () => {
+    if (team) {
+      await updateMember({ id: team._id, members: selected });
+      await refetch();
+    }
+  };
+
   const rowSelection = {
     onChange: (selectedRowKeys: React.Key[]) => {
       setSelected(selectedRowKeys as string[]);
     },
   };
 
-  // const handleDropdownClick = (event: React.MouseEvent<HTMLDivElement>) => {
-  //   event.stopPropagation();
-  // };
-  //
-  // const items: MenuProps['items'] = [
-  //   {
-  //     key: 'favourite',
-  //     label: 'Удалить из команды',
-  //     onClick: async (info) => {
-  //       info.domEvent.stopPropagation();
-  //       // await toggleFav(team._id);
-  //     },
-  //   },
-  // ];
-
   const columns: TableProps<UserSummary>['columns'] = [
     {
-      title: 'Сотрудники',
+      title: (
+        <Space>
+          Сотрудники{' '}
+          <Button type="link" icon={<PlusCircleFilled />}>
+            {sm && 'Добавить'}
+          </Button>
+        </Space>
+      ),
       dataIndex: 'firstname',
       key: 'firstname',
       render: (_, user) => (
@@ -93,26 +96,32 @@ const TeamInfo: React.FC = () => {
       ),
     },
     {
-      title: selected.length === team?.members.length && (
-        <Button type="primary" size="small">
-          Удалить все
-        </Button>
+      title: selected.length > 1 && (
+        <Button
+          danger
+          type="primary"
+          size="small"
+          icon={<DeleteOutlined />}
+          disabled={isLoading}
+          onClick={handleDeleteMember}
+        />
       ),
       align: 'end',
       hidden: !selected.length,
       key: 'actions',
       dataIndex: 'actions',
+      width: '40px',
       render: (_, user) => (
         <>
-          {selected.includes(user._id) && (
+          {selected.includes(user._id) && selected.length === 1 && team && (
             <Button
-              type="primary"
               danger
+              type="primary"
               size="small"
               icon={<DeleteOutlined />}
-            >
-              {sm && 'Удалить'}
-            </Button>
+              disabled={isLoading}
+              onClick={handleDeleteMember}
+            />
           )}
         </>
       ),
@@ -131,19 +140,27 @@ const TeamInfo: React.FC = () => {
         <main>
           {team.name}
 
-          <Row gutter={24}>
-            <Col xs={24} lg={12}>
-              <Table
-                locale={{ emptyText: <NoData /> }}
-                columns={columns}
-                dataSource={dataSource}
-                pagination={{
-                  pageSize: 8,
-                  position: ['bottomRight'],
-                }}
-              />
+          <Row gutter={16} justify="space-between">
+            <Col
+              xs={24}
+              lg={11}
+              style={{
+                background: '#eee',
+                padding: '10px',
+                borderRadius: '16px',
+              }}
+            >
+              Проекты
             </Col>
-            <Col xs={24} lg={12}>
+            <Col
+              xs={24}
+              lg={12}
+              style={{
+                background: '#eee',
+                padding: '10px',
+                borderRadius: '16px',
+              }}
+            >
               <Table
                 locale={{ emptyText: <NoData /> }}
                 columns={columns}
