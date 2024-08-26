@@ -17,7 +17,11 @@ export interface UpdateTeamFav {
   id: string;
 }
 
-export interface UpdateTeamMemberMutation {
+export interface UpdateTeamMutation {
   id: string;
-  members: string[];
+  mutation: {
+    name?: string;
+    description?: string;
+    members?: string[];
+  };
 }

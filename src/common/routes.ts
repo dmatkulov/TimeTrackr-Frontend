@@ -49,5 +49,6 @@ export const teamUrl = {
   get: 'teams',
   create: 'teams/new-team',
   toggle: 'teams/toggle-favourite/',
-  updateMembers: 'teams/delete-members/',
+  delete: 'teams/delete-members/',
+  update: 'teams/update-members/',
 };

@@ -15,39 +15,41 @@ import { appRoutes } from '../../common/routes';
 import {
   useDeleteMembersMutation,
   useGetSelectedTeamQuery,
+  useGetTeamsQuery,
+  useUpdateTeamMutation,
 } from '../../store/services/team/team';
 import { UserSummary } from '../../types/types.user';
 import UserAvatar from '../../components/UI/UserAvatar/UserAvatar';
 import NoData from '../../components/UI/NoData/NoData';
 import { DeleteOutlined, PlusCircleFilled } from '@ant-design/icons';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
+import TeamMembersForm from '../../components/Team/TeamForm/TeamMembersForm';
 
 const TeamInfo: React.FC = () => {
   const { id } = useParams() as { id: string };
+  const { sm } = useBreakpoint();
 
   const { data: team, refetch } = useGetSelectedTeamQuery(id);
-  const [updateMember, { isLoading }] = useDeleteMembersMutation();
-  const [selected, setSelected] = useState<string[]>([]);
+  const { refetch: refetchAll } = useGetTeamsQuery();
+  const [addMember, { isLoading: updating }] = useUpdateTeamMutation();
+  const [deleteMember, { isLoading: deleting }] = useDeleteMembersMutation();
 
-  const { sm } = useBreakpoint();
-  const breadCrumb = (
-    <Breadcrumb
-      style={{ marginBottom: '30px' }}
-      items={[
-        {
-          title: <Link to={appRoutes.user.teamsAll}>Все команды</Link>,
-        },
-        {
-          title: team?.name || '',
-        },
-      ]}
-    />
-  );
+  const [selected, setSelected] = useState<string[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
 
   const handleDeleteMember = async () => {
     if (team) {
-      await updateMember({ id: team._id, members: selected });
+      await deleteMember({ id: team._id, mutation: { members: selected } });
       await refetch();
+      await refetchAll();
+    }
+  };
+
+  const handleAddMember = async (members: string[]) => {
+    if (team) {
+      await addMember({ id: team._id, mutation: { members } });
+      await refetch();
+      await refetchAll();
     }
   };
 
@@ -62,7 +64,11 @@ const TeamInfo: React.FC = () => {
       title: (
         <Space>
           Сотрудники{' '}
-          <Button type="link" icon={<PlusCircleFilled />}>
+          <Button
+            type="link"
+            icon={<PlusCircleFilled />}
+            onClick={() => setOpen(true)}
+          >
             {sm && 'Добавить'}
           </Button>
         </Space>
@@ -102,7 +108,7 @@ const TeamInfo: React.FC = () => {
           type="primary"
           size="small"
           icon={<DeleteOutlined />}
-          disabled={isLoading}
+          disabled={deleting}
           onClick={handleDeleteMember}
         />
       ),
@@ -119,7 +125,7 @@ const TeamInfo: React.FC = () => {
               type="primary"
               size="small"
               icon={<DeleteOutlined />}
-              disabled={isLoading}
+              disabled={deleting}
               onClick={handleDeleteMember}
             />
           )}
@@ -127,6 +133,20 @@ const TeamInfo: React.FC = () => {
       ),
     },
   ];
+
+  const breadCrumb = (
+    <Breadcrumb
+      style={{ marginBottom: '30px' }}
+      items={[
+        {
+          title: <Link to={appRoutes.user.teamsAll}>Все команды</Link>,
+        },
+        {
+          title: team?.name || '',
+        },
+      ]}
+    />
+  );
 
   const dataSource = team?.members.map((user) => ({
     ...user,
@@ -136,10 +156,16 @@ const TeamInfo: React.FC = () => {
   return (
     team && (
       <>
+        <TeamMembersForm
+          existingUsers={team.members}
+          open={open}
+          onClose={() => setOpen(false)}
+          onSubmit={handleAddMember}
+          loading={updating}
+        />
         <div>{breadCrumb}</div>
         <main>
           {team.name}
-
           <Row gutter={16} justify="space-between">
             <Col
               xs={24}

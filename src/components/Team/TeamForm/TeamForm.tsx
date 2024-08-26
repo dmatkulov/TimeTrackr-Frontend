@@ -51,7 +51,6 @@ const TeamForm: React.FC<Props> = ({
   });
 
   const handleSubmit = async () => {
-    console.log(state);
     onSubmit(state);
     setState(initialState);
     form.setFieldsValue(initialState);

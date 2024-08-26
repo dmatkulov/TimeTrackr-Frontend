@@ -4,7 +4,7 @@ import {
   Team,
   TeamMutation,
   UpdateTeamFav,
-  UpdateTeamMemberMutation,
+  UpdateTeamMutation,
 } from '../../../types/types.team';
 import { teamUrl } from '../../../common/routes';
 
@@ -33,11 +33,23 @@ export const teamApi = api.injectEndpoints({
       invalidatesTags: ['Teams'],
     }),
 
-    deleteMembers: build.mutation<GlobalMessage, UpdateTeamMemberMutation>({
-      query: ({ id, members }) => ({
-        url: teamUrl.updateMembers + id,
+    deleteMembers: build.mutation<GlobalMessage, UpdateTeamMutation>({
+      query: ({ id, mutation }) => ({
+        url: teamUrl.delete + id,
         method: 'delete',
-        body: { members },
+        body: { members: mutation.members },
+        invalidatesTags: ['Teams', 'Team'],
+      }),
+    }),
+
+    updateTeam: build.mutation<GlobalMessage, UpdateTeamMutation>({
+      query: ({ id, mutation }) => ({
+        url: teamUrl.update + id,
+        method: 'PATCH',
+        body: mutation,
+        headers: {
+          'Content-Type': 'application/json',
+        },
         invalidatesTags: ['Teams', 'Team'],
       }),
     }),
@@ -58,5 +70,6 @@ export const {
   useCreateTeamMutation,
   useGetSelectedTeamQuery,
   useDeleteMembersMutation,
+  useUpdateTeamMutation,
   useToggleFavouriteMutation,
 } = teamApi;
