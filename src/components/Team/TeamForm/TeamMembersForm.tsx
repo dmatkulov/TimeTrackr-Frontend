@@ -39,7 +39,7 @@ const TeamMembersForm = ({
   });
 
   const handleSubmit = async () => {
-    onSubmit(state);
+    state.length > 0 && onSubmit(state);
     setState([]);
     form.setFieldsValue([]);
     onClose();

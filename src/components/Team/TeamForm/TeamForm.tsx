@@ -28,19 +28,23 @@ const initialState: TeamMutation = {
 interface Props {
   onSubmit: (state: TeamMutation) => void;
   loading: boolean;
+  existingTeam?: TeamMutation;
   isOpen: boolean;
   onClose: () => void;
   isError: boolean;
   error: unknown;
+  isEdit?: boolean;
 }
 
 const TeamForm: React.FC<Props> = ({
   onSubmit,
   loading,
+  existingTeam,
   isOpen,
   onClose,
   isError,
   error,
+  isEdit,
 }) => {
   const [form] = Form.useForm();
   const [state, setState] = useState<TeamMutation>(initialState);
@@ -50,8 +54,16 @@ const TeamForm: React.FC<Props> = ({
     query: '(min-width: 320px) and (max-width: 480px)',
   });
 
+  useEffect(() => {
+    if (existingTeam) {
+      form.setFieldsValue(existingTeam);
+      setState(existingTeam);
+    }
+  }, [existingTeam]);
+
   const handleSubmit = async () => {
     onSubmit(state);
+    isEdit && onClose();
     setState(initialState);
     form.setFieldsValue(initialState);
   };
@@ -98,7 +110,7 @@ const TeamForm: React.FC<Props> = ({
   return (
     <Modal
       open={isOpen}
-      title="Создать команду"
+      title={isEdit ? 'Редактировать' : 'Создать команду'}
       onCancel={handleClose}
       width={700}
       footer={[]}
@@ -145,46 +157,50 @@ const TeamForm: React.FC<Props> = ({
               />
             </Form.Item>
           </Col>
-          <Col xs={24} style={{ marginBottom: '24px' }}>
-            <p className="members-label">Добавьте участников</p>
+          {!isEdit && (
+            <Col xs={24} style={{ marginBottom: '24px' }}>
+              <p className="members-label">Добавьте участников</p>
 
-            <Row gutter={24}>
-              <Col xs={24}>
-                <Form.Item
-                  name={['members']}
-                  rules={[{ required: true, message: 'Укажите пользователя' }]}
-                >
-                  <Select
-                    mode="multiple"
-                    size="large"
-                    variant="filled"
-                    notFoundContent="Никого не удалось найти"
-                    style={{ width: '100%' }}
-                    value={state.members}
-                    filterOption={filterOption}
-                    placeholder="Введите имя"
-                    allowClear
-                    showSearch
-                    options={userOptions}
-                    optionRender={(option) => (
-                      <Space>
-                        <UserAvatar
-                          image={option.data.photo}
-                          firstname={option.data.label.split(' ')[0]}
-                          lastname={option.data.label.split(' ')[1]}
-                        />
-                        {option.data.label}{' '}
-                        <span style={{ color: '#969a9e' }}>
-                          {option.data.position}
-                        </span>
-                      </Space>
-                    )}
-                    onChange={handleMemberChange}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-          </Col>
+              <Row gutter={24}>
+                <Col xs={24}>
+                  <Form.Item
+                    name={['members']}
+                    rules={[
+                      { required: true, message: 'Укажите пользователя' },
+                    ]}
+                  >
+                    <Select
+                      mode="multiple"
+                      size="large"
+                      variant="filled"
+                      notFoundContent="Никого не удалось найти"
+                      style={{ width: '100%' }}
+                      value={state.members}
+                      filterOption={filterOption}
+                      placeholder="Введите имя"
+                      allowClear
+                      showSearch
+                      options={userOptions}
+                      optionRender={(option) => (
+                        <Space>
+                          <UserAvatar
+                            image={option.data.photo}
+                            firstname={option.data.label.split(' ')[0]}
+                            lastname={option.data.label.split(' ')[1]}
+                          />
+                          {option.data.label}{' '}
+                          <span style={{ color: '#969a9e' }}>
+                            {option.data.position}
+                          </span>
+                        </Space>
+                      )}
+                      onChange={handleMemberChange}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Col>
+          )}
         </Row>
         <Divider style={{ marginBottom: '44px' }} />
         <Flex justify="space-between" vertical={xxs} gap={24}>
@@ -208,7 +224,7 @@ const TeamForm: React.FC<Props> = ({
             disabled={loading}
             size="large"
           >
-            Создать
+            {isEdit ? 'Сохранить' : 'Создать'}
           </Button>
         </Flex>
       </Form>

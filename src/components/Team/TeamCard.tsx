@@ -1,19 +1,9 @@
 import React from 'react';
-import {
-  Avatar,
-  Button,
-  Card,
-  Dropdown,
-  Flex,
-  MenuProps,
-  Space,
-  Tag,
-  Tooltip,
-} from 'antd';
+import { Avatar, Button, Card, Flex, Space, Tag, Tooltip } from 'antd';
 import {
   FolderOpenOutlined,
-  MoreOutlined,
   StarFilled,
+  StarOutlined,
 } from '@ant-design/icons';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import { useMediaQuery } from 'react-responsive';
@@ -26,10 +16,9 @@ import { apiURL } from '../../common/constants';
 
 interface Props {
   team: Team;
-  isTeamLead: boolean;
 }
 
-const TeamCard: React.FC<Props> = ({ team, isTeamLead = false }) => {
+const TeamCard: React.FC<Props> = ({ team }) => {
   const [toggle] = useToggleFavouriteMutation();
   const { md, lg } = useBreakpoint();
   const navigate = useNavigate();
@@ -43,41 +32,6 @@ const TeamCard: React.FC<Props> = ({ team, isTeamLead = false }) => {
     } catch (error) {
       console.error('Failed to toggle favorite:', error);
     }
-  };
-
-  const items: MenuProps['items'] = [
-    {
-      key: 'favourite',
-      label: team.isFavorite ? 'Удалить из избранного' : 'Добавить в избранное',
-      onClick: async (info) => {
-        info.domEvent.stopPropagation();
-        await toggleFav(team._id);
-      },
-    },
-  ];
-
-  if (isTeamLead) {
-    items.push(
-      {
-        key: 'edit',
-        label: 'Редактрировать',
-        onClick: async (info) => {
-          info.domEvent.stopPropagation();
-        },
-      },
-      { type: 'divider' },
-      {
-        key: 'delete',
-        label: 'Удалить',
-        onClick: (info) => {
-          info.domEvent.stopPropagation();
-        },
-      },
-    );
-  }
-
-  const handleDropdownClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.stopPropagation();
   };
 
   return (
@@ -101,14 +55,21 @@ const TeamCard: React.FC<Props> = ({ team, isTeamLead = false }) => {
         }}
         extra={
           <>
-            <Dropdown
-              menu={{ items }}
-              placement="bottomRight"
-              overlayStyle={{ zIndex: 10 }}
-              trigger={['click']}
-            >
-              <Button icon={<MoreOutlined />} onClick={handleDropdownClick} />
-            </Dropdown>
+            <Button
+              type="text"
+              style={{ color: '#969a9e' }}
+              onClick={async (event: React.MouseEvent) => {
+                event.stopPropagation();
+                await toggleFav(team._id);
+              }}
+              icon={
+                team.isFavorite ? (
+                  <StarFilled style={{ color: '#FABB18' }} />
+                ) : (
+                  <StarOutlined />
+                )
+              }
+            />
           </>
         }
         onClick={() => navigate(appRoutes.user.teamsAll + '/' + team._id)}

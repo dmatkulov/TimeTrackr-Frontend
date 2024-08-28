@@ -61,7 +61,7 @@ const Teams: React.FC = () => {
                   lg={{ span: 8 }}
                   xl={{ span: 6 }}
                 >
-                  <TeamCard team={team} isTeamLead={isTeamLead} />
+                  <TeamCard team={team} />
                 </Col>
               ))}
               <Divider style={{ margin: '30px 0' }} />
@@ -77,7 +77,7 @@ const Teams: React.FC = () => {
                 lg={{ span: 8 }}
                 xl={{ span: 6 }}
               >
-                <TeamCard team={team} isTeamLead={isTeamLead} />
+                <TeamCard team={team} />
               </Col>
             ))}
           </Row>

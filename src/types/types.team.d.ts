@@ -3,6 +3,7 @@ import { UserSummary } from './types.user';
 export interface Team {
   _id: string;
   name: string;
+  description: string | null;
   isFavorite: boolean;
   members: UserSummary[];
 }

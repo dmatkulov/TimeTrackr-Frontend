@@ -12,7 +12,7 @@ import { ConfigProvider } from 'antd';
 
 const primaryColor = '#3947CF';
 const secondaryHoverColor = '#FFF8E8';
-const defaultGreyColor = '#f5f5f5';
+// const defaultGreyColor = '#f5f5f5';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -37,9 +37,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                   },
                   Button: {
                     borderRadius: 8,
-                    defaultBg: defaultGreyColor,
                     boxShadow: 'none',
-                    defaultBorderColor: 'none',
+                    defaultBg: 'none',
+                    // defaultBorderColor: 'none',
                     defaultHoverBorderColor: 'none',
                     defaultHoverBg: '#ededed',
                   },

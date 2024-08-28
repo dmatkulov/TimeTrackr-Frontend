@@ -35,7 +35,7 @@ export const teamApi = api.injectEndpoints({
 
     deleteMembers: build.mutation<GlobalMessage, UpdateTeamMutation>({
       query: ({ id, mutation }) => ({
-        url: teamUrl.delete + id,
+        url: teamUrl.deleteMember + id,
         method: 'delete',
         body: { members: mutation.members },
         invalidatesTags: ['Teams', 'Team'],
@@ -54,6 +54,13 @@ export const teamApi = api.injectEndpoints({
       }),
     }),
 
+    deleteTeam: build.mutation<void, string>({
+      query: (id) => ({
+        url: teamUrl.deleteTeam + id,
+        method: 'delete',
+      }),
+    }),
+
     toggleFavourite: build.mutation<void, UpdateTeamFav>({
       query: ({ id }) => ({
         url: teamUrl.toggle + id,
@@ -66,10 +73,10 @@ export const teamApi = api.injectEndpoints({
 
 export const {
   useGetTeamsQuery,
-  useGetTeamsByUserQuery,
   useCreateTeamMutation,
   useGetSelectedTeamQuery,
   useDeleteMembersMutation,
   useUpdateTeamMutation,
+  useDeleteTeamMutation,
   useToggleFavouriteMutation,
 } = teamApi;
