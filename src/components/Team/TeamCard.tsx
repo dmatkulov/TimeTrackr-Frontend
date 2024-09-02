@@ -72,7 +72,7 @@ const TeamCard: React.FC<Props> = ({ team }) => {
             />
           </>
         }
-        onClick={() => navigate(appRoutes.user.teamsAll + '/' + team._id)}
+        onClick={() => navigate(appRoutes.user.teams + team._id)}
       >
         <Flex
           justify="space-between"

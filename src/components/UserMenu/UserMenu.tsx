@@ -26,27 +26,28 @@ import './index.css';
 import { useLogoutMutation } from '../../store/services/auth/auth';
 import TeamAdd from '../Team/TeamForm/TeamAdd';
 import {
-  useGetTeamsQuery,
+  useGetTeamsListQuery,
   useToggleFavouriteMutation,
 } from '../../store/services/team/team';
-import { Team } from '../../types/types.team';
 import { blue } from '@ant-design/colors';
 import { useAppSelector } from '../../store/hooks/hooks';
 import { selectUser } from '../../store/services/auth/authSlice';
 import { Roles } from '../../enum/roles.enum';
+import { useGetProjectsListQuery } from '../../store/services/projects/projects';
+import { MenuListItems } from '../../types/types.global';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
-interface MenuChildren {
-  key: string;
-  label: React.JSX.Element;
-  icon?: React.JSX.Element;
-  type?: string;
-  onClick?: () => void;
-  style?: CSSProperties;
-  className?: string;
-  disabled?: boolean;
-}
+// interface MenuChildren {
+//   key: string;
+//   label: React.JSX.Element;
+//   icon?: React.JSX.Element;
+//   type?: string;
+//   onClick?: () => void;
+//   style?: CSSProperties;
+//   className?: string;
+//   disabled?: boolean;
+// }
 
 interface Props {
   handleMobile?: () => void;
@@ -58,8 +59,9 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
 
   const isTeamLead = user && user.roles.includes(Roles.TeamLead);
 
-  const { data: teams = [], refetch } = useGetTeamsQuery();
-  const [toggle] = useToggleFavouriteMutation();
+  const { data: teams = [], refetch } = useGetTeamsListQuery();
+  const { data: projects = [] } = useGetProjectsListQuery();
+  const [toggleTeam] = useToggleFavouriteMutation();
   const [logout] = useLogoutMutation();
 
   const navigate = useNavigate();
@@ -69,13 +71,19 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [openKeys, setOpenKeys] = useState<string[]>([]);
 
-  let children: MenuChildren[] = [];
-  let favouriteTeams: MenuChildren[] = [];
-
-  const toggleFav = async (event: React.MouseEvent, id: string) => {
+  const toggleFavTeam = async (event: React.MouseEvent, id: string) => {
     event.stopPropagation();
     try {
-      await toggle({ id }).unwrap();
+      await toggleTeam({ id }).unwrap();
+    } catch (error) {
+      console.error('Failed to toggle favorite:', error);
+    }
+  };
+
+  const toggleFavProject = async (event: React.MouseEvent, id: string) => {
+    event.stopPropagation();
+    try {
+      console.log(id);
     } catch (error) {
       console.error('Failed to toggle favorite:', error);
     }
@@ -85,10 +93,18 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
     refetch();
   }, []);
 
-  const createTeamItem = (teams: Team[]) => {
-    return teams
-      .map((team: Team) => ({
-        key: team._id,
+  if (projects) {
+    console.log(projects);
+  }
+
+  const createListItems = (
+    items: MenuListItems[],
+    route: string,
+    toggle: (event: React.MouseEvent, id: string) => void,
+  ) => {
+    return items
+      .map((item) => ({
+        key: item._id,
         label: (
           <Flex justify="space-between" align="center">
             <Typography.Text
@@ -98,14 +114,14 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
                 overflow: 'hidden',
               }}
             >
-              {team.name}
+              {item.name}
             </Typography.Text>
             <Button
               type="text"
               style={{ color: '#969a9e' }}
-              onClick={(event: React.MouseEvent) => toggleFav(event, team._id)}
+              onClick={(event: React.MouseEvent) => toggle(event, item._id)}
               icon={
-                team.isFavorite ? (
+                item.isFavorite ? (
                   <StarFilled style={{ color: '#FABB18' }} />
                 ) : (
                   <StarOutlined />
@@ -114,47 +130,59 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
             />
           </Flex>
         ),
-        onClick: () => handleNavigate(appRoutes.user.teamsAll + '/' + team._id),
+        onClick: () => handleNavigate(route + item._id),
         style: { paddingRight: '8px' },
       }))
       .splice(0, 6);
   };
 
-  if (teams && teams.length > 0) {
-    const teamList = teams.filter((team) => !team.isFavorite);
-    const selectedTeamList = teams.filter((team) => team.isFavorite);
-    children = createTeamItem(teamList);
+  const getMenuList = (
+    items: MenuListItems[],
+    route: string,
+    toggle: (event: React.MouseEvent, id: string) => void,
+    team?: boolean,
+  ) => {
+    if (items && items.length > 0) {
+      const list = items.filter((item) => !item.isFavorite);
+      return createListItems(list, route, toggle);
+    } else if (items.length === 0) {
+      return [
+        {
+          key: team ? 'emptyTeams' : 'emptyProjects',
+          label: (
+            <Space>
+              <ExclamationCircleOutlined />
+              <Typography.Text style={{ color: '#969a9e' }}>
+                Нет данных
+              </Typography.Text>
+            </Space>
+          ),
+          style: { background: 'none', cursor: 'default' },
+          className: 'menuItemBtn',
+          disabled: true,
+        },
+      ];
+    }
+  };
 
-    children.push({
-      key: 'allTeams',
-      label: (
-        <Flex justify="space-between" align="center">
-          Все команды
-          <RightOutlined />
-        </Flex>
-      ),
-      onClick: () => handleNavigate(appRoutes.user.teamsAll),
-    });
+  const getFavList = (
+    items: MenuListItems[],
+    route: string,
+    toggle: (event: React.MouseEvent, id: string) => void,
+  ) => {
+    const selectedTeamList = items.filter((item) => item.isFavorite);
+    return createListItems(selectedTeamList, route, toggle);
+  };
 
-    favouriteTeams = createTeamItem(selectedTeamList);
-  } else if (teams.length === 0) {
-    children = [
-      {
-        key: 'emptyTeams',
-        label: (
-          <Space>
-            <ExclamationCircleOutlined />
-            <Typography.Text style={{ color: '#969a9e' }}>
-              Нет данных
-            </Typography.Text>
-          </Space>
-        ),
-        style: { background: 'none', cursor: 'default' },
-        className: 'menuItemBtn',
-        disabled: true,
-      },
-    ];
-  }
+  const teamsList =
+    getMenuList(teams, appRoutes.user.teams, toggleFavTeam, true) ?? [];
+  const favouriteTeamsList =
+    getFavList(teams, appRoutes.user.teams, toggleFavTeam) ?? [];
+
+  const projectsList =
+    getMenuList(projects, appRoutes.user.projects, toggleFavProject) ?? [];
+  const favouriteProjectsList =
+    getFavList(projects, appRoutes.user.projects, toggleFavProject) ?? [];
 
   const logOutUser = async () => {
     await logout();
@@ -229,14 +257,24 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
           key: 'g1',
           label: 'Избранное',
           type: 'group',
-          children: favouriteTeams,
-          style: { display: favouriteTeams.length > 0 ? 'block' : 'none' },
+          children: favouriteTeamsList,
+          style: { display: favouriteTeamsList.length > 0 ? 'block' : 'none' },
         },
         {
           type: 'divider',
-          style: { display: favouriteTeams.length > 0 ? 'block' : 'none' },
+          style: { display: favouriteTeamsList.length > 0 ? 'block' : 'none' },
         },
-        ...children,
+        ...teamsList,
+        {
+          key: 'allTeams',
+          label: (
+            <Flex justify="space-between" align="center">
+              Все команды
+              <RightOutlined />
+            </Flex>
+          ),
+          onClick: () => handleNavigate(appRoutes.user.teams + 'all'),
+        },
         { type: 'divider', style: { display: !isTeamLead ? 'none' : 'block' } },
         {
           key: 'addTeam',
@@ -275,34 +313,44 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
       },
       children: [
         {
-          key: 'project1',
-          label: (
-            <Flex justify="space-between" align="center">
-              project1 <Button type="text" icon={<StarFilled />} />
-            </Flex>
-          ),
+          key: 'g1',
+          label: 'Избранное',
+          type: 'group',
+          children: favouriteProjectsList,
           style: {
-            paddingRight: '8px',
+            display: favouriteProjectsList.length > 0 ? 'block' : 'none',
           },
         },
-        { key: 'project2', label: 'project2' },
         {
-          key: 'allProjects',
-          label: 'Все проекты',
-          onClick: () => handleNavigate(appRoutes.user.teams),
+          type: 'divider',
+          style: {
+            display: favouriteProjectsList.length > 0 ? 'block' : 'none',
+          },
         },
+        ...projectsList,
+        { type: 'divider', style: { display: !isTeamLead ? 'none' : 'block' } },
         {
           key: 'addProject',
           label: (
             <Button
-              onClick={() => alert('clicked')}
-              type="primary"
+              style={{ color: blue.primary, padding: '0' }}
+              onClick={() => {
+                setIsOpen(true);
+                if (handleMobile) {
+                  handleMobile();
+                }
+              }}
+              type="link"
               icon={<PlusCircleOutlined />}
             >
               Добавить
             </Button>
           ),
-          style: { background: 'none', cursor: 'default' },
+          style: {
+            display: !isTeamLead ? 'none' : 'block',
+            background: 'none',
+            cursor: 'default',
+          },
           className: 'menuItemBtn',
         },
       ],

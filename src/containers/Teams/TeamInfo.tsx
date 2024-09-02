@@ -83,7 +83,7 @@ const TeamInfo: React.FC = () => {
   const handleDeleteTeam = async () => {
     await deleteTeam(id);
     await refetchAll();
-    navigate(appRoutes.user.teamsAll);
+    navigate(appRoutes.user.teams + 'all');
   };
 
   const rowSelection = {
@@ -175,7 +175,7 @@ const TeamInfo: React.FC = () => {
       style={{ marginBottom: '30px' }}
       items={[
         {
-          title: <Link to={appRoutes.user.teamsAll}>Все команды</Link>,
+          title: <Link to={appRoutes.user.teams + 'all'}>Все команды</Link>,
         },
         {
           title: team?.name || '',

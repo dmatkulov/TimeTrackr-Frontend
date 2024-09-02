@@ -1,5 +1,5 @@
 import { api } from '../../index';
-import { GlobalMessage } from '../../../types/types.global';
+import { GlobalMessage, MenuListItems } from '../../../types/types.global';
 import {
   Team,
   TeamMutation,
@@ -11,6 +11,11 @@ import { teamUrl } from '../../../common/routes';
 export const teamApi = api.injectEndpoints({
   endpoints: (build) => ({
     getTeams: build.query<Team[], void>({
+      query: () => teamUrl.get,
+      providesTags: ['Teams'],
+    }),
+
+    getTeamsList: build.query<MenuListItems[], void>({
       query: () => teamUrl.get,
       providesTags: ['Teams'],
     }),
@@ -73,6 +78,7 @@ export const teamApi = api.injectEndpoints({
 
 export const {
   useGetTeamsQuery,
+  useGetTeamsListQuery,
   useCreateTeamMutation,
   useGetSelectedTeamQuery,
   useDeleteMembersMutation,

@@ -44,11 +44,8 @@ const App = () => {
               path={appRoutes.user.teams}
               element={<TeamsOutlet></TeamsOutlet>}
             />
-            <Route path={appRoutes.user.teamsAll} element={<Teams />} />
-            <Route
-              path={appRoutes.user.teamsAll + '/' + ':id'}
-              element={<TeamInfo />}
-            />
+            <Route path={appRoutes.user.teams + 'all/'} element={<Teams />} />
+            <Route path={appRoutes.user.teams + ':id'} element={<TeamInfo />} />
             <Route path={appRoutes.user.projects} element={<Projects />} />
             <Route path={appRoutes.user.calendar} element={<CalendarPage />} />
           </Route>

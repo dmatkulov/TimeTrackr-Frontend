@@ -11,7 +11,7 @@ const Redirect: React.FC = () => {
   const user = useAppSelector(selectUser);
 
   const [loading, setLoading] = useState(true);
-
+  console.log(user);
   const navigateToPanel = useCallback(() => {
     if (user) {
       if (user.roles.includes(Roles.Admin)) {

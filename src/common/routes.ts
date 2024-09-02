@@ -14,10 +14,9 @@ export const appRoutes = {
     account: '/profile/info',
     dashboard: '/profile/dashboard',
     calendar: '/profile/calendar',
-    notes: '/profile/notes',
-    teams: '/profile/teams',
-    teamsAll: '/profile/teams/all',
-    projects: '/profile/projects',
+    notes: '/profile/notes/',
+    teams: '/profile/teams/',
+    projects: '/profile/projects/',
   },
   notFound: '*',
 };
@@ -52,4 +51,10 @@ export const teamUrl = {
   deleteMember: 'teams/delete-members/',
   deleteTeam: 'teams/delete-team/',
   update: 'teams/update-members/',
+};
+
+export const projectUrl = {
+  get: 'projects/',
+  create: 'projects/new-project/',
+  addTask: 'projects/add-tasks/',
 };
