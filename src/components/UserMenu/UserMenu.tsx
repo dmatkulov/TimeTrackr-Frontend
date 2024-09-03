@@ -64,6 +64,10 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
   const [toggleTeam] = useToggleFavouriteMutation();
   const [logout] = useLogoutMutation();
 
+  if (projects) {
+    console.log('projects, ', projects);
+  }
+
   const navigate = useNavigate();
   const location = useLocation();
   const activeKey = location.pathname;
@@ -93,10 +97,6 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
     refetch();
   }, []);
 
-  if (projects) {
-    console.log(projects);
-  }
-
   const createListItems = (
     items: MenuListItems[],
     route: string,
@@ -109,7 +109,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
           <Flex justify="space-between" align="center">
             <Typography.Text
               style={{
-                maxWidth: '100px',
+                maxWidth: '200px',
                 textOverflow: 'ellipsis',
                 overflow: 'hidden',
               }}

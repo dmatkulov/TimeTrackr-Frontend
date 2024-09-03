@@ -54,7 +54,7 @@ export const teamUrl = {
 };
 
 export const projectUrl = {
-  get: 'projects/',
+  get: 'projects',
   create: 'projects/new-project/',
   addTask: 'projects/add-tasks/',
 };

@@ -13,8 +13,11 @@ interface ProjectMutation {
   type: ProjectEnum;
 }
 
-interface ProjectsList {
+interface ProjectSummary {
   _id: string;
   name: string;
-  isFavorite: false;
+  isDone: boolean;
+  deadline: string;
+  type: ProjectEnum;
+  tasks: number;
 }

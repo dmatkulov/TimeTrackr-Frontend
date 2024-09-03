@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Button, Card, Flex, Space, Tag, Tooltip } from 'antd';
+import { Avatar, Button, Card, Flex, Tag, Tooltip } from 'antd';
 import {
   FolderOpenOutlined,
   StarFilled,
@@ -37,12 +37,7 @@ const TeamCard: React.FC<Props> = ({ team }) => {
   return (
     <>
       <Card
-        title={
-          <Space size="middle">
-            {team.isFavorite && <StarFilled style={{ color: '#FABB18' }} />}
-            {team.name}
-          </Space>
-        }
+        title={team.name}
         bordered={false}
         hoverable
         style={{
