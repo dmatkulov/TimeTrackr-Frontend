@@ -14,7 +14,7 @@ import {
   DeleteOutlined,
   EditOutlined,
   MoreOutlined,
-  StopOutlined,
+  PlayCircleFilled,
 } from '@ant-design/icons';
 
 const tagStyle = {
@@ -40,6 +40,7 @@ const ProjectsTable = ({ projects, handleStatus }: Props) => {
 
   const handleToggleStatus = (value: boolean) => {
     handleStatus(value, selected);
+    console.log({ value, selected });
   };
 
   const items: MenuProps['items'] = [
@@ -53,14 +54,6 @@ const ProjectsTable = ({ projects, handleStatus }: Props) => {
     },
     {
       key: '2',
-      label: 'Завершить',
-      onClick: (info) => {
-        info.domEvent.stopPropagation();
-      },
-      icon: <StopOutlined />,
-    },
-    {
-      key: '3',
       danger: true,
       label: 'Удалить',
       onClick: (info) => {
@@ -71,19 +64,15 @@ const ProjectsTable = ({ projects, handleStatus }: Props) => {
   ];
 
   const isDoneBtn = (
-    <Button
-      type="primary"
-      style={{ marginLeft: 'auto', margin: '16px 0' }}
-      onClick={() => handleToggleStatus(true)}
-    >
+    <Button type="primary" onClick={() => handleToggleStatus(true)}>
       Завершить
     </Button>
   );
 
   const isNotDoneBtn = (
     <Button
-      type="dashed"
-      style={{ marginLeft: 'auto', margin: '16px 0' }}
+      // type="primary"
+      icon={<PlayCircleFilled />}
       onClick={() => handleToggleStatus(false)}
     >
       Возобновить
@@ -162,7 +151,23 @@ const ProjectsTable = ({ projects, handleStatus }: Props) => {
       dataIndex: 'actions',
       key: 'actions',
       align: 'right',
-      hidden: selected.length > 0,
+      hidden: selected.length !== 1,
+      render: (_, row: ProjectSummary) => (
+        <>
+          {selected.includes(row._id)
+            ? row.isDone
+              ? isNotDoneBtn
+              : isDoneBtn
+            : null}
+        </>
+      ),
+    },
+
+    {
+      dataIndex: 'actions',
+      key: 'actions',
+      align: 'right',
+      // hidden: selected.length > 0,
       render: () => (
         <>
           <Dropdown
@@ -176,15 +181,6 @@ const ProjectsTable = ({ projects, handleStatus }: Props) => {
         </>
       ),
     },
-    {
-      dataIndex: 'actions',
-      key: 'actions',
-      align: 'right',
-      hidden: selected.length === 0,
-      render: (_, row: ProjectSummary) => (
-        <>{row.isDone ? isNotDoneBtn : isDoneBtn}</>
-      ),
-    },
   ];
   return (
     <>
@@ -195,7 +191,7 @@ const ProjectsTable = ({ projects, handleStatus }: Props) => {
           ...rowSelection,
         }}
         pagination={
-          selected.length > 0
+          selected.length > 1
             ? false
             : {
                 pageSize: 8,
@@ -203,7 +199,7 @@ const ProjectsTable = ({ projects, handleStatus }: Props) => {
               }
         }
       />
-      {selected.length > 0 && (
+      {selected.length > 1 && (
         <div
           style={{
             display: 'flex',
@@ -211,7 +207,7 @@ const ProjectsTable = ({ projects, handleStatus }: Props) => {
             alignItems: 'flex-end',
           }}
         >
-          <Space>
+          <Space style={{ marginLeft: 'auto', margin: '16px 0' }}>
             {isNotDoneBtn}
             {isDoneBtn}
           </Space>
