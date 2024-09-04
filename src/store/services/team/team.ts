@@ -1,9 +1,12 @@
 import { api } from '../../index';
-import { GlobalMessage, MenuListItems } from '../../../types/types.global';
+import {
+  GlobalMessage,
+  MenuListItems,
+  UpdateFavourite,
+} from '../../../types/types.global';
 import {
   Team,
   TeamMutation,
-  UpdateTeamFav,
   UpdateTeamMutation,
 } from '../../../types/types.team';
 import { teamUrl } from '../../../common/routes';
@@ -66,7 +69,7 @@ export const teamApi = api.injectEndpoints({
       }),
     }),
 
-    toggleFavourite: build.mutation<void, UpdateTeamFav>({
+    toggleFavouriteTeam: build.mutation<void, UpdateFavourite>({
       query: ({ id }) => ({
         url: teamUrl.toggle + id,
         method: 'PATCH',
@@ -84,5 +87,5 @@ export const {
   useDeleteMembersMutation,
   useUpdateTeamMutation,
   useDeleteTeamMutation,
-  useToggleFavouriteMutation,
+  useToggleFavouriteTeamMutation,
 } = teamApi;

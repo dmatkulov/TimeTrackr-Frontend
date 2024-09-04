@@ -37,6 +37,7 @@ import { TeamMutation } from '../../types/types.team';
 import {
   useCreateProjectMutation,
   useGetProjectsByTeamQuery,
+  useToggleIsDoneMutation,
 } from '../../store/services/projects/projects';
 import { apiURL } from '../../common/constants';
 import TeamTable from './TeamTable';
@@ -78,6 +79,8 @@ const TeamInfo: React.FC = () => {
     { isLoading, isError: isCreateError, error: createError },
   ] = useCreateProjectMutation();
 
+  const [toggleStatus] = useToggleIsDoneMutation();
+
   const [open, setOpen] = useState<boolean>(false);
   const [show, setShow] = useState<boolean>(false);
   const [toggleBtn, setToggleBtn] = useState(false);
@@ -118,6 +121,15 @@ const TeamInfo: React.FC = () => {
     await deleteTeam(id);
     await refetchAll();
     navigate(appRoutes.user.teams + 'all');
+  };
+
+  const handleStatus = async (value: boolean, projects: string[]) => {
+    if (team) {
+      await toggleStatus({
+        teamId: team._id,
+        mutation: { value, projects: projects },
+      });
+    }
   };
 
   const breadCrumb = (
@@ -194,7 +206,9 @@ const TeamInfo: React.FC = () => {
   }
 
   if (projects) {
-    projectTable = <ProjectsTable projects={projects} />;
+    projectTable = (
+      <ProjectsTable projects={projects} handleStatus={handleStatus} />
+    );
   }
 
   const addBtn = (

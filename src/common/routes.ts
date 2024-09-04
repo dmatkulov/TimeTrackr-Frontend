@@ -56,5 +56,10 @@ export const teamUrl = {
 export const projectUrl = {
   get: 'projects',
   create: 'projects/new-project/',
-  addTask: 'projects/add-tasks/',
+  toggleFavourite: 'projects/toggle-favourite/',
+  toggleIsDone: 'projects/toggle-status',
+};
+
+export const taskUrl = {
+  addTask: projectUrl.get + '/add-tasks/',
 };

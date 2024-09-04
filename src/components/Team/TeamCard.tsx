@@ -8,7 +8,7 @@ import {
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import { useMediaQuery } from 'react-responsive';
 import { Team } from '../../types/types.team';
-import { useToggleFavouriteMutation } from '../../store/services/team/team';
+import { useToggleFavouriteTeamMutation } from '../../store/services/team/team';
 import { useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../common/routes';
 import './index.css';
@@ -19,7 +19,7 @@ interface Props {
 }
 
 const TeamCard: React.FC<Props> = ({ team }) => {
-  const [toggle] = useToggleFavouriteMutation();
+  const [toggle] = useToggleFavouriteTeamMutation();
   const { md, lg } = useBreakpoint();
   const navigate = useNavigate();
   const xxs = useMediaQuery({

@@ -1,7 +1,11 @@
 import { api } from '../../index';
-import { ProjectMutation, ProjectSummary } from '../../../types/types.project';
+import {
+  ProjectMutation,
+  ProjectSummary,
+  ToggleProjectStatus,
+} from '../../../types/types.project';
 import { projectUrl } from '../../../common/routes';
-import { MenuListItems } from '../../../types/types.global';
+import { MenuListItems, UpdateFavourite } from '../../../types/types.global';
 
 export const projectApi = api.injectEndpoints({
   endpoints: (build) => ({
@@ -23,6 +27,26 @@ export const projectApi = api.injectEndpoints({
       query: () => projectUrl.get,
       providesTags: ['Projects'],
     }),
+
+    toggleFavouriteProject: build.mutation<void, UpdateFavourite>({
+      query: ({ id }) => ({
+        url: projectUrl.toggleFavourite + id,
+        method: 'PATCH',
+      }),
+      invalidatesTags: ['Projects', 'Project'],
+    }),
+
+    toggleIsDone: build.mutation<void, ToggleProjectStatus>({
+      query: ({ teamId, mutation }) => ({
+        url: projectUrl.toggleIsDone + '?teamId=' + teamId,
+        method: 'PATCH',
+        body: mutation,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }),
+      invalidatesTags: ['Projects'],
+    }),
   }),
 });
 
@@ -30,4 +54,6 @@ export const {
   useCreateProjectMutation,
   useGetProjectsListQuery,
   useGetProjectsByTeamQuery,
+  useToggleFavouriteProjectMutation,
+  useToggleIsDoneMutation,
 } = projectApi;

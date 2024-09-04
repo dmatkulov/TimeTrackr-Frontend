@@ -22,3 +22,7 @@ interface MenuListItems {
   name: string;
   isFavorite: false;
 }
+
+export interface UpdateFavourite {
+  id: string;
+}

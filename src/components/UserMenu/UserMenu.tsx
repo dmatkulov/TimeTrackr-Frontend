@@ -27,13 +27,16 @@ import { useLogoutMutation } from '../../store/services/auth/auth';
 import TeamAdd from '../Team/TeamForm/TeamAdd';
 import {
   useGetTeamsListQuery,
-  useToggleFavouriteMutation,
+  useToggleFavouriteTeamMutation,
 } from '../../store/services/team/team';
 import { blue } from '@ant-design/colors';
 import { useAppSelector } from '../../store/hooks/hooks';
 import { selectUser } from '../../store/services/auth/authSlice';
 import { Roles } from '../../enum/roles.enum';
-import { useGetProjectsListQuery } from '../../store/services/projects/projects';
+import {
+  useGetProjectsListQuery,
+  useToggleFavouriteProjectMutation,
+} from '../../store/services/projects/projects';
 import { MenuListItems } from '../../types/types.global';
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -61,7 +64,8 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
 
   const { data: teams = [], refetch } = useGetTeamsListQuery();
   const { data: projects = [] } = useGetProjectsListQuery();
-  const [toggleTeam] = useToggleFavouriteMutation();
+  const [toggleTeam] = useToggleFavouriteTeamMutation();
+  const [toggleProject] = useToggleFavouriteProjectMutation();
   const [logout] = useLogoutMutation();
 
   const navigate = useNavigate();
@@ -83,7 +87,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
   const toggleFavProject = async (event: React.MouseEvent, id: string) => {
     event.stopPropagation();
     try {
-      console.log(id);
+      await toggleProject({ id }).unwrap();
     } catch (error) {
       console.error('Failed to toggle favorite:', error);
     }
@@ -139,7 +143,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
     team?: boolean,
   ) => {
     if (items && items.length > 0) {
-      const list = items.filter((item) => !item.isFavorite);
+      const list = items.filter((item) => !item.isFavorite).splice(0, 4);
       return createListItems(list, route, toggle);
     } else if (items.length === 0) {
       return [
@@ -201,7 +205,8 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
     display: collapsed ? 'flex' : 'list-item',
     width: collapsed ? '50px' : 'auto',
     border: '1px solid rgba(5, 5, 5, 0.06)',
-    borderRadius: '16px',
+    // borderRadius: '16px',
+    overflow: 'hidden',
   };
 
   const items: MenuItem[] = [
@@ -324,6 +329,16 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
           },
         },
         ...projectsList,
+        {
+          key: 'allProjects',
+          label: (
+            <Flex justify="space-between" align="center">
+              Все проекты
+              <RightOutlined />
+            </Flex>
+          ),
+          onClick: () => handleNavigate(appRoutes.user.teams + 'all'),
+        },
         { type: 'divider', style: { display: !isTeamLead ? 'none' : 'block' } },
         {
           key: 'addProject',

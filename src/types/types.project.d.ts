@@ -21,3 +21,11 @@ interface ProjectSummary {
   type: ProjectEnum;
   tasks: number;
 }
+
+interface ToggleProjectStatus {
+  teamId: string;
+  mutation: {
+    value: boolean;
+    projects: string[];
+  };
+}
