@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   Avatar,
+  Badge,
   Breadcrumb,
   Button,
-  Card,
   Col,
+  Divider,
   Flex,
   Row,
   Space,
@@ -24,6 +25,7 @@ import {
   DeleteOutlined,
   EditOutlined,
   MoreOutlined,
+  PlusCircleFilled,
   PlusOutlined,
 } from '@ant-design/icons';
 import TeamMembersForm from '../../components/Team/TeamForm/TeamMembersForm';
@@ -32,29 +34,49 @@ import { selectUser } from '../../store/services/auth/authSlice';
 import { Roles } from '../../enum/roles.enum';
 import TeamForm from '../../components/Team/TeamForm/TeamForm';
 import { TeamMutation } from '../../types/types.team';
-import { useGetProjectsByTeamQuery } from '../../store/services/projects/projects';
+import {
+  useCreateProjectMutation,
+  useGetProjectsByTeamQuery,
+} from '../../store/services/projects/projects';
 import { apiURL } from '../../common/constants';
 import TeamTable from './TeamTable';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
-import dayjs from 'dayjs';
-import ProjectAdd from '../Projects/ProjectAdd';
+import ProjectForm from '../../components/Project/ProjectForm';
+import { ProjectMutation } from '../../types/types.project';
+import ProjectsTable from '../../components/Project/ProjectsTable';
+
+const blockStyle = {
+  background: '#eee',
+  padding: '24px',
+  borderRadius: '16px',
+};
 
 const TeamInfo: React.FC = () => {
-  const user = useAppSelector(selectUser);
-  const navigate = useNavigate();
-
-  const isTeamLead = user.roles.includes(Roles.TeamLead);
-
   const { id } = useParams() as { id: string };
   const { sm } = useBreakpoint();
+  const navigate = useNavigate();
+
+  const user = useAppSelector(selectUser);
+  const isTeamLead = user.roles.includes(Roles.TeamLead);
 
   const { data: team, refetch } = useGetSelectedTeamQuery(id);
-  const { data: projects = [] } = useGetProjectsByTeamQuery(id);
+
+  const { data: projects = [], refetch: refetchProjects } =
+    useGetProjectsByTeamQuery(id);
+
   const { refetch: refetchAll } = useGetTeamsQuery();
+
   const [handleUpdate, { isLoading: updating, isError, error }] =
     useUpdateTeamMutation();
+
   const [deleteMember, { isLoading: deleting }] = useDeleteMembersMutation();
+
   const [deleteTeam, { isLoading: isDeleting }] = useDeleteTeamMutation();
+
+  const [
+    createProject,
+    { isLoading, isError: isCreateError, error: createError },
+  ] = useCreateProjectMutation();
 
   const [open, setOpen] = useState<boolean>(false);
   const [show, setShow] = useState<boolean>(false);
@@ -69,9 +91,13 @@ const TeamInfo: React.FC = () => {
     await refetchAll();
   };
 
-  if (projects) {
-    console.log(projects);
-  }
+  useEffect(() => {
+    refetchProjects();
+  }, [refetchProjects]);
+
+  const handleCreateProject = async (state: ProjectMutation) => {
+    await createProject(state).unwrap();
+  };
 
   const handleAddMember = async (members: string[]) => {
     await handleUpdate({ id, mutation: { members } });
@@ -108,7 +134,11 @@ const TeamInfo: React.FC = () => {
     />
   );
 
-  let form;
+  let editTeamForm;
+  let teamMembersForm;
+  let projectForm;
+  let teamTable;
+  let projectTable;
 
   if (team) {
     const mutation = {
@@ -117,7 +147,7 @@ const TeamInfo: React.FC = () => {
       members: [],
     };
 
-    form = (
+    editTeamForm = (
       <TeamForm
         onSubmit={handleUpdateTeam}
         existingTeam={mutation}
@@ -129,178 +159,210 @@ const TeamInfo: React.FC = () => {
         isEdit
       />
     );
+
+    teamMembersForm = (
+      <TeamMembersForm
+        existingUsers={team?.members}
+        open={open}
+        onClose={() => setOpen(false)}
+        onSubmit={handleAddMember}
+        loading={updating}
+      />
+    );
+
+    teamTable = (
+      <TeamTable
+        team={team}
+        handleDelete={handleDeleteMember}
+        deleting={deleting}
+        open={showMembers}
+        close={() => setShowMembers(false)}
+      />
+    );
+
+    projectForm = (
+      <ProjectForm
+        onSubmit={handleCreateProject}
+        loading={isLoading}
+        isOpen={openModal}
+        onClose={() => setOpenModal(false)}
+        isError={isCreateError}
+        error={createError}
+        existingTeamId={team._id}
+      />
+    );
   }
+
+  if (projects) {
+    projectTable = <ProjectsTable projects={projects} />;
+  }
+
+  const addBtn = (
+    <Button
+      type="dashed"
+      icon={<PlusCircleFilled />}
+      onClick={() => setOpenModal(true)}
+    >
+      Добавить проект
+    </Button>
+  );
 
   return (
     team && (
       <>
         <div>{breadCrumb}</div>
         <main>
-          <Flex
-            vertical={!sm}
-            gap={24}
-            justify="space-between"
-            align={!sm ? 'flex-start' : 'center'}
-          >
-            {isTeamLead && (
-              <Space
-                key="1"
-                align="center"
-                style={{
-                  border: '1px solid #d9d9d9',
-                  width: toggleBtn ? '260px' : '34px',
-                  height: '34px',
-                  borderRadius: '9px',
-                  transition: 'width 0.4s ease',
-                  overflow: 'hidden',
-                }}
-              >
-                <Button
-                  type="text"
-                  onClick={() => {
-                    setToggleBtn(!toggleBtn);
-                  }}
-                  style={{ background: 'white' }}
-                  icon={<MoreOutlined />}
-                />
-                <Space size="small">
-                  <Button
-                    type="text"
-                    icon={<EditOutlined />}
-                    onClick={() => setShow(true)}
-                    size="small"
-                  >
-                    Изменить
-                  </Button>
-                  <Button
-                    size="small"
-                    type="text"
-                    icon={<DeleteOutlined />}
-                    disabled={isDeleting}
-                    onClick={handleDeleteTeam}
-                  >
-                    Удалить
-                  </Button>
-                </Space>
-              </Space>
-            )}
-
-            <Space size="small">
-              <Avatar.Group
-                maxCount={4}
-                maxStyle={{
-                  color: '#f56a00',
-                  backgroundColor: '#fde3cf',
-                  cursor: 'pointer',
-                }}
-                maxPopoverTrigger="hover"
-              >
-                {team.members.map((member) => (
-                  <Tooltip
-                    title={member.firstname}
-                    placement="top"
-                    key={member._id}
-                  >
-                    {member.photo ? (
-                      <Avatar src={apiURL + '/' + member.photo} />
-                    ) : (
-                      <Avatar style={{ backgroundColor: '#f56a00' }}>
-                        {member.firstname}
-                      </Avatar>
-                    )}
-                  </Tooltip>
-                ))}
-              </Avatar.Group>
-              <Button
-                size="small"
-                type="primary"
-                shape="circle"
-                icon={<PlusOutlined />}
-                onClick={() => setOpen(true)}
-              />
-              <Button
-                size="small"
-                shape="circle"
-                type="primary"
-                danger
-                icon={<DeleteOutlined />}
-                onClick={() => setShowMembers(true)}
-              />
-            </Space>
-          </Flex>
-
-          <Typography.Title style={{ marginBottom: '30px' }}>
-            {team.name}
-          </Typography.Title>
-          {team.description && (
-            <div style={{ marginBottom: '30px' }}>
-              <Typography.Text>{team.description}</Typography.Text>
-            </div>
-          )}
-
-          <Button onClick={() => setOpenModal(true)}>Добавить проект</Button>
-
           <Row gutter={16} justify="space-between">
             <Col
               xs={24}
               style={{
-                background: '#eee',
-                padding: '10px',
-                borderRadius: '16px',
+                ...blockStyle,
+                background: 'white',
               }}
             >
-              {projects.length > 0
-                ? projects.map((project) => (
-                    <Card
-                      key={project._id}
-                      bordered={false}
-                      hoverable
-                      extra={null}
-                      styles={{
-                        header: { padding: '0 16px' },
-                        body: { padding: '10px 16px' },
+              <Flex
+                vertical={!sm}
+                gap={24}
+                justify="space-between"
+                align={!sm ? 'flex-start' : 'center'}
+              >
+                {isTeamLead && (
+                  <Space
+                    key="1"
+                    align="center"
+                    style={{
+                      border: '1px solid #d9d9d9',
+                      width: toggleBtn ? '260px' : '34px',
+                      height: '34px',
+                      borderRadius: '9px',
+                      transition: 'width 0.4s ease',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <Button
+                      type="text"
+                      onClick={() => {
+                        setToggleBtn(!toggleBtn);
                       }}
-                    >
-                      <div
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          backgroundColor: 'white',
-                          borderRadius: '16px',
-                        }}
+                      icon={<MoreOutlined />}
+                    />
+                    <Space size="small">
+                      <Button
+                        type="text"
+                        icon={<EditOutlined />}
+                        onClick={() => setShow(true)}
+                        size="small"
                       >
-                        <p>{project.name}</p>
-                        <p>{dayjs(project.deadline).format('D MMMM, YYYY')}</p>
-                        <p>{project.isDone ? 'Завершен' : 'В процессе'}</p>
-                        <p>
-                          {project.tasks}{' '}
-                          {project.tasks === 2 ? 'задачи' : 'задач'}
-                        </p>
-                      </div>
-                    </Card>
-                  ))
-                : 'Добавьте'}
+                        Изменить
+                      </Button>
+                      <Button
+                        size="small"
+                        type="text"
+                        icon={<DeleteOutlined />}
+                        disabled={isDeleting}
+                        onClick={handleDeleteTeam}
+                      >
+                        Удалить
+                      </Button>
+                    </Space>
+                  </Space>
+                )}
+
+                <Space size="small">
+                  <Avatar.Group
+                    maxCount={4}
+                    maxStyle={{
+                      color: '#f56a00',
+                      backgroundColor: '#fde3cf',
+                      cursor: 'pointer',
+                    }}
+                    maxPopoverTrigger="hover"
+                  >
+                    {team.members.map((member) => (
+                      <Tooltip
+                        title={member.firstname}
+                        placement="top"
+                        key={member._id}
+                      >
+                        {member.photo ? (
+                          <Avatar src={apiURL + '/' + member.photo} />
+                        ) : (
+                          <Avatar style={{ backgroundColor: '#f56a00' }}>
+                            {member.firstname}
+                          </Avatar>
+                        )}
+                      </Tooltip>
+                    ))}
+                  </Avatar.Group>
+                  <Button
+                    size="small"
+                    type="primary"
+                    shape="circle"
+                    icon={<PlusOutlined />}
+                    onClick={() => setOpen(true)}
+                  />
+                  <Button
+                    size="small"
+                    shape="circle"
+                    type="primary"
+                    danger
+                    icon={<DeleteOutlined />}
+                    onClick={() => setShowMembers(true)}
+                  />
+                </Space>
+              </Flex>
+
+              <Typography.Title style={{ marginBottom: '30px' }}>
+                {team.name}
+              </Typography.Title>
+              {team.description && (
+                <div>
+                  <Divider />
+                  <Typography.Text style={{ color: '#7c7c7c' }}>
+                    {team.description}
+                  </Typography.Text>
+                </div>
+              )}
             </Col>
           </Row>
+
+          <Row gutter={16} justify="space-between">
+            <Col xs={24} style={{ margin: '50px 0 30px 0' }}>
+              <Flex justify="space-between" align="center">
+                {projects.length > 0 ? (
+                  <Space>
+                    <Typography.Text>Проекты</Typography.Text>
+                    <Badge count={projects.length} />
+                  </Space>
+                ) : (
+                  <Typography.Text>
+                    Проекты в команде {team.name} отсуствуют
+                  </Typography.Text>
+                )}
+                {isTeamLead && addBtn}
+              </Flex>
+            </Col>
+          </Row>
+
+          {projects.length > 0 && (
+            <Row gutter={16} justify="space-between">
+              <Col
+                xs={24}
+                style={{
+                  ...blockStyle,
+                  minHeight: '100px',
+                }}
+              >
+                {projectTable}
+              </Col>
+            </Row>
+          )}
         </main>
-        {form}
-        <TeamMembersForm
-          existingUsers={team.members}
-          open={open}
-          onClose={() => setOpen(false)}
-          onSubmit={handleAddMember}
-          loading={updating}
-        />
-        <TeamTable
-          team={team}
-          handleDelete={handleDeleteMember}
-          deleting={deleting}
-          open={showMembers}
-          close={() => setShowMembers(false)}
-        />
-        <ProjectAdd isOpen={openModal} onClose={() => setOpenModal(false)} />
+
+        {editTeamForm}
+        {teamMembersForm}
+        {projectForm}
+        {teamTable}
       </>
     )
   );

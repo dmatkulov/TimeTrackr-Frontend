@@ -1,14 +1,10 @@
 import { ProjectMutation } from '../../types/types.project';
-import { Button, Form, Input, Modal, Select, TimePicker } from 'antd';
-import { useEffect, useState } from 'react';
+import { Button, DatePicker, Form, Input, Modal, Select } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { ProjectEnum } from '../../enum/project.enum';
 import { useGetTeamsListQuery } from '../../store/services/team/team';
 import { TeamMutation } from '../../types/types.team';
-import {
-  buddhistLocale,
-  disabledTime,
-  format,
-} from '../../utils/formattedTime';
+import { buddhistLocale } from '../../utils/formattedTime';
 import { handleFormFieldError } from '../../utils/handleError';
 
 const initialState: ProjectMutation = {
@@ -64,9 +60,9 @@ const ProjectForm = ({
 
   const handleSubmit = async () => {
     onSubmit(state);
-    isEdit && onClose();
     setState(initialState);
     form.setFieldsValue(initialState);
+    onClose();
   };
 
   const handleClose = () => {
@@ -79,6 +75,17 @@ const ProjectForm = ({
     label: team.name,
     value: team._id,
   }));
+
+  const handleInputChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const { name, value } = event.target;
+
+    setState((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
 
   return (
     <Modal
@@ -102,19 +109,22 @@ const ProjectForm = ({
         onFinish={handleSubmit}
       >
         <Form.Item
-          name="teamId"
+          label="Команда"
+          name="teamID"
           rules={[{ required: true, message: 'Укажите пользователя' }]}
         >
           <Select
             size="large"
             variant="filled"
-            notFoundContent="Никого не удалось найти"
             style={{ width: '100%' }}
             value={state.teamID}
             placeholder="Введите имя"
             allowClear
             showSearch
             options={teamOpt}
+            onChange={(value: string) => {
+              setState({ ...state, teamID: value });
+            }}
           />
         </Form.Item>
         <Form.Item<TeamMutation>
@@ -122,30 +132,35 @@ const ProjectForm = ({
           name="name"
           rules={[{ required: true, message: 'Введите название' }]}
         >
-          <Input />
+          <Input name="name" value={state.name} onChange={handleInputChange} />
         </Form.Item>
-        <Form.Item<TeamMutation>
-          label="Название команды"
-          name="name"
-          rules={[{ required: true, message: 'Введите название' }]}
-        >
-          <Input />
+        <Form.Item<TeamMutation> label="Описание" name="description">
+          <Input.TextArea
+            name="description"
+            value={state.description}
+            onChange={handleInputChange}
+          />
         </Form.Item>
         <Form.Item
-          name="teamId"
+          label="Тип проекта"
+          name="type"
           rules={[{ required: true, message: 'Укажите пользователя' }]}
         >
           <Select
-            mode="multiple"
             size="large"
             variant="filled"
-            notFoundContent="Никого не удалось найти"
             style={{ width: '100%' }}
             value={state.teamID}
             placeholder="Введите имя"
             allowClear
             showSearch
-            options={teamOpt}
+            options={Object.values(ProjectEnum).map((type) => ({
+              value: type,
+              label: type,
+            }))}
+            onChange={(value: string) => {
+              setState({ ...state, type: value });
+            }}
           />
         </Form.Item>
         <Form.Item
@@ -153,16 +168,21 @@ const ProjectForm = ({
           name="deadline"
           rules={[{ required: true, message: 'Время не указано' }]}
         >
-          <TimePicker
-            disabledTime={disabledTime}
-            hideDisabledOptions={true}
-            variant="filled"
-            placeholder="Начало"
-            minuteStep={5}
-            format={format}
-            needConfirm={false}
+          <DatePicker
+            allowClear={false}
+            name="deadline"
+            value={state.deadline}
+            onChange={(_date, dateString) => {
+              if (typeof dateString === 'string') {
+                setState((prevState) => {
+                  return {
+                    ...prevState,
+                    deadline: dateString,
+                  };
+                });
+              }
+            }}
             locale={buddhistLocale}
-            width="100%"
           />
         </Form.Item>
         <Button

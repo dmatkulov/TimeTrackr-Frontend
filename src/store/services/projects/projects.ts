@@ -11,10 +11,12 @@ export const projectApi = api.injectEndpoints({
         method: 'post',
         body: mutation,
       }),
+      invalidatesTags: ['Projects'],
     }),
 
     getProjectsByTeam: build.query<ProjectSummary[], string>({
       query: (id) => projectUrl.get + '?teamId=' + (id ?? ''),
+      providesTags: ['Projects'],
     }),
 
     getProjectsList: build.query<MenuListItems[], void>({

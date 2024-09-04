@@ -64,10 +64,6 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
   const [toggleTeam] = useToggleFavouriteMutation();
   const [logout] = useLogoutMutation();
 
-  if (projects) {
-    console.log('projects, ', projects);
-  }
-
   const navigate = useNavigate();
   const location = useLocation();
   const activeKey = location.pathname;

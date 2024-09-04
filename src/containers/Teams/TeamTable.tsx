@@ -33,7 +33,7 @@ const TeamTable: React.FC<Props> = ({
     },
   };
 
-  const dataSource = team?.members.map((user) => ({
+  const dataSource = team.members.map((user) => ({
     ...user,
     key: user._id,
   }));

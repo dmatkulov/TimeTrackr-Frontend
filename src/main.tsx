@@ -40,8 +40,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                     boxShadow: 'none',
                     defaultBg: 'none',
                     // defaultBorderColor: 'none',
-                    defaultHoverBorderColor: 'none',
-                    defaultHoverBg: '#ededed',
+                    // defaultHoverBorderColor: 'none',
+                    defaultHoverBg: 'none',
                   },
                 },
               }}
