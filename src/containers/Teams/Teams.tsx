@@ -32,9 +32,7 @@ const Teams: React.FC = () => {
         {isTeamLead && (
           <Button
             onClick={() => setOpen(true)}
-            size="large"
             type="text"
-            style={{ color: '#3947cf' }}
             icon={<PlusCircleFilled />}
             iconPosition="start"
           >

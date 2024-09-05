@@ -29,7 +29,6 @@ import {
   useGetTeamsListQuery,
   useToggleFavouriteTeamMutation,
 } from '../../store/services/team/team';
-import { blue } from '@ant-design/colors';
 import { useAppSelector } from '../../store/hooks/hooks';
 import { selectUser } from '../../store/services/auth/authSlice';
 import { Roles } from '../../enum/roles.enum';
@@ -41,17 +40,6 @@ import { MenuListItems } from '../../types/types.global';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
-// interface MenuChildren {
-//   key: string;
-//   label: React.JSX.Element;
-//   icon?: React.JSX.Element;
-//   type?: string;
-//   onClick?: () => void;
-//   style?: CSSProperties;
-//   className?: string;
-//   disabled?: boolean;
-// }
-
 interface Props {
   handleMobile?: () => void;
   collapsed?: boolean;
@@ -59,8 +47,12 @@ interface Props {
 
 const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
   const user = useAppSelector(selectUser);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const isTeamLead = user && user.roles.includes(Roles.TeamLead);
+
+  const [path, setPath] = useState<string>(location.pathname);
 
   const { data: teams = [], refetch } = useGetTeamsListQuery();
   const { data: projects = [] } = useGetProjectsListQuery();
@@ -68,9 +60,9 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
   const [toggleProject] = useToggleFavouriteProjectMutation();
   const [logout] = useLogoutMutation();
 
-  const navigate = useNavigate();
-  const location = useLocation();
-  const activeKey = location.pathname;
+  useEffect(() => {
+    setPath(location.pathname);
+  }, [location.pathname]);
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [openKeys, setOpenKeys] = useState<string[]>([]);
@@ -205,7 +197,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
     display: collapsed ? 'flex' : 'list-item',
     width: collapsed ? '50px' : 'auto',
     border: '1px solid rgba(5, 5, 5, 0.06)',
-    // borderRadius: '16px',
+    borderRadius: '16px',
     overflow: 'hidden',
   };
 
@@ -214,7 +206,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
       key: appRoutes.user.dashboard,
       label: 'Дашбоард',
       icon:
-        activeKey === appRoutes.user.dashboard ? (
+        path === appRoutes.user.dashboard ? (
           <DashboardFilled style={{ fontSize: '18px' }} />
         ) : (
           <DashboardOutlined style={{ fontSize: '18px' }} />
@@ -225,7 +217,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
       key: appRoutes.user.notes,
       label: 'Мои заметки',
       icon:
-        activeKey === appRoutes.user.notes ? (
+        path === appRoutes.user.notes ? (
           <FileFilled style={{ fontSize: '18px' }} />
         ) : (
           <FileOutlined style={{ fontSize: '18px' }} />
@@ -236,7 +228,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
       key: appRoutes.user.calendar,
       label: 'Календарь',
       icon:
-        activeKey === appRoutes.user.calendar ? (
+        path === appRoutes.user.calendar ? (
           <CalendarFilled style={{ fontSize: '18px' }} />
         ) : (
           <CalendarOutlined style={{ fontSize: '18px' }} />
@@ -281,7 +273,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
           key: 'addTeam',
           label: (
             <Button
-              style={{ color: blue.primary, padding: '0' }}
+              style={{ padding: '0' }}
               onClick={() => {
                 setIsOpen(true);
                 if (handleMobile) {
@@ -329,36 +321,28 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
           },
         },
         ...projectsList,
-        {
-          key: 'allProjects',
-          label: (
-            <Flex justify="space-between" align="center">
-              Все проекты
-              <RightOutlined />
-            </Flex>
-          ),
-          onClick: () => handleNavigate(appRoutes.user.teams + 'all'),
-        },
         { type: 'divider', style: { display: !isTeamLead ? 'none' : 'block' } },
         {
           key: 'addProject',
           label: (
-            <Button
-              style={{ color: blue.primary, padding: '0' }}
-              onClick={() => {
-                setIsOpen(true);
-                if (handleMobile) {
-                  handleMobile();
-                }
-              }}
-              type="link"
-              icon={<PlusCircleOutlined />}
-            >
-              Добавить
-            </Button>
+            <Flex justify="space-between" align="center">
+              <Button
+                style={{
+                  padding: '0',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  alignItems: 'center',
+                }}
+                onClick={() => handleNavigate(appRoutes.user.teams + 'all')}
+                type="link"
+              >
+                Все проекты
+                <RightOutlined />
+              </Button>
+            </Flex>
           ),
           style: {
-            display: !isTeamLead ? 'none' : 'block',
             background: 'none',
             cursor: 'default',
           },
@@ -393,7 +377,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
   return (
     <>
       <Menu
-        defaultSelectedKeys={[activeKey]}
+        defaultSelectedKeys={[path]}
         mode="inline"
         openKeys={openKeys}
         onOpenChange={handleOpenChange}

@@ -128,7 +128,7 @@ const TeamInfo: React.FC = () => {
       await toggleStatus({
         teamId: team._id,
         mutation: { value, projects: projects },
-      });
+      }).unwrap();
     }
   };
 
@@ -213,7 +213,7 @@ const TeamInfo: React.FC = () => {
 
   const addBtn = (
     <Button
-      type="dashed"
+      type="text"
       icon={<PlusCircleFilled />}
       onClick={() => setOpenModal(true)}
     >
@@ -245,10 +245,10 @@ const TeamInfo: React.FC = () => {
                     key="1"
                     align="center"
                     style={{
-                      border: '1px solid #d9d9d9',
+                      border: '1px solid #aeaeae',
                       width: toggleBtn ? '260px' : '34px',
                       height: '34px',
-                      borderRadius: '9px',
+                      borderRadius: '8px',
                       transition: 'width 0.4s ease',
                       overflow: 'hidden',
                     }}

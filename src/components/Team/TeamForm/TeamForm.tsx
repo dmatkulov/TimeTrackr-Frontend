@@ -148,11 +148,11 @@ const TeamForm: React.FC<Props> = ({
               name="description"
             >
               <Input.TextArea
-                variant="filled"
                 value={state.description}
                 onChange={handleChange}
                 name="description"
                 placeholder="Дайте описание команды"
+                variant="filled"
                 autoSize={{ minRows: 5, maxRows: 5 }}
               />
             </Form.Item>

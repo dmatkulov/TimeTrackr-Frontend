@@ -1,11 +1,20 @@
 import React, { ReactNode, useState } from 'react';
-import { Badge, Button, Drawer, Flex, Input, Space } from 'antd';
+import {
+  Badge,
+  Button,
+  Drawer,
+  Dropdown,
+  Flex,
+  Input,
+  MenuProps,
+  Space,
+} from 'antd';
 import UserTitle from '../../UI/UserTitle/UserTitle';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import {
   AppstoreOutlined,
   BellFilled,
-  CaretRightOutlined,
+  PlusOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
 import UserMenu from '../../UserMenu/UserMenu';
@@ -78,14 +87,32 @@ const UserHeader: React.FC<Props> = ({ toggleMenu }) => {
     );
   };
 
+  const items: MenuProps['items'] = [
+    {
+      label: <Button>Команда</Button>,
+      key: '1',
+      onClick: () => setOpen(true),
+    },
+    {
+      label: <Button>Проект</Button>,
+      key: '',
+      onClick: () => setOpen(true),
+    },
+  ];
+
   const timeBtn = (
-    <Button
-      icon={<CaretRightOutlined />}
-      type="primary"
-      style={{ marginRight: 'auto' }}
-    >
-      Таймер
-    </Button>
+    // <Dropdown menu={{ items }}>
+    //   <Button
+    //     icon={<PlusOutlined />}
+    //     type="primary"
+    //     style={{ marginRight: 'auto' }}
+    //   >
+    //     Создать
+    //   </Button>
+    // </Dropdown>
+    <Dropdown.Button icon={<PlusOutlined />} type="primary" menu={{ items }}>
+      Создать
+    </Dropdown.Button>
   );
 
   return (

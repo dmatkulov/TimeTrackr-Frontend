@@ -30,17 +30,20 @@ interface Props {
 }
 
 const ProjectsTable = ({ projects, handleStatus }: Props) => {
-  const [selected, setSelected] = useState<string[]>([]);
-
-  const rowSelection = {
-    onChange: (selectedRowKeys: React.Key[]) => {
-      setSelected(selectedRowKeys as string[]);
-    },
-  };
+  const [selected, setSelected] = useState<React.Key[]>([]);
 
   const handleToggleStatus = (value: boolean) => {
-    handleStatus(value, selected);
-    console.log({ value, selected });
+    handleStatus(value, selected as string[]);
+    setSelected([]);
+  };
+
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    setSelected(newSelectedRowKeys);
+  };
+
+  const rowSelection = {
+    selectedRowKeys: selected,
+    onChange: onSelectChange,
   };
 
   const items: MenuProps['items'] = [
@@ -71,7 +74,6 @@ const ProjectsTable = ({ projects, handleStatus }: Props) => {
 
   const isNotDoneBtn = (
     <Button
-      // type="primary"
       icon={<PlayCircleFilled />}
       onClick={() => handleToggleStatus(false)}
     >

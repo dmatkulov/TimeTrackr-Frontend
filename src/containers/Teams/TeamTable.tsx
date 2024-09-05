@@ -21,16 +21,25 @@ const TeamTable: React.FC<Props> = ({
   open,
   close,
 }) => {
-  const [selected, setSelected] = useState<string[]>([]);
+  const [selected, setSelected] = useState<React.Key[]>([]);
 
   const handleDeleteMember = () => {
-    handleDelete(selected);
+    handleDelete(selected as string[]);
+    setSelected([]);
+  };
+
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    setSelected(newSelectedRowKeys);
   };
 
   const rowSelection = {
-    onChange: (selectedRowKeys: React.Key[]) => {
-      setSelected(selectedRowKeys as string[]);
-    },
+    selectedRowKeys: selected,
+    onChange: onSelectChange,
+  };
+
+  const handleClose = () => {
+    setSelected([]);
+    close();
   };
 
   const dataSource = team.members.map((user) => ({
@@ -75,9 +84,9 @@ const TeamTable: React.FC<Props> = ({
       <Modal
         title="Удалить сотрудников"
         open={open}
-        onCancel={close}
+        onCancel={handleClose}
         footer={[
-          <Button onClick={close}>Отменить</Button>,
+          <Button onClick={handleClose}>Отменить</Button>,
           selected.length > 0 && (
             <Button
               danger
