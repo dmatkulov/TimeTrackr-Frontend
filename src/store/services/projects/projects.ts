@@ -1,8 +1,9 @@
 import { api } from '../../index';
 import {
+  Project,
   ProjectMutation,
-  ProjectSummary,
   ToggleProjectStatus,
+  UpdateProjectArg,
 } from '../../../types/types.project';
 import { projectUrl } from '../../../common/routes';
 import { MenuListItems, UpdateFavourite } from '../../../types/types.global';
@@ -18,7 +19,24 @@ export const projectApi = api.injectEndpoints({
       invalidatesTags: ['Projects'],
     }),
 
-    getProjectsByTeam: build.query<ProjectSummary[], string>({
+    updateProject: build.mutation<void, UpdateProjectArg>({
+      query: ({ id, mutation }) => ({
+        url: projectUrl.update + id,
+        method: 'PATCH',
+        body: mutation,
+      }),
+      invalidatesTags: ['Projects', 'Project'],
+    }),
+
+    deleteProject: build.mutation<void, string>({
+      query: (id) => ({
+        url: projectUrl.delete + id,
+        method: 'delete',
+      }),
+      invalidatesTags: ['Projects'],
+    }),
+
+    getProjectsByTeam: build.query<Project[], string>({
       query: (id) => projectUrl.get + '?teamId=' + (id ?? ''),
       providesTags: ['Projects'],
     }),
@@ -53,7 +71,9 @@ export const projectApi = api.injectEndpoints({
 export const {
   useCreateProjectMutation,
   useGetProjectsListQuery,
+  useUpdateProjectMutation,
   useGetProjectsByTeamQuery,
   useToggleFavouriteProjectMutation,
   useToggleIsDoneMutation,
+  useDeleteProjectMutation,
 } = projectApi;

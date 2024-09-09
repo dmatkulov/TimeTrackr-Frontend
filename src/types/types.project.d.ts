@@ -1,10 +1,5 @@
 import { ProjectEnum } from '../../../enum/project.enum';
 
-interface ProjectQuery {
-  teamId?: string;
-  taskId?: string;
-}
-
 interface ProjectMutation {
   teamID: string;
   name: string;
@@ -13,13 +8,20 @@ interface ProjectMutation {
   type: ProjectEnum;
 }
 
-interface ProjectSummary {
+interface Project {
   _id: string;
   name: string;
   isDone: boolean;
   deadline: string;
+  description: string;
   type: ProjectEnum;
   tasks: number;
+  teamID: string;
+}
+
+interface UpdateProjectArg {
+  id: string;
+  mutation: ProjectMutation;
 }
 
 interface ToggleProjectStatus {

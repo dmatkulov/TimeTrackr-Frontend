@@ -58,6 +58,8 @@ export const projectUrl = {
   create: 'projects/new-project/',
   toggleFavourite: 'projects/toggle-favourite/',
   toggleIsDone: 'projects/toggle-status',
+  update: 'projects/update/',
+  delete: 'projects/delete/',
 };
 
 export const taskUrl = {

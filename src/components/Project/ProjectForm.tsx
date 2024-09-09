@@ -19,6 +19,7 @@ import { buddhistLocale } from '../../utils/formattedTime';
 import { handleFormFieldError } from '../../utils/handleError';
 import { ClearOutlined } from '@ant-design/icons';
 import { useMediaQuery } from 'react-responsive';
+import dayjs from 'dayjs';
 
 const initialState: ProjectMutation = {
   teamID: '',
@@ -62,7 +63,10 @@ const ProjectForm = ({
   useEffect(() => {
     if (existingProject) {
       setState(existingProject);
-      form.setFieldsValue(existingProject);
+      form.setFieldsValue({
+        ...existingProject,
+        deadline: dayjs(existingProject.deadline),
+      });
     }
 
     if (existingTeamId) {

@@ -1,4 +1,8 @@
-import { ProjectSummary } from '../../types/types.project';
+import {
+  Project,
+  ProjectMutation,
+  UpdateProjectArg,
+} from '../../types/types.project';
 import {
   Button,
   Dropdown,
@@ -14,8 +18,14 @@ import {
   DeleteOutlined,
   EditOutlined,
   MoreOutlined,
+  PauseCircleFilled,
   PlayCircleFilled,
 } from '@ant-design/icons';
+import ProjectForm from './ProjectForm';
+import {
+  useDeleteProjectMutation,
+  useUpdateProjectMutation,
+} from '../../store/services/projects/projects';
 
 const tagStyle = {
   backgroundColor: '#52c41a',
@@ -25,16 +35,45 @@ const tagStyle = {
 };
 
 interface Props {
-  projects: ProjectSummary[];
+  projects: Project[];
   handleStatus: (value: boolean, projects: string[]) => void;
 }
 
 const ProjectsTable = ({ projects, handleStatus }: Props) => {
   const [selected, setSelected] = useState<React.Key[]>([]);
+  const [openForm, setOpenForm] = useState<boolean>(false);
+  const [state, setState] = useState<UpdateProjectArg>();
+
+  const [handleUpdate, { isLoading, error, isError }] =
+    useUpdateProjectMutation();
+
+  const [handleDelete, { isLoading: deleting }] = useDeleteProjectMutation();
 
   const handleToggleStatus = (value: boolean) => {
     handleStatus(value, selected as string[]);
     setSelected([]);
+  };
+
+  const handleOpenForm = (project: Project) => {
+    const mutation = {
+      teamID: project.teamID,
+      name: project.name,
+      description: project.description,
+      deadline: project.deadline,
+      type: project.type,
+    };
+    setState((prevState) => ({ ...prevState, id: project._id, mutation }));
+    setOpenForm(true);
+  };
+
+  const handleSubmitUpdate = async (mutation: ProjectMutation) => {
+    if (state) {
+      await handleUpdate({ id: state.id, mutation }).unwrap();
+    }
+  };
+
+  const handleSubmitDelete = async (id: string) => {
+    await handleDelete(id).unwrap();
   };
 
   const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
@@ -48,7 +87,7 @@ const ProjectsTable = ({ projects, handleStatus }: Props) => {
 
   const items: MenuProps['items'] = [
     {
-      key: '1',
+      key: 'edit',
       label: 'Редактировать',
       onClick: (info) => {
         info.domEvent.stopPropagation();
@@ -56,9 +95,10 @@ const ProjectsTable = ({ projects, handleStatus }: Props) => {
       icon: <EditOutlined />,
     },
     {
-      key: '2',
+      key: 'delete',
       danger: true,
       label: 'Удалить',
+      disabled: deleting,
       onClick: (info) => {
         info.domEvent.stopPropagation();
       },
@@ -67,7 +107,12 @@ const ProjectsTable = ({ projects, handleStatus }: Props) => {
   ];
 
   const isDoneBtn = (
-    <Button type="primary" onClick={() => handleToggleStatus(true)}>
+    <Button
+      icon={<PauseCircleFilled />}
+      danger
+      type="primary"
+      onClick={() => handleToggleStatus(true)}
+    >
       Завершить
     </Button>
   );
@@ -75,6 +120,7 @@ const ProjectsTable = ({ projects, handleStatus }: Props) => {
   const isNotDoneBtn = (
     <Button
       icon={<PlayCircleFilled />}
+      type="primary"
       onClick={() => handleToggleStatus(false)}
     >
       Возобновить
@@ -86,12 +132,12 @@ const ProjectsTable = ({ projects, handleStatus }: Props) => {
     key: project._id,
   }));
 
-  const columns: TableProps<ProjectSummary>['columns'] = [
+  const columns: TableProps<Project>['columns'] = [
     {
       title: 'Название',
       dataIndex: 'name',
       key: 'name',
-      render: (_, row: ProjectSummary) => <>{row.name}</>,
+      render: (_, row: Project) => <>{row.name}</>,
     },
 
     {
@@ -144,7 +190,7 @@ const ProjectsTable = ({ projects, handleStatus }: Props) => {
       title: 'Дедлайн',
       dataIndex: 'deadline',
       key: 'deadline',
-      render: (_, row: ProjectSummary) => (
+      render: (_, row: Project) => (
         <>{dayjs(row.deadline).format('D MMMM, YYYY')}</>
       ),
     },
@@ -153,33 +199,44 @@ const ProjectsTable = ({ projects, handleStatus }: Props) => {
       dataIndex: 'actions',
       key: 'actions',
       align: 'right',
-      hidden: selected.length !== 1,
-      render: (_, row: ProjectSummary) => (
+      render: (_, row: Project) => (
         <>
-          {selected.includes(row._id)
-            ? row.isDone
-              ? isNotDoneBtn
-              : isDoneBtn
-            : null}
-        </>
-      ),
-    },
-
-    {
-      dataIndex: 'actions',
-      key: 'actions',
-      align: 'right',
-      // hidden: selected.length > 0,
-      render: () => (
-        <>
-          <Dropdown
-            menu={{ items }}
-            placement="bottomRight"
-            overlayStyle={{ zIndex: 10 }}
-            trigger={['click']}
-          >
-            <Button icon={<MoreOutlined />} />
-          </Dropdown>
+          {selected.includes(row._id) && selected.length === 1 ? (
+            row.isDone ? (
+              <Button
+                icon={<PlayCircleFilled />}
+                type="primary"
+                onClick={() => handleToggleStatus(false)}
+              />
+            ) : (
+              <Button
+                icon={<PauseCircleFilled />}
+                type="primary"
+                danger
+                onClick={() => handleToggleStatus(true)}
+              />
+            )
+          ) : (
+            <Dropdown
+              menu={{
+                items,
+                onClick: async ({ key }) => {
+                  if (key === 'delete') {
+                    await handleSubmitDelete(row._id);
+                  }
+                  if (key === 'edit') {
+                    handleOpenForm(row);
+                  }
+                },
+              }}
+              placement="bottomRight"
+              overlayStyle={{ zIndex: 10 }}
+              trigger={['click']}
+              disabled={selected.length > 0}
+            >
+              <Button icon={<MoreOutlined />} />
+            </Dropdown>
+          )}
         </>
       ),
     },
@@ -215,6 +272,17 @@ const ProjectsTable = ({ projects, handleStatus }: Props) => {
           </Space>
         </div>
       )}
+
+      <ProjectForm
+        onSubmit={handleSubmitUpdate}
+        existingProject={state?.mutation}
+        isOpen={openForm}
+        onClose={() => setOpenForm(false)}
+        loading={isLoading}
+        error={error}
+        isError={isError}
+        isEdit
+      />
     </>
   );
 };
