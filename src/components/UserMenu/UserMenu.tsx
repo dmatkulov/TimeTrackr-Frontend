@@ -5,13 +5,12 @@ import {
   CalendarOutlined,
   DashboardFilled,
   DashboardOutlined,
+  DatabaseFilled,
+  DatabaseOutlined,
   ExclamationCircleOutlined,
-  FileFilled,
-  FileOutlined,
   GlobalOutlined,
   LogoutOutlined,
   MinusOutlined,
-  PlusCircleOutlined,
   PlusOutlined,
   RightOutlined,
   RocketTwoTone,
@@ -122,7 +121,10 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
             />
           </Flex>
         ),
-        onClick: () => handleNavigate(route + item._id),
+        onClick: () => {
+          handleNavigate(route + item._id);
+          console.log(route + item._id);
+        },
         style: { paddingRight: '8px' },
       }))
       .splice(0, 6);
@@ -214,15 +216,15 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
       onClick: () => handleNavigate(appRoutes.user.dashboard),
     },
     {
-      key: appRoutes.user.notes,
-      label: 'Мои заметки',
+      key: appRoutes.user.desk,
+      label: 'Доска',
       icon:
-        path === appRoutes.user.notes ? (
-          <FileFilled style={{ fontSize: '18px' }} />
+        path === appRoutes.user.desk ? (
+          <DatabaseFilled style={{ fontSize: '18px' }} />
         ) : (
-          <FileOutlined style={{ fontSize: '18px' }} />
+          <DatabaseOutlined style={{ fontSize: '18px' }} />
         ),
-      onClick: () => handleNavigate(appRoutes.user.notes),
+      onClick: () => handleNavigate(appRoutes.user.desk),
     },
     {
       key: appRoutes.user.calendar,
@@ -258,40 +260,27 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
           style: { display: favouriteTeamsList.length > 0 ? 'block' : 'none' },
         },
         ...teamsList,
+        { type: 'divider', style: { display: !isTeamLead ? 'none' : 'block' } },
         {
           key: 'allTeams',
           label: (
             <Flex justify="space-between" align="center">
-              Все команды
-              <RightOutlined />
+              <Button
+                style={{
+                  padding: '0',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                  alignItems: 'center',
+                }}
+                onClick={() => handleNavigate(appRoutes.user.teams)}
+                type="link"
+              >
+                Все команды
+                <RightOutlined />
+              </Button>
             </Flex>
           ),
-          onClick: () => handleNavigate(appRoutes.user.teams + 'all'),
-        },
-        { type: 'divider', style: { display: !isTeamLead ? 'none' : 'block' } },
-        {
-          key: 'addTeam',
-          label: (
-            <Button
-              style={{ padding: '0' }}
-              onClick={() => {
-                setIsOpen(true);
-                if (handleMobile) {
-                  handleMobile();
-                }
-              }}
-              type="link"
-              icon={<PlusCircleOutlined />}
-            >
-              Добавить
-            </Button>
-          ),
-          style: {
-            display: !isTeamLead ? 'none' : 'block',
-            background: 'none',
-            cursor: 'default',
-          },
-          className: 'menuItemBtn',
         },
       ],
     },
@@ -299,7 +288,6 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
       key: appRoutes.user.projects,
       label: 'Проекты',
       icon: <StarTwoTone style={{ fontSize: '18px' }} twoToneColor="#FABB18" />,
-      onClick: () => handleNavigate(appRoutes.user.projects),
       style: {
         ...itemStyle,
         marginTop: '10px',
@@ -323,7 +311,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
         ...projectsList,
         { type: 'divider', style: { display: !isTeamLead ? 'none' : 'block' } },
         {
-          key: 'addProject',
+          key: 'allProjects',
           label: (
             <Flex justify="space-between" align="center">
               <Button
@@ -334,7 +322,7 @@ const UserMenu: React.FC<Props> = ({ handleMobile, collapsed }) => {
                   width: '100%',
                   alignItems: 'center',
                 }}
-                onClick={() => handleNavigate(appRoutes.user.teams + 'all')}
+                onClick={() => handleNavigate(appRoutes.user.projects + 'all/')}
                 type="link"
               >
                 Все проекты

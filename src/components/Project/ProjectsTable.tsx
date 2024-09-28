@@ -26,6 +26,11 @@ import {
   useDeleteProjectMutation,
   useUpdateProjectMutation,
 } from '../../store/services/projects/projects';
+import { useAppSelector } from '../../store/hooks/hooks';
+import { selectUser } from '../../store/services/auth/authSlice';
+import { Roles } from '../../enum/roles.enum';
+import { useNavigate } from 'react-router-dom';
+import { appRoutes } from '../../common/routes';
 
 const tagStyle = {
   backgroundColor: '#52c41a',
@@ -40,6 +45,11 @@ interface Props {
 }
 
 const ProjectsTable = ({ projects, handleStatus }: Props) => {
+  const user = useAppSelector(selectUser);
+  const isTeamlead = user.roles.includes(Roles.TeamLead);
+
+  const navigate = useNavigate();
+
   const [selected, setSelected] = useState<React.Key[]>([]);
   const [openForm, setOpenForm] = useState<boolean>(false);
   const [state, setState] = useState<UpdateProjectArg>();
@@ -105,6 +115,14 @@ const ProjectsTable = ({ projects, handleStatus }: Props) => {
       icon: <DeleteOutlined />,
     },
   ];
+
+  const handleDropdownClick = (
+    event:
+      | React.MouseEvent<HTMLElement, MouseEvent>
+      | React.KeyboardEvent<HTMLElement>,
+  ) => {
+    event.stopPropagation();
+  };
 
   const isDoneBtn = (
     <Button
@@ -199,6 +217,7 @@ const ProjectsTable = ({ projects, handleStatus }: Props) => {
       dataIndex: 'actions',
       key: 'actions',
       align: 'right',
+      hidden: !isTeamlead,
       render: (_, row: Project) => (
         <>
           {selected.includes(row._id) && selected.length === 1 ? (
@@ -206,14 +225,20 @@ const ProjectsTable = ({ projects, handleStatus }: Props) => {
               <Button
                 icon={<PlayCircleFilled />}
                 type="primary"
-                onClick={() => handleToggleStatus(false)}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  handleToggleStatus(false);
+                }}
               />
             ) : (
               <Button
                 icon={<PauseCircleFilled />}
                 type="primary"
                 danger
-                onClick={() => handleToggleStatus(true)}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  handleToggleStatus(true);
+                }}
               />
             )
           ) : (
@@ -234,7 +259,7 @@ const ProjectsTable = ({ projects, handleStatus }: Props) => {
               trigger={['click']}
               disabled={selected.length > 0}
             >
-              <Button icon={<MoreOutlined />} />
+              <Button onClick={handleDropdownClick} icon={<MoreOutlined />} />
             </Dropdown>
           )}
         </>
@@ -245,10 +270,23 @@ const ProjectsTable = ({ projects, handleStatus }: Props) => {
     <>
       <Table
         columns={columns}
+        className="projects-table"
         dataSource={dataSource}
-        rowSelection={{
-          ...rowSelection,
+        onRow={(record) => {
+          return {
+            onClick: (event) => {
+              event.stopPropagation();
+              navigate(appRoutes.user.teams + record.teamID + '/' + record._id);
+            },
+          };
         }}
+        rowSelection={
+          isTeamlead
+            ? {
+                ...rowSelection,
+              }
+            : undefined
+        }
         pagination={
           selected.length > 1
             ? false

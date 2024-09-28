@@ -1,4 +1,5 @@
 import { ProjectEnum } from '../../../enum/project.enum';
+import { Task } from './types.task';
 
 interface ProjectMutation {
   teamID: string;
@@ -30,4 +31,9 @@ interface ToggleProjectStatus {
     value: boolean;
     projects: string[];
   };
+}
+
+interface ProjectSummary {
+  project: Project;
+  tasks: Task[];
 }

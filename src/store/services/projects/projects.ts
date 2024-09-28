@@ -2,6 +2,7 @@ import { api } from '../../index';
 import {
   Project,
   ProjectMutation,
+  ProjectSummary,
   ToggleProjectStatus,
   UpdateProjectArg,
 } from '../../../types/types.project';
@@ -17,6 +18,11 @@ export const projectApi = api.injectEndpoints({
         body: mutation,
       }),
       invalidatesTags: ['Projects'],
+    }),
+
+    getProject: build.query<ProjectSummary, string>({
+      query: (id) => projectUrl.get + '/' + id,
+      providesTags: ['Project'],
     }),
 
     updateProject: build.mutation<void, UpdateProjectArg>({
@@ -76,4 +82,5 @@ export const {
   useToggleFavouriteProjectMutation,
   useToggleIsDoneMutation,
   useDeleteProjectMutation,
+  useGetProjectQuery,
 } = projectApi;
