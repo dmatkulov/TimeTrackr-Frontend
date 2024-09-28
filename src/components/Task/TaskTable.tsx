@@ -3,6 +3,7 @@ import { Button, Dropdown, MenuProps, Space, Table, TableProps } from 'antd';
 import React from 'react';
 import { DeleteOutlined, EditOutlined, MoreOutlined } from '@ant-design/icons';
 import UserAvatar from '../UI/UserAvatar/UserAvatar';
+import TaskTag from './TaskItem/TaskTag';
 
 interface Props {
   tasks: Task[];
@@ -62,7 +63,22 @@ const TaskTable = ({ tasks }: Props) => {
       title: 'Статус',
       dataIndex: 'status',
       key: 'status',
-      render: (_, row: Task) => <>{row.status}</>,
+      render: (_, row: Task) => (
+        <>
+          <TaskTag label={row.status} dropdown />
+        </>
+      ),
+    },
+
+    {
+      title: 'Тип',
+      dataIndex: 'type',
+      key: 'type',
+      render: (_, row: Task) => (
+        <>
+          <TaskTag label={row.type} hasIcon dropdown />
+        </>
+      ),
     },
 
     {
