@@ -137,7 +137,7 @@ const TeamInfo: React.FC = () => {
       style={{ marginBottom: '30px' }}
       items={[
         {
-          title: <Link to={appRoutes.user.teams + 'all'}>Все команды</Link>,
+          title: <Link to={appRoutes.user.teams}>Все команды</Link>,
         },
         {
           title: team?.name || '',

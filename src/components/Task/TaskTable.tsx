@@ -1,9 +1,23 @@
 import { Task } from '../../types/types.task';
-import { Button, Dropdown, MenuProps, Space, Table, TableProps } from 'antd';
-import React from 'react';
-import { DeleteOutlined, EditOutlined, MoreOutlined } from '@ant-design/icons';
+import {
+  Button,
+  DatePicker,
+  Dropdown,
+  MenuProps,
+  Space,
+  Table,
+  TableProps,
+} from 'antd';
+import React, { useState } from 'react';
+import {
+  CalendarOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  MoreOutlined,
+} from '@ant-design/icons';
 import UserAvatar from '../UI/UserAvatar/UserAvatar';
 import TaskTag from './TaskItem/TaskTag';
+import dayjs from 'dayjs';
 
 interface Props {
   tasks: Task[];
@@ -35,12 +49,14 @@ const TaskTable = ({ tasks }: Props) => {
     event.stopPropagation();
   };
 
+  const [openPicker, setOpenPicker] = useState<string>('');
+
   const columns: TableProps<Task>['columns'] = [
     {
       title: 'Задача',
       dataIndex: 'title',
       key: 'title',
-      render: (_, row: Task) => <>{row.title}</>,
+      render: (_, row: Task) => <b>{row.title}</b>,
     },
     {
       title: 'Исполнитель',
@@ -77,6 +93,53 @@ const TaskTable = ({ tasks }: Props) => {
       render: (_, row: Task) => (
         <>
           <TaskTag label={row.type} hasIcon dropdown />
+        </>
+      ),
+    },
+
+    {
+      title: 'Дедлайн',
+      dataIndex: 'deadline',
+      key: 'deadline',
+      render: (_, row: Task) => (
+        <>
+          {row._id === openPicker ? (
+            <>
+              <DatePicker
+                placement="bottomRight"
+                defaultOpen={true}
+                showNow={false}
+                needConfirm={true}
+                onOk={() => setOpenPicker('')}
+              />
+              <div
+                onClick={() => setOpenPicker('')}
+                style={{
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  zIndex: 1,
+                }}
+              ></div>
+            </>
+          ) : (
+            <Space size="middle">
+              <Button
+                type="dashed"
+                icon={<CalendarOutlined />}
+                onClick={() => {
+                  if (row._id !== openPicker) {
+                    setOpenPicker(row._id);
+                  } else {
+                    setOpenPicker('');
+                  }
+                }}
+              />
+              {dayjs(row.executionDate).format('DD MMMM')}
+            </Space>
+          )}
         </>
       ),
     },

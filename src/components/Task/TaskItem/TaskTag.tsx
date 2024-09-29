@@ -64,7 +64,7 @@ const TaskTag: React.FC<Props> = ({
       icon={hasIcon && icon}
       style={{
         marginRight: 0,
-        padding: '8px 10px',
+        padding: '3px 6px',
       }}
     >
       {dropdown ? (
