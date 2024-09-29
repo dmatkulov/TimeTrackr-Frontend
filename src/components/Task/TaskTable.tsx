@@ -18,12 +18,14 @@ import {
 import UserAvatar from '../UI/UserAvatar/UserAvatar';
 import TaskTag from './TaskItem/TaskTag';
 import dayjs from 'dayjs';
+import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 
 interface Props {
   tasks: Task[];
 }
 
 const TaskTable = ({ tasks }: Props) => {
+  const { md, lg } = useBreakpoint();
   const items: MenuProps['items'] = [
     {
       key: 'edit',
@@ -62,6 +64,7 @@ const TaskTable = ({ tasks }: Props) => {
       title: 'Исполнитель',
       dataIndex: 'user',
       key: 'user',
+      responsive: ['lg'],
       render: (_, row: Task) => (
         <>
           <Space>
@@ -70,7 +73,9 @@ const TaskTable = ({ tasks }: Props) => {
               lastname={row.user.lastname}
               firstname={row.user.firstname}
             />
-            {row.user.firstname + ' ' + row.user.lastname}
+            {!lg
+              ? row.user.firstname
+              : row.user.firstname + ' ' + row.user.lastname}
           </Space>
         </>
       ),
@@ -79,9 +84,10 @@ const TaskTable = ({ tasks }: Props) => {
       title: 'Статус',
       dataIndex: 'status',
       key: 'status',
+      responsive: ['md'],
       render: (_, row: Task) => (
         <>
-          <TaskTag label={row.status} dropdown />
+          <TaskTag label={row.status} />
         </>
       ),
     },
@@ -90,9 +96,10 @@ const TaskTable = ({ tasks }: Props) => {
       title: 'Тип',
       dataIndex: 'type',
       key: 'type',
+      responsive: ['md'],
       render: (_, row: Task) => (
         <>
-          <TaskTag label={row.type} hasIcon dropdown />
+          <TaskTag label={row.type} hasIcon onlyIcon={lg} />
         </>
       ),
     },
@@ -101,6 +108,7 @@ const TaskTable = ({ tasks }: Props) => {
       title: 'Дедлайн',
       dataIndex: 'deadline',
       key: 'deadline',
+      responsive: ['md'],
       render: (_, row: Task) => (
         <>
           {row._id === openPicker ? (
@@ -137,7 +145,7 @@ const TaskTable = ({ tasks }: Props) => {
                   }
                 }}
               />
-              {dayjs(row.executionDate).format('DD MMMM')}
+              {dayjs(row.executionDate).format(!lg ? 'DD.MM' : 'DD MMMM')}
             </Space>
           )}
         </>
@@ -184,11 +192,14 @@ const TaskTable = ({ tasks }: Props) => {
     <>
       <Table
         columns={columns}
+        showHeader={md}
         className="projects-table"
         dataSource={dataSource}
         expandable={{
           expandedRowRender: (record) => (
-            <p style={{ margin: 0 }}>{record.description ?? 'Нет описания'}</p>
+            <p style={{ margin: 0, paddingLeft: '49px' }}>
+              {record.description ?? 'Нет описания'}
+            </p>
           ),
           rowExpandable: (record) => record.title !== 'Not Expandable',
         }}

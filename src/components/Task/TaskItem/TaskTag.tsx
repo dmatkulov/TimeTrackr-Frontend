@@ -6,20 +6,21 @@ import {
   SettingFilled,
   SwapOutlined,
 } from '@ant-design/icons';
-import { Space, Tag } from 'antd';
 import { TypeEnum } from '../../../enum/type.enum';
 import { StatusEnum } from '../../../enum/status.enum';
+import { Tag } from 'antd';
 
 interface Props {
   label: string;
   dropdown?: boolean;
   hasIcon?: boolean;
+  onlyIcon?: boolean;
 }
 
 const TaskTag: React.FC<Props> = ({
   label,
-  dropdown = false,
   hasIcon = false,
+  onlyIcon = false,
 }) => {
   let tagColor;
   let icon;
@@ -57,6 +58,14 @@ const TaskTag: React.FC<Props> = ({
       tagColor = 'cyan';
       break;
   }
+
+  let tagContent;
+
+  if (hasIcon) {
+    tagContent = !onlyIcon ? null : label;
+  } else {
+    tagContent = label;
+  }
   return (
     <Tag
       color={tagColor}
@@ -64,16 +73,11 @@ const TaskTag: React.FC<Props> = ({
       icon={hasIcon && icon}
       style={{
         marginRight: 0,
-        padding: '3px 6px',
+        padding: '5px 8px',
+        borderRadius: '8px',
       }}
     >
-      {dropdown ? (
-        <Space>
-          {label} <MoreOutlined />
-        </Space>
-      ) : (
-        label
-      )}
+      {tagContent} <MoreOutlined />
     </Tag>
   );
 };
