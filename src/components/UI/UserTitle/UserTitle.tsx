@@ -118,7 +118,7 @@ const UserTitle: React.FC<Props> = ({ user }) => {
           <></>
         ) : (
           <>
-            <Text style={{ fontWeight: 'bold' }}>
+            <Text style={{ fontWeight: 'bold', textWrap: 'nowrap' }}>
               {user.firstname + ' ' + user.lastname}
             </Text>
           </>

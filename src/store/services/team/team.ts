@@ -1,10 +1,13 @@
 import { api } from '../../index';
-import { GlobalMessage } from '../../../types/types.global';
+import {
+  GlobalMessage,
+  MenuListItems,
+  UpdateFavourite,
+} from '../../../types/types.global';
 import {
   Team,
-  TeamList,
   TeamMutation,
-  UpdateTeamFav,
+  UpdateTeamMutation,
 } from '../../../types/types.team';
 import { teamUrl } from '../../../common/routes';
 
@@ -15,9 +18,13 @@ export const teamApi = api.injectEndpoints({
       providesTags: ['Teams'],
     }),
 
-    getTeamsList: build.query<TeamList[], string>({
-      query: (id) => teamUrl.get + '?teamList=' + (id ?? ''),
+    getTeamsList: build.query<MenuListItems[], void>({
+      query: () => teamUrl.get,
       providesTags: ['Teams'],
+    }),
+
+    getTeamsByUser: build.query<Team[], string>({
+      query: (id) => teamUrl.get + '?user-teams=' + (id ?? ''),
     }),
 
     getSelectedTeam: build.query<Team, string>({
@@ -34,11 +41,38 @@ export const teamApi = api.injectEndpoints({
       invalidatesTags: ['Teams'],
     }),
 
-    toggleFavourite: build.mutation<void, UpdateTeamFav>({
-      query: ({ id, isFavorite }) => ({
+    deleteMembers: build.mutation<GlobalMessage, UpdateTeamMutation>({
+      query: ({ id, mutation }) => ({
+        url: teamUrl.deleteMember + id,
+        method: 'delete',
+        body: { members: mutation.members },
+        invalidatesTags: ['Teams', 'Team'],
+      }),
+    }),
+
+    updateTeam: build.mutation<GlobalMessage, UpdateTeamMutation>({
+      query: ({ id, mutation }) => ({
+        url: teamUrl.update + id,
+        method: 'PATCH',
+        body: mutation,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        invalidatesTags: ['Teams', 'Team'],
+      }),
+    }),
+
+    deleteTeam: build.mutation<void, string>({
+      query: (id) => ({
+        url: teamUrl.deleteTeam + id,
+        method: 'delete',
+      }),
+    }),
+
+    toggleFavouriteTeam: build.mutation<void, UpdateFavourite>({
+      query: ({ id }) => ({
         url: teamUrl.toggle + id,
         method: 'PATCH',
-        body: { isFavorite },
       }),
       invalidatesTags: ['Teams', 'Team'],
     }),
@@ -50,5 +84,8 @@ export const {
   useGetTeamsListQuery,
   useCreateTeamMutation,
   useGetSelectedTeamQuery,
-  useToggleFavouriteMutation,
+  useDeleteMembersMutation,
+  useUpdateTeamMutation,
+  useDeleteTeamMutation,
+  useToggleFavouriteTeamMutation,
 } = teamApi;

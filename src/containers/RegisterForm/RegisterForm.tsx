@@ -11,6 +11,7 @@ const initialState: RegisterMutation = {
   email: '',
   firstname: '',
   lastname: '',
+  companyID: '',
   password: '',
 };
 

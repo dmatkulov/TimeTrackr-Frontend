@@ -31,7 +31,7 @@ const UserPanel: React.FC<Props> = () => {
           {md && (
             <Sider
               collapsible
-              width="250px"
+              width="320px"
               trigger={null}
               collapsed={collapsed}
               style={{

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Avatar } from 'antd';
-import { apiURL } from '../../../common/constants';
+import { getPhotoUrl } from '../../../utils/photoURL';
 
 interface Props {
   image: string | null;
@@ -9,8 +9,9 @@ interface Props {
 }
 
 const UserAvatar: React.FC<Props> = ({ image, firstname, lastname }) => {
+  const photo = getPhotoUrl(image);
   return firstname && image ? (
-    <Avatar src={apiURL + '/' + image} alt={firstname} size={32} />
+    <Avatar src={photo} alt={firstname} size={32} />
   ) : (
     <Avatar
       style={{

@@ -1,0 +1,86 @@
+import { api } from '../../index';
+import {
+  Project,
+  ProjectMutation,
+  ProjectSummary,
+  ToggleProjectStatus,
+  UpdateProjectArg,
+} from '../../../types/types.project';
+import { projectUrl } from '../../../common/routes';
+import { MenuListItems, UpdateFavourite } from '../../../types/types.global';
+
+export const projectApi = api.injectEndpoints({
+  endpoints: (build) => ({
+    createProject: build.mutation<void, ProjectMutation>({
+      query: (mutation) => ({
+        url: projectUrl.create,
+        method: 'post',
+        body: mutation,
+      }),
+      invalidatesTags: ['Projects'],
+    }),
+
+    getProject: build.query<ProjectSummary, string>({
+      query: (id) => projectUrl.get + '/' + id,
+      providesTags: ['Project'],
+    }),
+
+    updateProject: build.mutation<void, UpdateProjectArg>({
+      query: ({ id, mutation }) => ({
+        url: projectUrl.update + id,
+        method: 'PATCH',
+        body: mutation,
+      }),
+      invalidatesTags: ['Projects', 'Project'],
+    }),
+
+    deleteProject: build.mutation<void, string>({
+      query: (id) => ({
+        url: projectUrl.delete + id,
+        method: 'delete',
+      }),
+      invalidatesTags: ['Projects'],
+    }),
+
+    getProjectsByTeam: build.query<Project[], string>({
+      query: (id) => projectUrl.get + '?teamId=' + (id ?? ''),
+      providesTags: ['Projects'],
+    }),
+
+    getProjectsList: build.query<MenuListItems[], void>({
+      query: () => projectUrl.get,
+      providesTags: ['Projects'],
+    }),
+
+    toggleFavouriteProject: build.mutation<void, UpdateFavourite>({
+      query: ({ id }) => ({
+        url: projectUrl.toggleFavourite + id,
+        method: 'PATCH',
+      }),
+      invalidatesTags: ['Projects', 'Project'],
+    }),
+
+    toggleIsDone: build.mutation<void, ToggleProjectStatus>({
+      query: ({ teamId, mutation }) => ({
+        url: projectUrl.toggleIsDone + '?teamId=' + teamId,
+        method: 'PATCH',
+        body: mutation,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }),
+      invalidatesTags: ['Projects'],
+    }),
+  }),
+});
+
+export const {
+  useCreateProjectMutation,
+  useGetProjectsListQuery,
+  useUpdateProjectMutation,
+  useGetProjectsByTeamQuery,
+  useToggleFavouriteProjectMutation,
+  useToggleIsDoneMutation,
+  useDeleteProjectMutation,
+  useGetProjectQuery,
+} = projectApi;

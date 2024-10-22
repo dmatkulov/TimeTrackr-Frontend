@@ -1,47 +1,83 @@
 import React from 'react';
-import { TaskMutation } from '../../../types/types.task';
 import {
   MoreOutlined,
   ProductFilled,
   RocketFilled,
   SettingFilled,
+  SwapOutlined,
 } from '@ant-design/icons';
-import { Space, Tag } from 'antd';
+import { TypeEnum } from '../../../enum/type.enum';
+import { StatusEnum } from '../../../enum/status.enum';
+import { Tag } from 'antd';
 
 interface Props {
-  task: TaskMutation;
+  label: string;
   dropdown?: boolean;
+  hasIcon?: boolean;
+  onlyIcon?: boolean;
 }
 
-const TaskTag: React.FC<Props> = ({ task, dropdown = false }) => {
-  let tagColor = 'processing';
-  let icon = <RocketFilled />;
-  if (task.label === 'Доработка') {
-    tagColor = 'purple';
-    icon = <SettingFilled />;
-  } else if (task.label === 'Менеджмент') {
-    tagColor = 'orange';
-    icon = <ProductFilled />;
+const TaskTag: React.FC<Props> = ({
+  label,
+  hasIcon = false,
+  onlyIcon = false,
+}) => {
+  let tagColor;
+  let icon;
+
+  switch (label) {
+    case TypeEnum.NEW_TASK:
+      tagColor = 'processing';
+      icon = <RocketFilled />;
+      break;
+
+    case TypeEnum.IMPROVEMENT:
+      tagColor = 'orange';
+      icon = <ProductFilled />;
+      break;
+
+    case TypeEnum.BUG:
+      tagColor = 'purple';
+      icon = <SettingFilled />;
+      break;
+
+    case TypeEnum.HANDOVER:
+      tagColor = 'magenta';
+      icon = <SwapOutlined />;
+      break;
+
+    case StatusEnum.TODO:
+      tagColor = 'red';
+      break;
+
+    case StatusEnum.DONE:
+      tagColor = 'green';
+      break;
+
+    case StatusEnum.IN_PROGRESS:
+      tagColor = 'cyan';
+      break;
+  }
+
+  let tagContent;
+
+  if (hasIcon) {
+    tagContent = !onlyIcon ? null : label;
+  } else {
+    tagContent = label;
   }
   return (
     <Tag
       color={tagColor}
-      bordered={false}
-      icon={icon}
+      bordered={!hasIcon}
+      icon={hasIcon && icon}
       style={{
-        height: '28px',
-        display: 'flex',
-        alignItems: 'center',
         marginRight: 0,
+        padding: '5px 8px',
+        borderRadius: '8px',
       }}
     >
-      {dropdown ? (
-        <Space>
-          {task.label} <MoreOutlined />
-        </Space>
-      ) : (
-        task.label
-      )}
+      {tagContent} <MoreOutlined />
     </Tag>
   );
 };

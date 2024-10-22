@@ -11,8 +11,9 @@ import { GOOGLE_CLIENT_ID } from './common/constants';
 import { ConfigProvider } from 'antd';
 
 const primaryColor = '#3947CF';
+const secondaryColor = '#7046ea';
 const secondaryHoverColor = '#FFF8E8';
-const defaultGreyColor = '#f5f5f5';
+const defaultGreyColor = '#6C757D';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -36,12 +37,17 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                     itemHoverBg: secondaryHoverColor,
                   },
                   Button: {
+                    colorLink: secondaryColor,
                     borderRadius: 8,
-                    defaultBg: defaultGreyColor,
                     boxShadow: 'none',
-                    defaultBorderColor: 'none',
-                    defaultHoverBorderColor: 'none',
-                    defaultHoverBg: '#ededed',
+                    defaultBg: 'none',
+                    defaultBorderColor: '#aeaeae',
+                    colorText: defaultGreyColor,
+                    defaultColor: defaultGreyColor,
+                    defaultHoverColor: '#545a60',
+                    defaultHoverBorderColor: defaultGreyColor,
+                    defaultHoverBg: 'none',
+                    colorLinkHover: primaryColor,
                   },
                 },
               }}

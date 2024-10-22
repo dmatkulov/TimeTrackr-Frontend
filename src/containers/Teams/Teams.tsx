@@ -1,30 +1,88 @@
 import { useGetTeamsQuery } from '../../store/services/team/team';
 import Spinner from '../../components/UI/Spin/Spin';
 import TeamCard from '../../components/Team/TeamCard';
-import { Col, Row } from 'antd';
+import { Button, Col, Divider, Flex, Row, Typography } from 'antd';
+import { PlusCircleFilled } from '@ant-design/icons';
+import React, { useState } from 'react';
+import TeamAdd from '../../components/Team/TeamForm/TeamAdd';
+import { useAppSelector } from '../../store/hooks/hooks';
+import { selectUser } from '../../store/services/auth/authSlice';
+import { Roles } from '../../enum/roles.enum';
 
-const Teams = () => {
+const Teams: React.FC = () => {
+  const user = useAppSelector(selectUser);
+  const isTeamLead = user.roles.includes(Roles.TeamLead);
+
   const { data: teams = [], isFetching } = useGetTeamsQuery();
-  console.log(teams);
+  const [open, setOpen] = useState<boolean>(false);
+
+  const teamList = teams.filter((team) => !team.isFavorite);
+  const selectedTeamList = teams.filter((team) => team.isFavorite);
+
   return (
-    <div>
-      Teams
-      {isFetching && <Spinner />}
-      <Row gutter={16}>
-        {teams.map((team) => (
-          <Col
-            style={{ marginBottom: 16 }}
-            key={team._id}
-            xs={{ span: 24 }}
-            sm={{ span: 12 }}
-            lg={{ span: 8 }}
-            xl={{ span: 6 }}
+    <>
+      <Flex
+        justify="space-between"
+        align="center"
+        style={{ margin: '20px 0 50px 0' }}
+      >
+        <Typography.Title level={2} style={{ margin: 0 }}>
+          Мои команды
+        </Typography.Title>
+        {isTeamLead && (
+          <Button
+            onClick={() => setOpen(true)}
+            type="text"
+            icon={<PlusCircleFilled />}
+            iconPosition="start"
           >
-            <TeamCard team={team} />
-          </Col>
-        ))}
-      </Row>
-    </div>
+            Добавить команду
+          </Button>
+        )}
+      </Flex>
+      <Divider style={{ margin: '0 0 50px 0' }} />
+      {isFetching ? (
+        <Spinner />
+      ) : (
+        <>
+          {selectedTeamList.length > 0 && (
+            <Row gutter={24} style={{ marginBottom: '20px' }}>
+              <Col span={24} style={{ marginBottom: '20px' }}>
+                <Typography.Text>Избранное</Typography.Text>
+              </Col>
+              {selectedTeamList.map((team) => (
+                <Col
+                  style={{ marginBottom: 16 }}
+                  key={team._id}
+                  xs={{ span: 24 }}
+                  sm={{ span: 12 }}
+                  lg={{ span: 8 }}
+                  xl={{ span: 6 }}
+                >
+                  <TeamCard team={team} />
+                </Col>
+              ))}
+              <Divider style={{ margin: '30px 0' }} />
+            </Row>
+          )}
+          <Row gutter={16}>
+            {teamList.map((team) => (
+              <Col
+                style={{ marginBottom: 16 }}
+                key={team._id}
+                xs={{ span: 24 }}
+                sm={{ span: 12 }}
+                lg={{ span: 8 }}
+                xl={{ span: 6 }}
+              >
+                <TeamCard team={team} />
+              </Col>
+            ))}
+          </Row>
+        </>
+      )}
+      <TeamAdd isOpen={open} onClose={() => setOpen(false)} />
+    </>
   );
 };
 

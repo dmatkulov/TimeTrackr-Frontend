@@ -16,3 +16,13 @@ export interface ValidationError {
   error: string;
   statusCode: number;
 }
+
+interface MenuListItems {
+  _id: string;
+  name: string;
+  isFavorite: false;
+}
+
+export interface UpdateFavourite {
+  id: string;
+}

@@ -86,3 +86,12 @@ input[type='number'] {
 .ant-input {
   font-size: 14px;
 }
+
+.def-btn {
+  border: 1px solid #7046ea;
+  color: #7046ea;
+}
+
+.projects-table tr {
+  cursor: pointer;
+}

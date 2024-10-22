@@ -1,74 +1,37 @@
 import React from 'react';
+import { Avatar, Button, Card, Flex, Tag, Tooltip } from 'antd';
 import {
-  Avatar,
-  Button,
-  Card,
-  Dropdown,
-  Flex,
-  MenuProps,
-  Tag,
-  Tooltip,
-} from 'antd';
-import {
-  DeleteOutlined,
   FolderOpenOutlined,
-  MoreOutlined,
   StarFilled,
   StarOutlined,
 } from '@ant-design/icons';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import { useMediaQuery } from 'react-responsive';
 import { Team } from '../../types/types.team';
-import { apiURL } from '../../common/constants';
-import { useToggleFavouriteMutation } from '../../store/services/team/team';
+import { useToggleFavouriteTeamMutation } from '../../store/services/team/team';
 import { useNavigate } from 'react-router-dom';
 import { appRoutes } from '../../common/routes';
 import './index.css';
+import { apiURL } from '../../common/constants';
 
 interface Props {
   team: Team;
 }
 
 const TeamCard: React.FC<Props> = ({ team }) => {
-  const [toggle] = useToggleFavouriteMutation();
+  const [toggle] = useToggleFavouriteTeamMutation();
   const { md, lg } = useBreakpoint();
   const navigate = useNavigate();
   const xxs = useMediaQuery({
     query: '(min-width: 320px) and (max-width: 360px)',
   });
 
-  const toggleFav = async (id: string, favourite: boolean) => {
+  const toggleFav = async (id: string) => {
     try {
-      await toggle({ id, isFavorite: favourite }).unwrap();
+      await toggle({ id }).unwrap();
     } catch (error) {
       console.error('Failed to toggle favorite:', error);
     }
-  };
-
-  const items: MenuProps['items'] = [
-    {
-      key: '1',
-      label: team.isFavorite ? 'Удалить из избранного' : 'Добавить в избранное',
-      onClick: async (info) => {
-        info.domEvent.stopPropagation();
-        await toggleFav(team._id, !team.isFavorite);
-      },
-      icon: team.isFavorite ? <StarFilled /> : <StarOutlined />,
-    },
-    {
-      key: '2',
-      danger: true,
-      label: 'Удалить',
-      onClick: (info) => {
-        info.domEvent.stopPropagation();
-      },
-      icon: <DeleteOutlined />,
-      disabled: false,
-    },
-  ];
-
-  const handleDropdownClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    event.stopPropagation();
   };
 
   return (
@@ -81,21 +44,30 @@ const TeamCard: React.FC<Props> = ({ team }) => {
           height: '100%',
         }}
         className="team-card"
-        styles={{ header: { border: 'none' } }}
+        styles={{
+          header: { border: 'none', padding: '0 16px' },
+          body: { padding: '24px 16px' },
+        }}
         extra={
           <>
-            <Dropdown
-              menu={{ items }}
-              placement="bottomRight"
-              arrow
-              overlayStyle={{ zIndex: 10 }}
-              trigger={['click']}
-            >
-              <Button icon={<MoreOutlined />} onClick={handleDropdownClick} />
-            </Dropdown>
+            <Button
+              type="text"
+              style={{ color: '#969a9e' }}
+              onClick={async (event: React.MouseEvent) => {
+                event.stopPropagation();
+                await toggleFav(team._id);
+              }}
+              icon={
+                team.isFavorite ? (
+                  <StarFilled style={{ color: '#FABB18' }} />
+                ) : (
+                  <StarOutlined />
+                )
+              }
+            />
           </>
         }
-        onClick={() => navigate(appRoutes.user.teamsAll + '/' + team._id)}
+        onClick={() => navigate(appRoutes.user.teams + team._id)}
       >
         <Flex
           justify="space-between"
@@ -116,25 +88,25 @@ const TeamCard: React.FC<Props> = ({ team }) => {
           >
             {team.members.map((member) => (
               <Tooltip
-                title={member.user.firstname}
+                title={member.firstname}
                 placement="top"
-                key={member.user._id}
+                key={member._id}
               >
-                {member.user.photo ? (
-                  <Avatar src={apiURL + '/' + member.user.photo} />
+                {member.photo ? (
+                  <Avatar src={apiURL + '/' + member.photo} />
                 ) : (
                   <Avatar style={{ backgroundColor: '#f56a00' }}>
-                    {member.user.firstname}
+                    {member.firstname}
                   </Avatar>
                 )}
               </Tooltip>
             ))}
           </Avatar.Group>
           <Tag
-            style={{ marginRight: 0 }}
+            style={{ marginRight: 0, borderRadius: '12px' }}
             bordered={false}
             icon={<FolderOpenOutlined />}
-            color="processing"
+            color="orange"
           >
             10 проектов
           </Tag>

@@ -14,10 +14,9 @@ export const appRoutes = {
     account: '/profile/info',
     dashboard: '/profile/dashboard',
     calendar: '/profile/calendar',
-    notes: '/profile/notes',
-    teams: '/profile/teams',
-    teamsAll: '/profile/teams/all',
-    projects: '/profile/projects',
+    desk: '/profile/notes/',
+    teams: '/profile/teams/all/',
+    projects: '/profile/projects/all/',
   },
   notFound: '*',
 };
@@ -48,5 +47,21 @@ export const positionUrl = {
 export const teamUrl = {
   get: 'teams',
   create: 'teams/new-team',
-  toggle: 'teams/toogle-favourite/',
+  toggle: 'teams/toggle-favourite/',
+  deleteMember: 'teams/delete-members/',
+  deleteTeam: 'teams/delete-team/',
+  update: 'teams/update-members/',
+};
+
+export const projectUrl = {
+  get: 'projects',
+  create: 'projects/new-project/',
+  toggleFavourite: 'projects/toggle-favourite/',
+  toggleIsDone: 'projects/toggle-status',
+  update: 'projects/update/',
+  delete: 'projects/delete/',
+};
+
+export const taskUrl = {
+  addTask: projectUrl.get + '/add-tasks/',
 };

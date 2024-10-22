@@ -2,53 +2,27 @@ import { UserSummary } from './types.user';
 
 export interface Task {
   _id: string;
-  startTime: string;
-  endTime: string;
-  timeSpent: number;
+  user: UserSummary;
+  executionDate: string;
+  description: string;
+  title: string;
+  status: string;
+  type: string;
+  timeExpected: string;
+  timeSpent: string;
+  timeCalculated: number;
+}
+
+export interface TaskMutation {
   title: string;
   description: string;
-  label: string;
-}
-
-export interface Tasks {
-  _id: string;
-  userId: UserSummary;
+  user: string;
   executionDate: string;
-  totalTimeSpent: number;
-  tasks: Task[];
+  timeExpected: string;
+  type: string;
 }
 
-export interface TasksMutation {
-  executionDate: string;
-  tasks: TaskMutation[];
-}
-
-interface TaskMutation {
-  startTime: string;
-  endTime: string;
-  title: string;
-  description: string;
-  label: string;
-}
-
-export interface TaskInfo extends Task {
-  globalId: string;
-  author: UserSummary;
-  executionDate: string;
-}
-
-export interface TaskQueryParams {
-  userId?: string;
-  date?: string;
-}
-
-export interface TaskDeleteArgs {
+export interface AddTaskArg {
   id: string;
-  taskId: string;
-}
-
-export interface TaskEditArgs {
-  id: string;
-  taskId: string;
-  task: TaskMutation;
+  mutation: TaskMutation;
 }

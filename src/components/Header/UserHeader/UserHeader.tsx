@@ -1,11 +1,11 @@
 import React, { ReactNode, useState } from 'react';
-import { Badge, Button, Drawer, Flex, Input, Space } from 'antd';
+import { Badge, Button, Drawer, Dropdown, Input, MenuProps, Space } from 'antd';
 import UserTitle from '../../UI/UserTitle/UserTitle';
 import useBreakpoint from 'antd/es/grid/hooks/useBreakpoint';
 import {
   AppstoreOutlined,
   BellFilled,
-  CaretRightOutlined,
+  PlusOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
 import UserMenu from '../../UserMenu/UserMenu';
@@ -19,7 +19,7 @@ interface Props {
 
 const UserHeader: React.FC<Props> = ({ toggleMenu }) => {
   const user = store.getState().auth?.user;
-  const { md } = useBreakpoint();
+  const { sm, md } = useBreakpoint();
 
   const [open, setOpen] = useState(false);
   const [focus, setFocus] = useState(false);
@@ -78,59 +78,60 @@ const UserHeader: React.FC<Props> = ({ toggleMenu }) => {
     );
   };
 
+  const items: MenuProps['items'] = [
+    {
+      label: <Button>Команда</Button>,
+      key: '1',
+      onClick: () => setOpen(true),
+    },
+    {
+      label: <Button>Проект</Button>,
+      key: '',
+      onClick: () => setOpen(true),
+    },
+  ];
+
   const timeBtn = (
-    <Button
-      icon={<CaretRightOutlined />}
-      type="primary"
-      style={{ marginRight: 'auto' }}
-    >
-      Таймер
-    </Button>
+    <Dropdown.Button icon={<PlusOutlined />} type="primary" menu={{ items }}>
+      Создать
+    </Dropdown.Button>
   );
 
   return (
     user && (
       <>
-        <Space>
+        <Space align="center">
           <Button
             icon={<AppstoreOutlined />}
             onClick={!md ? handleOpen : toggleMenu}
           />
-          <Logo link={appRoutes.user.dashboard} />
+          {sm && <Logo link={appRoutes.user.dashboard} />}
         </Space>
 
-        <Flex
-          align="center"
-          justify="flex-end"
-          vertical={false}
-          style={{ flexGrow: 1 }}
-        >
-          {md ? (
-            <>
-              {timeBtn}
-              <Space align="center" size="large">
-                {input}
-                {badge(
-                  <Button
-                    type="text"
-                    shape="circle"
-                    style={{
-                      backgroundColor: '#F5F5F5',
-                      width: '34px',
-                      height: '34px',
-                    }}
-                    icon={<BellFilled style={{ fontSize: 16 }} />}
-                  />,
-                )}
-                <UserTitle user={user} />
-              </Space>
-            </>
-          ) : (
-            <Space size="middle" align="center">
-              {badge(<UserTitle user={user} />)}
-            </Space>
-          )}
-        </Flex>
+        {md ? (
+          <Space align="center" size="large">
+            {timeBtn}
+            {input}
+            {badge(
+              <Button
+                type="text"
+                shape="circle"
+                style={{
+                  backgroundColor: '#F5F5F5',
+                  width: '34px',
+                  height: '34px',
+                }}
+                icon={<BellFilled style={{ fontSize: 16 }} />}
+              />,
+            )}
+            <UserTitle user={user} />
+          </Space>
+        ) : (
+          <Space size="middle" align="center">
+            {timeBtn}
+            {badge(<UserTitle user={user} />)}
+          </Space>
+        )}
 
         {!md && (
           <Drawer
