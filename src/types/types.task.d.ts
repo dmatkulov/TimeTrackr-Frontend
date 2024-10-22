@@ -14,10 +14,10 @@ export interface Task {
 }
 
 export interface TaskMutation {
+  title: string;
+  description: string;
   user: string;
   executionDate: string;
-  description: string;
-  title: string;
   timeExpected: string;
   type: string;
 }
